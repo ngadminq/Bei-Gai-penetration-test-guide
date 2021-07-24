@@ -34,7 +34,6 @@
           - [access](#access)
           - [mysql](#mysql)
       - [非关系型](#非关系型)
-    - [开源渗透测试标准](#开源渗透测试标准)
     - [Linux](#linux)
         - [权限划分](#权限划分)
         - [安装软件](#安装软件)
@@ -135,8 +134,6 @@
         - [只能上传图片](#只能上传图片)
         - [+解析漏洞](#解析漏洞)
         - [+文件包含漏洞](#文件包含漏洞)
-        - [+ IIS6.0上传漏洞](#-iis60上传漏洞)
-        - [+ Apache解析漏洞-低版本2.X](#-apache解析漏洞-低版本2x)
         - [+Apache2.4.0-2.4.29换行解析](#apache240-2429换行解析)
         - [待补充： +weblogic](#待补充-weblogic)
         - [+firecms上传漏洞](#firecms上传漏洞)
@@ -149,7 +146,6 @@
     - [越权](#越权)
       - [水平越权](#水平越权)
       - [垂直越权](#垂直越权)
-      - [待补充：工具](#待补充工具)
       - [防御](#防御-1)
     - [登录脆弱](#登录脆弱)
       - [验证脆弱](#验证脆弱)
@@ -415,7 +411,6 @@
       - [成为什么样的人](#成为什么样的人)
       - [让自己小有名气](#让自己小有名气)
         - [写书](#写书)
-
 # 写在前面
 
 **作者：北丐**
@@ -491,7 +486,9 @@ HEX编码又叫十六进制编码，是数据的16进制表达形式，是计算
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628225351540.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 端口
-
+范围：0-65535
+固定端口：0-1023 1024保留
+动态端口：1024-65535
 #### 常见端口
 
 **web:80**
@@ -852,15 +849,8 @@ Access 和 MySQL 等。
 每个网站对应的数据库不一样，不像mysql或其他数据库一个网站对应一个数据库
 
 ###### mysql
-
-
- //连接登录mysql的 不是网站后台登录密码
- mysql库下的user表中--->一般是经过md5加密后的
-mysql的网站注入，5.0以上和5.0以下有什么区别？
-
-  5.0以下（一般都是2000年左右的没有更新的网站才有）没有information_schema这个系统表，无法列表名等，只能暴力跑表名。5.0以下是多用户单操作，5.0以上是多用户多操做。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151652986.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151920287.png)
+  5.0以下（一般都是2000年左右的没有更新的网站才有）没有information_schema这个系统表，无法列表名等，只能用字典暴力跑表名、列名，这点access也是一样的。5.0以下是多用户单操作，5.0以上是多用户多操做。
+  
 
 **mysql 基本信息**
 
@@ -884,15 +874,6 @@ mysql的网站注入，5.0以上和5.0以下有什么区别？
 功能没有关系型数据库完善。
 
 
-
-
-
-
-### 开源渗透测试标准
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210521222032138.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210521222305289.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210521222332114.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### Linux
 
@@ -1191,7 +1172,7 @@ python sublist3r.py -d example.com
 >>DNSsdumpster网站.你要是懒得下载sublist3r做子域名检测，那么使用这个在线工具对你也类似，搜素出的结果是一样的
 >>![在这里插入图片描述](https://img-blog.csdnimg.cn/20210620200656369.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 >>搜索引擎：这种方法被很多人推荐，但是以下例子很清晰的看到这种方法获得的结果很杂乱
->>![sousuo](https://img-blog.csdnimg.cn/20210624183123142.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+>>
 >>![在这里插入图片描述](https://img-blog.csdnimg.cn/20210630002712737.png)
 
 ##### 方法二：旁站搜集
@@ -1562,7 +1543,6 @@ dnsdb搜索引擎是一款针对dns解析的查询平台。
 
 ### nslookup
 
-我们将介绍的第一个工具是 NSLookup，它使用语法“nslookup -option target”。如果要指定名称服务器，则需要将其添加到命令的末尾。语法是“nslookup -option target nameserver”。有关基本查询的示例，请参见图 3.1
 ![/](https://img-blog.csdnimg.cn/20210602183521855.png)
 如您从这张图片中看到的，我们从我们执行的查询中只收到了一条记录。我们获得这个单一结果是因为我们没有指定查询类型。默认情况下，如果未指定查询类型，nslookup 将检索域的 A 记录。
 
@@ -2314,13 +2294,38 @@ Filename：文件名，可以更改
 这时候你就需要配合其他漏洞才可以执行。
 
 ##### +解析漏洞
+常见解析漏洞存在于
+* IIS 5.x/6.0解析漏洞
 
-解析漏洞存在的条件是比较苛刻的
+> ①`/xx.asp/xx.jpg` xx.asp的目录将被解析
+> 
+> 利用：创建/.asp文件夹；上传xx.jpg
+>   ②xx.asp;.jpg`:分号后面的不被解析
+利用：上传xx.asp;.jpg
 
-> IIS 6.0 /xx.asp/xx.jpg "xx.asp"是文件夹名
-  IIS 7.0/7.5 默认Fast-CGI开启，直接在url中图片地址后面输入/1.php，会把正常图片当成php解析
-  Nginx 版本小于等于0.8.37，利用方法和IIS 7.0/7.5一样，Fast-CGI关闭情况下也可利用。 空字节代码 xxx.jpg%00.php
-  Apache （1）上传的文件命名为：test.php.x1.x2.x3，Apache是从右往左判断后缀 （2）lighttpd （3）xx.jpg/xx.php
+
+* Apache
+
+> xx.php.uarepig.truee	解析文件是从右到左开始判断的，如果后缀名识别不了就会往左继续判断
+> 
+> 利用：上传xx.php.uarepig.truee
+
+* Nginx <8.03
+
+> xx.php%00.jpg	截断
+> 
+> 利用：上传xx.php%00.jpg
+
+* 配置不当.htaccess
+> 写入`AddType application/x-httpd-php .jpg`	服务器允许客户端上传该文件
+> 利用：上传xx.jpg
+
+* 配置不当IIS 7.0/IIS 7.5/ Nginx <8.03/lighttpd  
+> 
+> 前提：只支持php脚本php.ini中的参数cgi.fix_pathinfo。这是配置不当引起的
+> xx.jpg/.php
+> 利用：上传xx.jpg
+> 访问xx.jpg/.php
 
 图片马制作很简单，你可以轻松的上传它，但是如何执行起来就是另一项技术。
 生成在同级文件下放入一句话木马和图，将其在win的cmd下输入
@@ -2337,19 +2342,6 @@ copy 1.jpg /b+1.php/a 1.jpg
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709135133834.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-##### + IIS6.0上传漏洞
-
-现在这个版本已经不太常见了
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709153926671.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021070915424534.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### + Apache解析漏洞-低版本2.X
-
-符合Apache低版本就有漏洞
-x.php.xxx.yyy
-识别最后的yyy，如果不识别的就向前解析，直到识别。
-利用场景：
-如果对方中间件apache属于低版本，我们可以利用文件上传，上传一个不识别的文件后缀，利用解析漏洞规则成功解析文件，其中后门代码被触发。
 
 ##### +Apache2.4.0-2.4.29换行解析
 
@@ -2357,16 +2349,8 @@ x.php.xxx.yyy
 https://vulhub.org/#/environments/httpd/CVE-2017-15715/
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709161011292.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-Nginx解析漏洞-vulhub
 
-Nginx文件名逻辑-vulhub
 
-各个WEB编辑器安全讲解
-网站后台里面有操作添加文字等类似功能的时候，有些网站会套用第三方的编辑器去对文章、图片、音频等进行相关处理。如果一个网站里面有编辑器的话，那么这个编辑器是什么类型，有没有漏洞，也会成为我们利用条件。
-
-https://navisec.it/编辑器漏洞手册/
-各个CMS文件上传简要讲解
-wordpress，phpcms
 
 ##### 待补充： +weblogic
 
@@ -2404,7 +2388,6 @@ wordpress，phpcms
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709151241163.png)
 
 
-* Apache。解析顺序中，是从右往左开始解析后缀的，如果遇到1.php.xxx，那么1.php就会被解析
 * 如果后端有读取图像类型比如getimagesize()如果错误那么你将不会被上传成功，这时候你可以将图片和webshell合并一个文件，命令是 cat 1.jpg 2.php > webshell.php
 * 竞态条件上传，在系统将你的php删除之前，在网站中调用的你php文件，那么代码就会被保留。
 * php小于5.3.4会把00后面字符删除。上传name=1.php%00.jpg只需要注意一点是get会自动解码 %00
@@ -2419,16 +2402,12 @@ wordpress，phpcms
    ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709010254367.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-* 最老套的方法是用Content-Type值判断的，这时候比如服务器只能允许上传image/jpeg，那么上传了php后，通过burpsuite拦截，可以看到content-type变为了application/octet-stream，在加上content-Type改为image/jpeg就能完成上传。但是如果目标网站开启了WAF这种方法仍旧行不通。
+* 前端验证Content-Type值判断的，这时候比如服务器只能允许上传image/jpeg，那么上传了php后，通过burpsuite拦截，可以看到content-type变为了application/octet-stream，在加上content-Type改为image/jpeg就能完成上传。这种方法绝大多数行不通。
 * windows解析php特有技巧，将.php文件加上`：：&DATA`
 * 将上传名加一个空格`1.php `，这样你可能绕过开发者写的匹配规则。但是文件上传到系统后是会强行去掉你加的空格，这样你的文件就能保证成功执行了。类似的还有加上`.`
 
 * 简要上传表单代码分析解释
   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709002346399.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-* .htaccess文件配置覆盖。当没有过滤.htaccess文件时，这个漏洞可以被执行。执行方法是1.创建.htaccess文件
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709011811865.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-  下载一张后缀名为jpg的图片，把图片名改为shana，打开图片，在最后增加一行php代码，然后上传
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709011838515.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 * 代码替换关键字
 
@@ -2522,11 +2501,6 @@ unlink，delfile是php中对应删除的函数
 2.通过网站源码本地搭建自己去模拟抓取
 3.盲猜
 
-#### 待补充：工具
-
-寻找最好用的越权检测工具
-**在burpsuite装authz**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712220713456.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 防御
 
@@ -2709,8 +2683,8 @@ hydra爆破工具，在kali有集成。在kali上有个默认密码字典位于`
 %5c------------/反斜杠
 
 php中有一个转义字符
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210511175255628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210511175404953.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
 
 ## 待整理：XXE
 
@@ -3138,13 +3112,10 @@ select * from user where username='reborn'='' and password='reborn'=''
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705181025600.png)
 
 
-*access就没有什么数据库版本，数据库名给你查，也没有infomation_schema给你，因此只能靠暴力猜。但是其他sql语句都是一样的。如下几个语句都是猜的*
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210706113950703.png)
+
 
 ### sql注入过程：手工/sqlmap
-
-sqlmap支持MySQL, Oracle,PostgreSQL, Microsoft SQL Server, Microsoft Access, IBM DB2, SQLite, Firebird,Sybase和SAP MaxDB等数据库的各种安全漏洞检测。
- 使用sqlmap 步骤是：
+使用sqlmap 步骤是：
 
 ```python
 # 1.判断链接是否可注入
@@ -3196,12 +3167,10 @@ Havij
 #### tamper 自定义
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708185301610.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708185420237.png)
+
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708190916943.png)
-sqlmap在请求中，应该
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708193025566.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+sqlmap在发送请求数据包中user-agent直接申明自己名号，很多防火墙轻易就将此查杀。
 
 #### 注入插件脚本编写
 
@@ -3256,7 +3225,6 @@ NULL
 **关键字过滤**
 比如过滤大小写、select等
 
-**防护软件**
 
 **session 进行参数绑定**
 利用session防御，session内容正常情况下是用户无法修改的select * from users where user = "'" + session getAttribute("userID") + "'";
@@ -3666,10 +3634,6 @@ fuzzy https://xssfuzzer.com/fuzzer.html
 
 
 ## CSRF
-
-
-**什么是**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710175822379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 只要受害者在登录状态，点击了一下你的链接，就可以完成攻击。一般你在选取csrf界面时你应该选择可以添加（管理员、用户等）、删除、修改等操作上。如果不能做这些即便有相关漏洞也是没什么危害的。
 **危害性**
 比xss更大，更难防范。通常可以用来以目标用户的名义发邮件、盗取目标用户账号、购买商品。通常用来做蠕虫攻击、刷SEO流量等。
