@@ -47,10 +47,9 @@
 - [信息收集](#信息收集)
   - [信息搜集开源项目](#信息搜集开源项目)
   - [web组成框架信息收集](#web组成框架信息收集)
-    - [源代码](#源代码)
     - [中间件](#中间件)
-  - [学会用搜索引擎](#学会用搜索引擎)
-  - [源码层面收集](#源码层面收集)
+    - [源码层面收集](#源码层面收集)
+      - [github](#github)
     - [CMS识别](#cms识别)
   - [特殊信息](#特殊信息)
       - [备案](#备案)
@@ -68,13 +67,16 @@
         - [目录爆破经验](#目录爆破经验)
         - [图像](#图像)
         - [阻塞遍历序列](#阻塞遍历序列)
+  - [监控](#监控)
 - [工具](#工具-1)
     - [虚拟机配置上网](#虚拟机配置上网)
   - [学会上网](#学会上网)
+    - [学会用普通搜索引擎](#学会用普通搜索引擎)
     - [google hack](#google-hack)
     - [暗网](#暗网)
     - [空间搜索引擎](#空间搜索引擎)
       - [Shodan](#shodan)
+      - [censys搜索引擎](#censys搜索引擎)
       - [钟馗之眼](#钟馗之眼)
       - [FoFa搜索引擎](#fofa搜索引擎)
       - [Dnsdb搜索引擎](#dnsdb搜索引擎)
@@ -89,6 +91,7 @@
     - [邮箱信息](#邮箱信息)
       - [搜集](#搜集)
       - [验证是否被弃用](#验证是否被弃用)
+      - [验证密码是否泄露](#验证密码是否泄露)
   - [综合工具](#综合工具)
     - [信息搜集](#信息搜集)
       - [电子邮件](#电子邮件)
@@ -108,7 +111,14 @@
     - [kali](#kali)
       - [安装kali](#安装kali)
     - [网站](#网站)
+      - [Cobalt Strike](#cobalt-strike)
     - [其他常见工具](#其他常见工具)
+  - [待补充：购物建议](#待补充购物建议)
+    - [硬件](#硬件)
+    - [服务器](#服务器)
+    - [代理](#代理-1)
+      - [国内](#国内)
+      - [国外](#国外)
 - [web安全](#web安全)
   - [中间人攻击](#中间人攻击)
   - [反序列化（对象注入）](#反序列化对象注入)
@@ -118,9 +128,6 @@
     - [JAVA序列化与反序列化](#java序列化与反序列化)
       - [序列化函数介绍](#序列化函数介绍)
       - [工具](#工具-2)
-  - [重放攻击](#重放攻击)
-  - [html 注入](#html-注入)
-  - [下载漏洞](#下载漏洞)
   - [文件操作](#文件操作)
     - [文件读取](#文件读取)
     - [文件包含](#文件包含)
@@ -297,6 +304,7 @@
     - [定向社工](#定向社工)
   - [如何在本地查询](#如何在本地查询)
 - [经验](#经验-1)
+  - [知名网站](#知名网站)
   - [IP伪造](#ip伪造)
   - [界面](#界面)
   - [EXP](#exp)
@@ -409,8 +417,6 @@
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
-      - [让自己小有名气](#让自己小有名气)
-        - [写书](#写书)
 # 写在前面
 
 **作者：北丐**
@@ -964,7 +970,7 @@ bunzip2 NB.*
 
 ### windows
 
-
+DOS编程教程，可以了解一下基础 https://blog.csdn.net/u010400728/article/details/43967181
 #### windows 常见命令
 
 熟悉命令，这部分知识通常用于拿到shell对对方查看或提权
@@ -998,33 +1004,26 @@ https://github.com/bit4woo/teemo
 
 ## web组成框架信息收集
 
-### 源代码
-
-通研究源代码，能够发现一些敏感目录。源代码获取可以直接右击。也可以利用httrack获取
-
-查看header:contype
-文件命名规则
-
-
 
 ### 中间件
 
 apache,iis,tomcat,nginx
+### 源码层面收集
 
+通研究源代码，能够发现一些敏感目录。
 
+查看header:contype
+文件命名规则
+#### github
+github除了很可能存在源码以外，也会记录下作者提交的删除的历史记录。这些历史记录可能保留着重要的如密码等敏感数据
+**Truffle Hog**工具会扫描不同的提交历史记录和分支来获取高机密的密钥，并输出它们。这对于查找机密数据、密码、密钥等非常有用。
 
-## 学会用搜索引擎
-
-(以下的baidu代表站点)
-你搜索其标题还可以得到更多的信息
-或者搜baidu
-或者搜baidu php
-
-## 源码层面收集
-
-寻找有无开源的github
-下载CMS
-寻找 网站有没有备份隐藏的源代码
+```bash
+cd /opt/trufflehog/truffleHog
+python truffleHog.py https://github.com/cyberspacekittens/dnscat2
+```
+****
+在查看大型项目时，**Git-all-secrets** 非常有用
 
 ### CMS识别
 
@@ -1042,17 +1041,9 @@ Dedecms discuz phpcms wordpress zblog phpweb aspcms
 **识别方法2：观察网站信息**
 查看网站的powered by.。
 
-点击一个特别路径名，在百度搜索名字有可能出
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210627224732482.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+看F12中特别路径名，在百度搜索名字有可能出
 
 
-
-4. 目标微博，公众号信息
-5. 目标邮箱用户信息
-6. 目标VPN用户信息
-7. 目标GitHub泄露信息
-8. 目标服务器/中间件/CMS框架信息
-   10.目标网盘或第三方网盘敏感文件信息
 
 主动探测是与目标机器做交互。在做交互时不可避免会留下痕迹。如何隐藏自己请看技巧的代理小节
 
@@ -1091,7 +1082,8 @@ xray的rad爬虫 https://github.com/chaitin/rad
 **网站使用说明书**
 
 通常包含一些敏感信息，比如登录敏感目录，管理员默认密码，密码长度等
-
+****
+目标网盘或第三方网盘敏感文件信息
 #### 公司
 
 **企业附属品**
@@ -1135,7 +1127,8 @@ ICP备案查询网
 **APP**
 
 * 七麦数据： https://www.qimai.cn/，可以查到企业下一些比较冷门的app。
-
+* ****
+目标微博，公众号信息
 
 ### 拓展信息收集
 
@@ -1151,7 +1144,14 @@ www 就是顶级域名，如果是https://blog.baidu.com就是他的子域名
 万网搜索是否号被注册了
 
 ##### 方法一：爆破子域名
+这个工具结合了Kali Linux 上的所有的子域名侦察工具，并定期进行维护更新。被动信息收集将利用下列所有的工具: Passive uses ARIN, dnsrecon, goofile, goog-mail, goohost, theHarvester, Metasploit, URLCrazy, Whois, multiple websites。强大。https://github.com/leebaird/discover
 
+****
+ SubBrute。SubBrute 是一个社区项目，目标是创建最快、最准确的子域枚举工具。SubBrute 背后的神奇之处在于，它使用开放的解析器作为代理来绕过 DNS 速率限制( https://www.us-cert.gov/ncas/alerts/TA13-088A )。这种设计还提供了一层匿名性，因为 SubBrute 不直接向目标的域名服务器发送流量。
+
+SubBrute 不仅速度非常快，它还执行 DNS 爬虫功能，爬取枚举的 DNS 记录。
+
+运行 SubBrute:
 >方法1：利用工具
 >
 >>[站长之家：在线子域名平台：](https://tool.chinaz.com/subdomain/)
@@ -1187,8 +1187,7 @@ https://scan.dyboy.cn/web/webside
 https://crt.sh/（SSL证书查询）
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210620185251394.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-**防火墙检测**
-hping3
+
 
 **端口扫描**
 在一个网站中可能存在同个网址，但是通过端口的不同，所显示的页面也不同。
@@ -1283,6 +1282,10 @@ filename=../../../etc/passwd
 简单来说就是不同服务器上的不同站点，网站搭建用不同的服务器搭建不同的站点，但都属于同一个站点，我们可以攻击其中一个网站，通过内网渗透从而获取其他网站的权限。
 
 在线C段查询：https://chapangzhan.com/
+## 监控
+监控是否有新的端口开放nmap_diff
+
+应用程序是否发生改变
 
 # 工具
 
@@ -1303,6 +1306,12 @@ filename=../../../etc/passwd
 
 
 ## 学会上网
+### 学会用普通搜索引擎
+
+(以下的baidu代表站点)
+你搜索其标题还可以得到更多的信息
+或者搜baidu
+或者搜baidu php
 
 ### google hack
 
@@ -1469,14 +1478,10 @@ before/after：　　搜索指定收录时间前后的数据，格式为dd-mm-yy
 net：　　搜索指定的IP地址或子网，例如 net:”210.45.240.0/24”
 
 
-censys搜索引擎
-censys搜索引擎功能与shodan类似，以下几个文档信息。
-地址：https://www.censys.io/
+####  censys搜索引擎
+censys搜索引擎功能与shodan类似,只是搜索功能免费，证书分析功能不错。
+地址：https://search.censys.io/search?resource=hosts
 
-https://www.censys.io/certificates/help 帮助文档
-https://www.censys.io/ipv4?q=  ip查询
-https://www.censys.io/domain?q=  域名查询
-https://www.censys.io/certificates?q= 证书查询
 搜索语法
 
 默认情况下censys支全文检索。
@@ -1489,7 +1494,6 @@ protocols: (“23/telnet” or “21/ftp”)　　协议
 tags: scada　　标签
 80.http.get.headers.server：nginx　　服务器类型版本
 autonomous_system.description: University　　系统描述
-正则
 
 
 #### 钟馗之眼
@@ -1607,6 +1611,8 @@ https://www.email-format.com/i/search/
 https://mailtester.com/testmail.php
 https://github.com/Tzeross/verifyemail
 
+#### 验证密码是否泄露
+https://haveibeenpwned.com/
 ## 综合工具
 
 ### 信息搜集
@@ -2012,10 +2018,19 @@ docker run -i -t 53e9507d8515 /bin/bash
 **nslookup**  查询IP
 [站长之家-在线nslookup执行，当然你也可以在kali直接利用或者将工具下载下来,这三种方式的查询结果都一样！](http://tool.chinaz.com/nslookup/)
 
-
+#### Cobalt Strike
+用来后期持久渗透，横向移动，流量隐藏、数据窃取的工具
 ### 其他常见工具
 xshell，免费正版下载，官网 https://www.netsarang.com/en/free-for-home-school/
 phpstudy https://www.xp.cn/download.html
+## 待补充：购物建议
+### 硬件
+### 服务器
+### 代理
+#### 国内
+选离你所在的城市近的国家
+#### 国外
+
 # web安全
 
 你应该根据网站的类型去鉴定最可能存在的漏洞是什么，比如社交最可能存在XSS、文件操作最可能存在包含上传或下载漏洞。根据你的猜想首先去测试最可能的网站的漏洞
@@ -2026,11 +2041,17 @@ phpstudy https://www.xp.cn/download.html
 
 
 ## 中间人攻击
+中间人攻击是一个（缺乏）相互认证的攻击；由于客户端与服务器之间在SSL握手的过程中缺乏相互认证而造成的漏洞
 
-**中间人攻击**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507195133430.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![ ](https://img-blog.csdnimg.cn/20210507200212915.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507200853468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+防御中间人攻击的方案通常基于一下几种技术
+
+1.公钥基础建设PKI 使用PKI相互认证机制，客户端验证服务器，服务器验证客户端；上述两个例子中都是只验证服务器，这样就造成了SSL握手环节的漏洞，而如果使用相互认证的的话，基本可以更强力的相互认证
+
+2.延迟测试
+
+使用复杂加密哈希函数进行计算以造成数十秒的延迟；如果双方通常情况下都要花费20秒来计算，并且整个通讯花费了60秒计算才到达对方，这就能表明存在第三方中间人。
+
+3.使用其他形式的密钥交换形式
 
 ## 反序列化（对象注入）
 
@@ -2103,26 +2124,8 @@ ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序�
 
 当你在目标网站发现一串数据是以rO0AB开头的，你可以先寻找目标站点是否有反序列化操作，即看这个序列化结果是否能被执行成正常代码或正常值得显示。如果是那么你就可以利用ysoserial去生成一段危险的序列化代码即payload。生成之后按照指定的编码格式，看是base64还是HEX，将这payload与前面目标网站抓取到的rO0AB序列化数据包替换。
 
-## 重放攻击
-
-重复发送请求就是重放攻击
 
 
-比如购物支付一次，在重放攻击下可能达到一百次的购买。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507194058912.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507194157586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507194501837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210507194643753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-用burpsuite重放方法：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713161458237.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-## html 注入
-
-## 下载漏洞
-
-前提是网站有比如“点击下载”的按钮。下载后分析文件地址
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210702164934707.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210702163522138.png)
 
 ## 文件操作
 
@@ -2219,6 +2222,7 @@ http://127.0.0.1:8080/include.php?filename=data://text/plain,<?php%20phpinfo();?
 写固定比如后端只接受1.txt文件，其他一律不处理
 
 ### 文件下载
+
 
 凡是网站有文件下载的功能都有可能发生漏洞。我们可以去分析下载链接和文件链接，已确定下载代码是在哪个目录。我们可以利用此漏洞下载敏感文件比如数据库配置等，也可以下载有价值的网站源码。
 一般文件下载参数以post传递
@@ -3909,7 +3913,8 @@ JWT攻击取决于对方服务器是接收数据来进行什么样的下一步�
 **waf检测工具**
 
 1. wafw00f
-2. sqlmap
+2. hping3
+3. sqlmap
    相较于手工和wafw00f而言，sqlmap业界认可度更高，用的人更多
 
 ```bash
@@ -4434,6 +4439,9 @@ http://cnseur/frumphp
 http://tool.chinaz.com/tools/dwz.aspx?qq-pf-to=pcqq.group
 
 # 经验
+## 知名网站
+这与中小型网站渗透不太一样，中小型的可能以下方案/工具对目标帮助不大，而前面提到的很多常规工具又对他们的自定义WAF失效，所以我就增加了这一小节，希望能帮助到你一点吧。
+扫这个网站向我们显示有关所发现的攻击，恶意网站或错误的信息 https://www.greynoise.io/viz/query
 ## IP伪造
 通过互联网传输的数据首先被分成多个数据包，这些数据包独立传输并在最后重新组合。每个数据包都有一个 IP（互联网协议）标头，其中包含有关数据包的信息，包括源 IP 地址和目标 IP 地址。如果ip判定是从请求数据包进行判定的，这样就有可能存在伪造ip绕过的情况。
  **前端验证绕过**
@@ -4820,8 +4828,8 @@ https://tools.ipip.net/dns.php
 权限划分：补充webshell权限，webshell权限比普通用户低一点，比来宾用户大
 
 本地权限：本地权限一般是内网渗透最初身份，通常是user，因此能用在webshell提权的都能用在本地提权上
-
-
+****
+提权一般都会进入tmp目录操作，即C:/tmp与/tmp 因为这个目录不需要高权限就可以写入
 ### 提权准备
 
 提权可能是你利用SQL注入等获得高权限。当你需要打开web的cmd窗口执行更多操作时，你上传的是一个bat文件，文件内容是cmd.exe  
@@ -4837,10 +4845,18 @@ whoami
 systeminfo
 ```
 
+
 ### window提权
 系统提权是希望从adminstator升级到system权限
 #### 提权准备
 信息搜集工具选其一，顺手即可
+**信息搜集：命令行**
+常见的公开漏洞要自己收集，具体怎么搜集后续我补充
+```bash
+systeminfo|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
+```
+
+
 **信息搜集：wes**
 项目链接： https://github.com/bitsadmin/wesng
 这个项目执行条件轻松，只需要对方的systeminfo就可以导出疑似的漏洞了。
@@ -4985,7 +5001,6 @@ impersonate token "NT AUTHORITY\ \SYSTEM"
 ```
 ### LINUX提权
 提权目的是要提权到最高权限root。
-提权一般都会进入tmp目录操作，因为这个目录又可以进行读又可以进行写。 
 
 更多参见资料《linux提权手法总结》，下载链接 https://www.jason-w.cn/wp-content/uploads/2021/06/%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87-linux%E6%8F%90%E6%9D%83%E6%89%8B%E6%B3%95%E6%80%BB%E7%BB%93.pdf
 
@@ -5051,13 +5066,16 @@ mysql安装之后是默认是集成系统最高权限，在获得root账号密�
 
 ##### UDF
 
-UDF (user defined function)，即用户自定义函数。是通过添加新函数，对MySQL的功能进行扩充，其实就像使用本地MySQL函数如 user() 或 concat() 等。
+UDF (user defined function)，即用户自定义函数。
 
 
 手工创建plugin目录或利用NTFS流创建
+
+```bash
 select 'x' into dumpfile '目录/lib/plugin : :INDEX_ALLOCATION';
 1.mysql<5.1（版本通过执行命令select version()看出）导出目录c :/ windows或system32
 2.mysql=>5.1导出  安装目录（通过@@basedir可以得出）/ lib/plugin/（默认没有/ lib/plugin/）
+```
 
 ##### MOF
 
@@ -5388,7 +5406,6 @@ mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
 # 代码审计
 
 如果你没有任何编程基础，这一部分就不要指望学到太多东西。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717014037512.png)
 代码审计是指你获得源代码后对代码进行下载交互操作并做源代码层面的分析，因此你在做审计前通常需要提前配置好相关环境。
 代码审计的内容可能是审计框架也可能是审计混写也可能是程序员全程自己写的
 
@@ -5616,7 +5633,6 @@ https://www.freebuf.com/jobs
 
 **小迪安全**
 推荐指数：5
-适合人群：初学者偏上，中级偏下。
 预备技能：一点编程、基础安全知识
 整体评价：干货多
 [视频很推荐B站小迪8 课程从2020/5/20开始](https://www.bilibili.com/video/BV1JZ4y1c7ro?p=4&spm_id_from=pageDriver)
@@ -5753,7 +5769,8 @@ https://www.classcentral.com/subject/cybersecurity?free=true
 ### 黑客组织和官网
 
 thc,开发了hydra等 https://www.thc.org/
-
+ 开发了SET等 TrustedSec	https://www.trustedsec.com
+ Coalfire 
 **Hack Forums:**
 http://hackforums.net/
 
@@ -6161,6 +6178,7 @@ Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易�
 
 #### 成为什么样的人
 
+
 1. 任何问题都不应该被解决两次
 2. 这个世界充满了迷人的问题等待解决。
 3. 无聊和苦工是邪恶的。这种浪费伤害了每个人。
@@ -6188,15 +6206,14 @@ Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易�
 信息安全技术实操认证新贵——Security+
 IT审计人员的必备之证——CISA
 
-#### 让自己小有名气
+**让自己小有名气**
 
 公关对任何人来说都是必要的，所以总尝试在你的圈内出名吧。这些圈内名气都会对职业生涯大有帮助，而薪资也会随着你的名气呈正比增长。
 努力奉献自己
-
 写工具
 
-##### 写书
-
+**写书/博客**
+开始写博客。千万不能陷入思维的陷阱，你必须是一个专家，然后才能发布任何东西。发布或教学的最佳时间是当您处于学习过程中的时候。所有的信息都是新鲜的，即使你只是写了一堆“如何做这个超级基本的事情”的帖子，有人会遇到它并从中受益。
 **本人无写书的经验，以下是copy别人的文字，等我积累经验了，这段文字会修改**
 比如一本书全价是70块，在京东等地打7折销售，那么版税是70块的8%，也就是说卖出一本作者能有5.6的收益，当然真实拿到手以后还再要扣税。
 
@@ -6242,4 +6259,3 @@ IT审计人员的必备之证——CISA
 总结：在国内知名出版社出书，其实是个体力活
     可能当下，写公众号和录视频等的方式，挣钱收益要高于出书，不过话可以这样说，经营公众号和录制视频也是个长期的事情，在短时间里可能未必有收益，如果不是系统地发表内容的话，可能甚至不会有收益。所以出书可能是个非常好的前期准备工作，你靠出书系统积累了素材，靠出书整合了你的知识体系，那么在此基础上，靠公众号或者录视频挣钱可能就会事半功倍。
 不过老实说，写书的意义不在于赚钱。仅仅从赚钱的角度来说，出网课可能更划算一些。但是如果想给自己的职业生涯留点东西，写书意义大于出网课。
-
