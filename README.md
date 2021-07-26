@@ -14,7 +14,6 @@
       - [UDP与TCP](#udp与tcp)
       - [三次握手与四次挥手](#三次握手与四次挥手)
       - [协议](#协议)
-      - [路由算法](#路由算法)
     - [DNS](#dns)
       - [邮件协议族](#邮件协议族)
       - [邮件安全协议](#邮件安全协议)
@@ -37,11 +36,9 @@
     - [Linux](#linux)
         - [权限划分](#权限划分)
         - [安装软件](#安装软件)
-        - [压缩](#压缩)
         - [重要目录](#重要目录)
       - [常见有用命令](#常见有用命令)
     - [windows](#windows)
-      - [windows 常见命令](#windows-常见命令)
       - [powshell](#powshell)
   - [常见文件含义](#常见文件含义)
 - [信息收集](#信息收集)
@@ -72,8 +69,8 @@
     - [虚拟机配置上网](#虚拟机配置上网)
   - [学会上网](#学会上网)
     - [学会用普通搜索引擎](#学会用普通搜索引擎)
-    - [google hack](#google-hack)
     - [暗网](#暗网)
+    - [google hack](#google-hack)
     - [空间搜索引擎](#空间搜索引擎)
       - [Shodan](#shodan)
       - [censys搜索引擎](#censys搜索引擎)
@@ -98,8 +95,6 @@
         - [Swaks](#swaks)
       - [theHarvester](#theharvester)
       - [sparta](#sparta)
-    - [帮助手动测试](#帮助手动测试)
-      - [hackbar](#hackbar)
     - [扫描端口](#扫描端口)
       - [nmap](#nmap)
       - [nbtscan](#nbtscan)
@@ -121,6 +116,9 @@
     - [代理](#代理-1)
       - [国内](#国内)
       - [国外](#国外)
+  - [你常用的](#你常用的)
+    - [开放漏洞情报](#开放漏洞情报)
+    - [寻找EXP](#寻找exp)
 - [web安全](#web安全)
   - [中间人攻击](#中间人攻击)
   - [反序列化（对象注入）](#反序列化对象注入)
@@ -139,16 +137,10 @@
       - [防御](#防御)
     - [文件下载](#文件下载)
     - [文件上传漏洞](#文件上传漏洞)
-      - [执行](#执行)
-        - [只能上传图片](#只能上传图片)
+      - [利用](#利用)
         - [+解析漏洞](#解析漏洞)
         - [+文件包含漏洞](#文件包含漏洞)
-        - [+Apache2.4.0-2.4.29换行解析](#apache240-2429换行解析)
-        - [待补充： +weblogic](#待补充-weblogic)
-        - [+firecms上传漏洞](#firecms上传漏洞)
-        - [待补充：+CVE-2017-12615:tomcat任意文件上传](#待补充cve-2017-12615tomcat任意文件上传)
-        - [+竞态](#竞态)
-        - [编辑器](#编辑器)
+      - [逻辑漏洞](#逻辑漏洞)
         - [常规上传](#常规上传)
     - [文件删除](#文件删除)
   - [逻辑越权](#逻辑越权)
@@ -242,16 +234,21 @@
     - [常见攻击演示](#常见攻击演示)
       - [图片上传](#图片上传)
   - [DDOS 攻击](#ddos-攻击)
-      - [DDOS 攻击手段](#ddos-攻击手段)
+    - [DDOS 攻击手段](#ddos-攻击手段)
   - [待补充：劫持漏洞](#待补充劫持漏洞)
     - [DNS劫持](#dns劫持)
     - [HTTP劫持](#http劫持)
     - [DLL劫持](#dll劫持)
 - [经验积累](#经验积累)
+  - [中间件](#中间件-1)
+    - [IIS](#iis)
+    - [Apache](#apache)
+    - [Nginx](#nginx)
+    - [tomcat](#tomcat)
   - [CMS特性](#cms特性)
     - [敏感信息搜集](#敏感信息搜集)
     - [工具](#工具-4)
-      - [利用](#利用)
+      - [利用](#利用-1)
       - [弱口令](#弱口令)
     - [thinkphp5](#thinkphp5)
       - [特性](#特性)
@@ -294,6 +291,8 @@
     - [探测工具简介](#探测工具简介)
     - [EXP工具](#exp工具)
         - [Metasploit](#metasploit)
+  - [字典](#字典)
+    - [制作](#制作)
 - [APP漏洞](#app漏洞)
   - [抓包](#抓包)
 - [社会工程学](#社会工程学)
@@ -310,8 +309,6 @@
 - [经验](#经验-1)
   - [知名网站](#知名网站)
   - [IP伪造](#ip伪造)
-  - [界面](#界面)
-  - [EXP](#exp)
     - [攻破类似网站](#攻破类似网站)
       - [如何攻击更多人](#如何攻击更多人)
       - [网站信息查询](#网站信息查询)
@@ -436,8 +433,11 @@
 
 
 很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**约一周发布2次左右更新版本。**
-在github显示效果似乎不是很好，可以下载typora与md文件，将md用typora打开，可以看到目录树。哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。另外请记得同步我的最新文章，它总是比上一个版本更好。
+在github显示与排版效果似乎不好，可以下载[typora](https://typora.io/)与md文件，将md用typora打开，可以看到目录树。如下图是软件打开效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。善用crtl+F，对关键字进行快速定位。学习时可自行按照自己喜欢的顺序，并不一定要严格按照我的文章目录。
+另外请记得同步我的最新文章，它总是比上一个版本更好。
+
 
 食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
 
@@ -501,75 +501,13 @@ HEX编码又叫十六进制编码，是数据的16进制表达形式，是计算
 固定端口：0-1023 1024保留
 动态端口：1024-65535
 #### 常见端口
+**常见端口**
+http:80
+https:443
+ftp:20/21
 
-**web:80**
-80端口通常提供web服务。
-
-
-**20/21**
-ftp的端口号20、21的区别前者是数据端口，后者是控制端口
-当你发现ip开放21端口，你可以在cmd中输入ftp ip查看是否能访问
-默认用户名密码 anonymous:anonymous
-
-
-
-**22**
-SSH 是协议。SSH 为 Secure Shell 的缩写，专为远程登录会话和其它网络服务提供安全性的协议。
-
-
-**23 Telnet**
-telnet是一种旧的远程管理方式，使用telnet工具登录系统过程中，网络上传输的用户和密码都是以明文方式传送的，黑客可使用嗅探技术截获到此类密码。
-
-**67/68**
-dhcp
-
-**888/888**
-宝塔
-
-**25/465**
-smtp：邮件协议，在linux中默认开启这个服务，可以向对方发送钓鱼邮件
-
-
-**53**
-53端口是DNS域名服务器的通信端口。
-
-
-**135**
-135端口主要用于使用RPC协议并提供DCOM服务，通过RPC可以保证在一台计算机上运行的程序可以顺利地执行远程计算机上的代码；使用DCOM可以通过网络直接进行通信，能够跨包括HTTP协议在内的多种网络传输。
-
-**139**
-139端口是为‘NetBIOS SessionService’提供的，主要用于提供windows文件和打印机共享以及UNIX中的Samba服务。
-
-**445**
-开放即代表开放了SMB协议，用于提供windows文件和打印机共享。
-
-**2409**
-NFS（Network File System）即网络文件系统，是FreeBSD支持的文件系统中的一种，它允许网络中的计算机之间通过TCP/IP网络共享资源。
-
-
-**3389端口渗透剖析**
-3389开启即RDP启动，这类似于linux的ssh即允许用户远程登录。
-
-
-**4899端口**
-是remote administrator远程控制软件默认监听的端口，也就是平时常说的radmini影子。
-
-
-**5631端口渗透剖析**
-5631端口是著名远程控制软件pcanywhere的默认监听端口，同时也是世界领先的远程控制软件。
-
-**5900端口渗透剖析**
-5900端口是优秀远程控制软件VNC的默认监听端口，此软件由著名的AT&T的欧洲研究实验室开发的。
-
-
-
-**7001/7002端口渗透剖析**
-7001/7002通常是weblogic中间件端口
-
-
-
-**8080端口渗透剖析**
-8080端口通常是apache_Tomcat服务器默认监听端口，apache是世界使用排名第一的web服务器。国内很多大型系统都是使用apache服务器，对于这种大型服务器的渗透，主要有以下方法：
+**危险端口**
+SMB：445	永恒之蓝
 
 **数据库端口**
 mysql：3306
@@ -658,16 +596,6 @@ icmp是Internet控制报文协议。它是TCP/IP协议簇的一个子协议，�
 动态主机配置协议 (Dynamic Host Configuration Protocol，DHCP) 是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要用于自动分配IP地址给用户，方便管理员进行统一管理。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/cbb0a34b02bf4711919c5b4da792d23b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-#### 路由算法
-
-路由算法是用于找到一条从源路由器到目的路由器的最佳路径的算法。存在着多种路由算法，每种算法对网络和路由器资源的影响都不同；由于路由算法使用多种度量标准 (metric)，所以不同路由算法的最佳路径选择也有所不同。
-**自治系统 AS (Autonomous System)**
-经典定义：
-由一个组织管理的一整套路由器和网络。
-使用一种AS 内部的路由选择协议和共同的度量以确定分组在该 AS 内的路由。
-使用一种 AS 之间的路由选择协议用以确定分组在AS之间的路由。
-尽管一个 AS 使用了多种内部路由选择协议和度量，但对其他 AS 表现出的是一个单一的和一致的路由选择策略。
-
 ### DNS
 
 
@@ -677,7 +605,7 @@ DNS解析过程是递归查询的，具体过程如下：
 用户要访问域名www.example.com时，先查看本机hosts是否有记录或者本机是否有DNS缓存，如果有，直接返回结果，否则向递归服务器查询该域名的IP地址
 递归缓存为空时，首先向根服务器查询com顶级域的IP地址
 根服务器告知递归服务器com顶级域名服务器的IP地址
-递归向com顶级域名服务器查询负责exa mple.com的权威服务器的IP
+递归向com顶级域名服务器查询负责example.com的权威服务器的IP
 com顶级域名服务器返回相应的IP地址
 递归向example.com的权威服务器查询www.example.com的地址记录
 权威服务器告知www.example.com的地址记录
@@ -902,58 +830,24 @@ apt-get autoremove –purge 软件名 删除包及其依赖的软件包+配置�
 dpkg -i 加文件 可以安装deb格式的安装包 
 ```
 
-##### 压缩
-
-**tar**
-tar是归档命令
--c表示创建
--v表示详细（可选）,如果我们想提取文件并“静默”提取，我们可以删除-v开关
--f写入或读取以下文件
-
-```bash
-压缩
- tar -cvf NB.tar nullbyte1 nullbyte2 nullbyte3
-```
-
--x开关从压缩包中提取这些文件
-
-```bash
-解压
-tar -xvf NB.tar
-```
-
-**gz**
-后缀.gz
-
-```bash
-压缩
-gzip NB.*
-```
-
-```bash
-解压
-gunzip NB.*
-```
-
-
-**bzip2**
-后缀.bz2
-
-```bash
-压缩
-gzip NB.*
-```
-
-```bash
-解压
-bunzip2 NB.*
-```
 ##### 重要目录
 /etc/shadow		存放密码
-用于放临时文件，里面文件拥有读写权限/tmp
 /ect/crontab		存放定时任务
 
 #### 常见有用命令
+
+```bash
+# 常用
+netstat -anpt
+ps -ef
+
+
+# 检查状态
+
+# 获取机密
+cat /root/.bash_history	查看管理员输入的历史信息
+find / -name *.cfg	查找敏感信息
+```
 
 >passwd 修改管理员密码
 
@@ -967,11 +861,31 @@ bunzip2 NB.*
 
 
 ### windows
+**DOS编程**
+DOS编程教程https://blog.csdn.net/u010400728/article/details/43967181把基础看一遍，剩下的我认为重点学习一下比如`|`,`||`,`&&`，`for`大概如何用就可以了。
 
-DOS编程教程，可以了解一下基础 https://blog.csdn.net/u010400728/article/details/43967181
-#### windows 常见命令
+**常见命令**
+在学命令参数前，你最重要需要学会的参数是`/?`，看图
+![在这里插入图片描述](https://img-blog.csdnimg.cn/269d27eb01234b559a44c316cbb46379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-熟悉命令，这部分知识通常用于拿到shell对对方查看或提权
+
+熟悉以下命令，这部分对于了解你所在的windows环境很有帮助
+
+```bash
+# 常用
+systeminfo	用来看打补丁
+whoami	
+ipconfig
+net user
+tasklist 
+
+# 提权会用到的
+cmdkey /l	把凭证取下来>本地解密
+netstat -ano
+# 域下环境
+
+```
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718222549927.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### powshell
@@ -1309,8 +1223,13 @@ filename=../../../etc/passwd
 你搜索其标题还可以得到更多的信息
 或者搜baidu
 或者搜baidu php
+### 暗网
 
+暗网下载链接，官方网址 https://www.torproject.org/zh-CN/download/   使用也很简单，我直接全点下一步安装，电脑挂上我的VPN，就可以轻松上网。
+*新手可能跟我一样，逛了一圈感觉没啥东西。网上资源太少，请待我收集整理~*
+*待完善：暗网黑客资源*
 ### google hack
+
 
 1、intext：（仅针对Google有效） 把网页中的正文内容中的某个字符作为搜索的条件
 2、intitle： 把网页标题中的某个字符作为搜索的条件
@@ -1432,11 +1351,7 @@ site:http://target.com intext:邮件 | email |@http://target.com
 site:http://target.com intitle:账号 | 密码 | 工号 | 学号 | 身份z
 ```
 
-### 暗网
 
-暗网下载链接，官方网址 https://www.torproject.org/zh-CN/download/   使用也很简单，我直接全点下一步安装，电脑挂上我的VPN，就可以轻松上网。
-
-*待完善：暗网黑客资源*
 
 ### 空间搜索引擎
 
@@ -1685,16 +1600,6 @@ python3 sparta.py
 
 
 
-### 帮助手动测试
-
-#### hackbar
-
-**安装**
-可以被安装在浏览器上，也可以被安装在burp上
-测试SQL注入,XSS漏洞和网站的安全性[谷歌火狐安装链接破解，亲测可用](https://www.cnblogs.com/rab3it/p/11010446.html)
-
-跟踪中继器选项卡并右键单击屏幕上的任意位置。结束后，我们可以看到一个新选项排列为“Hackbar”。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604011001878.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 扫描端口
 选一。以下工具在kali都有集成。
@@ -1895,9 +1800,40 @@ phpstudy https://www.xp.cn/download.html
 ### 硬件
 ### 服务器
 ### 代理
+**匿名性**
+透明代理：告诉服务器你使用了代理IP，与你的真实IP
+普通匿名：会告诉服务器使用了代理，但并不会泄露本机的真实IP
+高级匿名：完全伪造IP
 #### 国内
-选离你所在的城市近的国家
 #### 国外
+选离你所在的城市近的国家
+## 你常用的
+### 开放漏洞情报
+cve
+exploit.db
+cnvd
+cx security
+securitytracker
+### 寻找EXP
+
+**网站**
+0day.today － 世界最大的漏洞利用数据库公开了大量EXP工具，网站地址：https://cn.0day.today/
+
+exploit.db
+seebug
+
+**软件**
+searchsploit是一个离线Exploit-DB的命令行搜索工具
+使用，所以就把他想象成搜索引擎就可以。此工具在kali就集成了，因此不必安装。
+
+```bash
+# 常用命令
+searchsploit 搜索关键词  --exclude="不包含关键词"
+```
+
+
+
+
 
 # web安全
 
@@ -1923,18 +1859,10 @@ phpstudy https://www.xp.cn/download.html
 
 ## 反序列化（对象注入）
 
-如果学了点代码内核的，这一节理解基础不在话下，不然的话得多补补程序的魔术方法执行顺序以及什么是序列化。
-
-序列化：将php中对象、类、数组、变量、匿名函数等，转化为字符串 方便保存到数据库或者文件中（将状态信息保存为字符串）
+序列化：将中对象、类、数组、变量、匿名函数等，转化为字符串 方便保存到数据库或者文件中（将状态信息保存为字符串）
 反序列化： 将字符串保存为状态信息
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713181105994.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
- WebLogic 反序列化
-
 ### PHP序列化与反序列化
-
 #### 无类
 
 **准备知识**
@@ -1951,7 +1879,6 @@ serialize()/unserialize()
 unserialize（）在执行时如果传入的是非空，会调用苏醒函数__wakeup()
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713183229700.png)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713200413947.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-如果你想直接输出unserialize（）的值你应该用var_dump而不是echo
 
 #### 有类
 
@@ -1960,22 +1887,13 @@ unserialize（）在执行时如果传入的是非空，会调用苏醒函数__w
 漏洞一般就是产生在魔法方法里，在魔法方法中执行危险函数。比如在析构函数里执行SQL语句查询
 
 
-
-
-
-weblogic的反序列化
-
 ### JAVA序列化与反序列化
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713203116925.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 序列化函数介绍
+实现序列化的是ObjectOutputStream 类的 writeObject() 方法可以实现序列化，实现反序列化的是ObjectInputStream类的readObject() 方法用于反序列化。
 
-java没有魔术方法，与序列化相关的函数只有简单的几组
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714114559886.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-其中一组是writeObject()与readObject()
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713203342104.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713204541992.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713205037237.png)
 
@@ -2114,53 +2032,12 @@ http://127.0.0.1:8080/include.php?filename=data://text/plain,<?php%20phpinfo();?
 
 
 ### 文件上传漏洞
+首先对文件上传类型进行区分，是属于编辑器文件上传，还是属于第三方应用，还是会员中心。要确保文件上传是什么类型，就用什么类型方法对它进行后期测试。
 
-如果非常规类型，我们判断出来就用相应方案，而不是一上来就用常规测试方法。对文件上传类型进行区分，是属于编辑器文件上传，还是属于第三方应用，还是会员中心。要确保文件上传是什么类型，就用什么类型方法对它进行后期测试。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708210532166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+上传漏洞值用户能够上传恶意脚本即webshell，上传成功的原因要么出现在管理员未对文件本身命名做过滤，要么是本身源码存在的特性。
 
-这个洞遇到的也比较多，一般来说是后端没有限制上传文件的类型。但是上传的脚本文件也不会解析。也就没有办法getshell。
-(很多SRC对于上传到cdn云服务器的任意文件上传是忽略的)。这个漏洞要结合Webshell才有效果,具体请看后面webshell小节。
-
-
-上传含有xss代码的html文件，造成存储型xss(如果上传到了cdn服务器之类的大概率忽略)。
-上传恶意文件进行钓鱼
-尝试在上传的文件名前加../进行目录穿越。
-可以结合其他漏洞比如CORS漏洞扩大危害。
 
 字典生成 https://github.com/c0ny1/upload-fuzz-dic-builder
-
-目录穿越
-上传后如果没有被文件重命名，可以在文件名值做目录跳转
-注意一些像目录的参数名
-dir　path　location　url
-
-长文件名
-长Content-Disposition
-特殊文件
-svg / html / htm / swf
-xss
-pdf
-chrome 里可以跳转
-cer / asa / spx / php5 / phtml
-可能会被当做动态语言解析
-.htaccess / .user.ini / web.config / web.xml
-修改解析规则
-.xls / .xlsx
-POI Excel XXE
-.tar / .tar.gz / .zip
-可能存在文件释放目录跳转问题
-.pkl
-python反序列化文件
-.xml
-可能有 XXE
-.yaml / .yml
-YAML 反序列化
-.jar / .class
-上传到 java classpath 的目录下，类被加载时执行代码
-无大小和次数限制
-无限上传制造垃圾数据堵死硬盘
-有图片加工的地方可以注意一下imagemagick命令执行
-
 
 
 **经验**
@@ -2169,16 +2046,13 @@ Contont-Disposition：一般可更改
 Name：表单参数值，不能更改
 Filename：文件名，可以更改
 
-#### 执行
-
-#####  只能上传图片
-
-比如程序员写了要获取图片尺寸的或
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709135957977.png)
-
+#### 利用
+一般程序员都不会让你自己上传php的，上传最多的就是图像。
 这时候你就需要配合其他漏洞才可以执行。
 
 ##### +解析漏洞
+如果有解析漏洞，图像中代码就会被执行。常见的解析漏洞存在于
+
 常见解析漏洞存在于
 * IIS 5.x/6.0解析漏洞
 
@@ -2218,9 +2092,6 @@ Filename：文件名，可以更改
 ```bash
 copy 1.jpg /b+1.php/a 1.jpg
 ```
-如果有解析漏洞，图像中代码就会被执行
-
-
 ##### +文件包含漏洞
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709135206289.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2228,81 +2099,30 @@ copy 1.jpg /b+1.php/a 1.jpg
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709135133834.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-##### +Apache2.4.0-2.4.29换行解析
-
-换行解析漏洞
-https://vulhub.org/#/environments/httpd/CVE-2017-15715/
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709161011292.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 
 
-##### 待补充： +weblogic
-
-##### +firecms上传漏洞
-
-修改uid为3
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708230507178.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708230515619.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### 待补充：+CVE-2017-12615:tomcat任意文件上传
-
-##### +竞态
-
-二次渲染就是当系统收到用户上传的图片时，先进行保存到服务器，或者是为了方便用户进行图片的删除或者改大小。这通常就涉及到两次保存，一般程序员在保存第一次时可能疏忽不会写冗长的代码来过滤。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709142526875.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-只要成功保存一次，对于我们其实就够了，利用竞态，在文件被服务器删除之前访问。这时候对于系统来说就是打开了文件，打开就不能进行删除了。你制造竞态只需要不断请求修改数据包即可
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709144403839.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709143746379.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709143902195.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-启动爆破后，打开网页对php进行多次刷新访问，如果弹出一串奇怪的代码那就说明你已经执行成功了。这时候你要做的就是停止再刷新界面，将此界面保持就可以进行后门操作
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709144624895.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-##### 编辑器
-
-这里不用说太多，只要你发现对方采用了编辑器，百度编辑器漏洞就可以找到利用方法。如图就采用了一个编辑器
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709172009109.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-##### 常规上传
-
-* 文件夹绕过
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709151241163.png)
-
-
-* 如果后端有读取图像类型比如getimagesize()如果错误那么你将不会被上传成功，这时候你可以将图片和webshell合并一个文件，命令是 cat 1.jpg 2.php > webshell.php
-* 竞态条件上传，在系统将你的php删除之前，在网站中调用的你php文件，那么代码就会被保留。
-* php小于5.3.4会把00后面字符删除。上传name=1.php%00.jpg只需要注意一点是get会自动解码 %00
-  post不会解码需要上传数据时将 %00转换为url编码
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709132837178.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-* 前端JS检测绕过，JS前端都可以看到防御函数的，可以用此方法。当然如果文件从前端过来后，后端仍旧对格式有上传后缀名判断，就行不通的
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512190248641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
- * 如果php5 php3 phtml..没有定义到后名单里，可以用这格式绕过限制值得注意的点是，如果目标网站的程序员修改了设置执行这种代码的文件（默认是开启的，脚本可执行的），你就无法执行该文件，上传的脚本就像一个文本一样躺在那里
-   ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709010254367.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+#### 逻辑漏洞
 
 * 前端验证Content-Type值判断的，这时候比如服务器只能允许上传image/jpeg，那么上传了php后，通过burpsuite拦截，可以看到content-type变为了application/octet-stream，在加上content-Type改为image/jpeg就能完成上传。这种方法绝大多数行不通。
-* windows解析php特有技巧，将.php文件加上`：：&DATA`
-* 将上传名加一个空格`1.php `，这样你可能绕过开发者写的匹配规则。但是文件上传到系统后是会强行去掉你加的空格，这样你的文件就能保证成功执行了。类似的还有加上`.`
+* 前端JS检测绕过，JS前端都可以看到防御函数的，可以用此方法。当然如果文件从前端过来后，后端仍旧对格式有上传后缀名判断，就行不通的
 
-* 简要上传表单代码分析解释
-  ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709002346399.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+* 竞态条件上传，一般存在二次渲染就是当系统收到用户上传的图片时，先进行保存到服务器，或者是为了方便用户进行图片的删除或者改大小。这通常就涉及到两次保存，一般程序员在保存第一次时可能疏忽不会写冗长的代码来过滤。
+只要成功保存一次，对于我们其实就够了，利用竞态，在文件被服务器删除之前访问。这时候对于系统来说就是打开了文件，打开就不能进行删除了。你制造竞态只需要不断请求修改数据包即可。启动爆破后，打开网页对php进行多次刷新访问，如果弹出一串奇怪的代码那就说明你已经执行成功了。这时候你要做的就是停止再刷新界面，将此界面保持就可以进行后门操作
+*
+##### 常规上传
+**windows特性**
+Windows不允许空格和点以及一些特殊字符作为结尾，创建这样的文件会自动取出，所以可以使用 xx.php[空格] ， xx.php.， xx.php/， xx.php::$DATA 可以上传脚本文件
+
+**过滤不充分**
 
 * 代码替换关键字
 
-
->代码将字符串里的php替换为空
->一次过滤
->a.php -> a.
->a.pphphp -> a.php
-
->循环过滤 递归过滤
+>递归过滤
 >a.pphphp -> a.
 
 以下字典是我根据本文的方法进行的初步总结，但这样的字典明显太小，你需要用网上公开的fuzz字典，推荐一个 https://github.com/c0ny1/upload-fuzz-dic-builder
@@ -2487,7 +2307,7 @@ reCAPTCHA等
 
 ##### 准备字典
 
-你可以用pydictor生成普通爆破字典、基于网站内容的自定义字典、社会工程学字典等等一系列高级字典；你可以使用pydictor的内置工具，对字典进行安全删除、合并、去重、合并并去重、高频词筛选, 除此之外，你还可以输入自己的字典，然后使用handler工具，对字典进行各种筛选，编码或加密操作；
+
 
 **搜集更多信息以及生成他们字典**
 https://whois.domaintools.com
@@ -3523,30 +3343,35 @@ ftp://对方内网ip:21
 
 
 
-#### DDOS 攻击手段
+### DDOS 攻击手段
 
 1）TCP
 客户端一直没有给服务器端发送ACK报文，而是一直不断地向服务器端发送连接请求，导致服务端忙于处理批量的连接请求
 
 2）UDP
 向目标端口发送大量无用的UDP报文来占满目标的带宽，导致目标服务器瘫痪。
+```bash
+hping3 --udp  --flood -p 80 --rand-source 想测试的IP
+```
 
 3）HTTP
 客户端产生大量http访问请求 
 
 4）ICMP
-
 大量ping请求
+```bash
+hping3 --icmp  --flood -p 80 --rand-source 想测试的IP
+```
 
 5)SYN
 发送大量无情的SYN包。
-如下是攻击代码
+如下是攻击代码，在kali中执行
 -S 表示发送的是SYN包
 –flood 表示以洪水的方式发送，就是拼了命地发
 –rand-source 是随机伪造源IP
 -p 80 指定端口号为80
 ```bash
-hping3 -S -U --flood -p 80 --rand-source IP
+hping3 --syn  --flood -p 80 --rand-source 想测试的IP
 ```
 
 ## 待补充：劫持漏洞
@@ -3561,7 +3386,17 @@ autoSubTakeover
 ### DLL劫持
 # 经验积累
 
+## 中间件
 
+### IIS
+IIS是只适用于windows的中间件
+**待补充：漏洞**
+PROPFIND 栈溢出漏洞
+RCE CVE-2017-7269
+PUT任意文件写入
+### Apache
+### Nginx
+### tomcat
 
 ## CMS特性
 
@@ -3737,7 +3572,6 @@ JWT攻击取决于对方服务器是接收数据来进行什么样的下一步�
 **waf检测工具**
 
 1. wafw00f
-2. hping3
 3. sqlmap
    相较于手工和wafw00f而言，sqlmap业界认可度更高，用的人更多
 
@@ -4099,7 +3933,22 @@ shell
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720150351190.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
+## 字典
+### 制作
+**pydictor**
+生成简单字典、社工字典、合并整理多个字典
+项目地址：https://github.com/LandGrey/pydictor
+使用：
 
+```bash
+git clone https://www.github.com/landgrey/pydictor.git
+cd pydictor/
+python pydictor.py 
+# 查看社工字典
+python pydictor.py –sedb 
+# 合并去重
+python pydictor.py -tool uniqbiner 你的字典文件夹
+```
 
 # APP漏洞
 
@@ -4274,29 +4123,12 @@ X-remote-IP:是远端IP，默认来自tcp连接客户端的Ip。可以说，它�
 HTTP_CLIENT_IP 在高级匿名代理中，这个代表了代理服务器IP。
 HTTP_X_FORWARDED_FOR = clientip,proxy1,proxy2其中的值通过一个 逗号+空格 把多个IP地址区分开, 最左边(client1)是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把请求来源IP地址添加到右边。可以传入任意格式IP.这样结果会带来2大问题，其一，如果你设置某个页面，做IP限制。 对方可以容易修改IP不断请求该页面。 其二，这类数据你如果直接使用，将带来SQL注册，跨站攻击等漏洞
 **TOR**
-类似于分布式的 VPN
+类似于分布式的 VPN。太慢了！！等你用成一个黄花菜都凉了
 
 **选购代理**
-代理IP分为透明代理、普通匿名代理和高级匿名代理，透明代理并不能隐藏本机真实IP，在使用它的时候，它不但告诉服务器这个人用了代理IP，还把这个人的真实IP告诉服务器，让人很没有安全感；普通匿名代理在使用的时候，会告诉服务器使用了代理，但并不会泄露本机的真实IP；只有高级匿名代理才是最安全的，服务器不知道你使用了代理，也不知道你的真实IP。
-## 界面
-用户登录
-	忘记密码
-	
-	手机号注册：短信轰炸
-	邮箱注册
-	
-## EXP
 
-**网站**
-0day.today － 世界最大的漏洞利用数据库公开了大量EXP工具，网站地址：https://cn.0day.today/
 
-exploit.db
-seebug
 
-**软件**
-searchsploit提供漏洞本地和在线查询，搜索编号向你反馈漏洞基本信息和exp位置。
-详解：https://www.jianshu.com/p/bd8213c53717
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715012811273.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 ### 攻破类似网站
@@ -5430,9 +5262,19 @@ touch –r
 # 下一步
 
 ## 找工作
+**写简历**
+免费简历模板，快速生成个人简历https://www.100chui.com/resume/
+****
+**刷面试题**
 刷面试题
 https://www.freebuf.com/jobs
-
+****
+**找工作**
+各大网站发布得都比较散，要自行点进去一个个看。
+https://www.lagou.com/wn/jobs?px=new&pn=2&xl=%E6%9C%AC%E7%A7%91&fromSearch=true&kd=%E6%B8%97%E9%80%8F&city=%E6%B7%B1%E5%9C%B3
+http://www.hackdig.com/?cat-4.htm
+https://www.chamd5.org/jobs.aspx
+https://www.anquanke.com/job/
 ## 自学
 ①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
 
@@ -5687,11 +5529,6 @@ http://www.binrev.com/forums/
 提供各类教程、工具以及安全文章。
 
 
-Exploit-DB:
-
-https://www.exploit-db.com/
-
-Exploit-DB提供一整套庞大的归档体系，其中涵盖了各类公开的攻击事件、漏洞报告、安全文章以及技术教程等资源。
 
 
 Crackmes:
@@ -5781,7 +5618,19 @@ NetFlix帐户http://netflixyummrhppw.onion/，他们出售被黑的Netflix帐户
 2014年成立，更新频繁。文章浅显而广。https://www.heibai.org/
 
 [质量高，但更新也不快，文章来源于站长的爬虫](https://www.moonsec.com/)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210510040438393.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+**自行搜索github项目技巧**
+使用github hacking参数，读者请自行修改
+```bash
+# size:50..200表示项目在50到200kb之间，只能搜索小于384kb项目
+hack user:ngadminq stars:>5000 size:50000..200000 createds:>=2021-07-01 pushed:<2000-09-08 
+
+```
+注意事项
+
+```bash
+# 如果要搜索python开发的 固定写法是amazing language:python而不是language:python。另外几乎任何符号在搜索中都会被忽略
+amazing language:python ?##########[]
+```
 
 ## 期刊
 
