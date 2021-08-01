@@ -309,7 +309,9 @@
     - [域名伪造](#域名伪造)
     - [who am i](#who-am-i)
   - [钓鱼](#钓鱼)
+    - [文件内容](#文件内容)
     - [工具](#工具-6)
+      - [gophish](#gophish)
     - [钓鱼手段](#钓鱼手段)
       - [宏 – Office](#宏--office)
       - [非宏的 Office 文件 —— DDE](#非宏的-office-文件--dde)
@@ -428,13 +430,13 @@
     - [黑客组织和官网](#黑客组织和官网)
   - [期刊](#期刊)
   - [大会](#大会)
-  - [导航](#导航)
   - [游戏](#游戏)
     - [红蓝对抗](#红蓝对抗)
   - [图书推荐](#图书推荐)
   - [博客](#博客)
   - [如何修成](#如何修成)
       - [成为什么样的人](#成为什么样的人)
+
 # 写在前面
 
 **作者：北丐**
@@ -456,7 +458,6 @@
 
 
 我热爱分享，文章可能有的部分对于你有帮助有的没有，选来用。请善待我的努力和分享精神。食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
-
 # 常见知识点
 
 只介绍常见和必备基础不涉及到深度
@@ -1529,6 +1530,7 @@ https://mailtester.com/testmail.php
 https://github.com/Tzeross/verifyemail
 
 #### 验证邮箱是否泄露了密码 
+**待补充，国内密码泄露与国外泄露数据库，以及如何使用**
 https://haveibeenpwned.com/
 
 获取 email 帐户的最佳方法之一是持续监控和捕捉过去的违规行为。我不想直接链接到违规文件，但我给出一些我认为有用的参考:
@@ -2587,7 +2589,11 @@ oob
 
 
 ## 数据库注入
-与数据库交互的操作的常见几种方法为
+**学习方法**
+学习要走常规方法，还是需要用靶机上手啊！靶机如下
+sqli-labs[下载地址](https://github.com/Audi-1/sqli-labs)与[部署到本机方法](https://www.freebuf.com/articles/web/271772.html)，在安装最新版的phpstudy后，你只需要使用恰当的PHP版本5.x与你phpstudy的数据库名密码一致的配置文件。
+
+**与数据库交互的操作的常见几种方法为**
 select 查询数据
 在网站应用中进行数据显示查询效果
 例： select * from news wher id=$id
@@ -4092,9 +4098,15 @@ APP-> WEB APP->其他 APP->逆向
 
 
 ### 域名伪造
-如果我们的目标公司有 mail.cyberspacekittens.com 这个域名，我们将购买 mailcyberspacekittens.com 这个域名，并设置一个假的 Outlook 页面来获取登录凭证。当受害者进入假网站并输入密码时，我们会收集这些数据并将其重定向到公司的有效电子邮件服务器（mail.cyberspacekittens.com）。这给受害者留下这样的印象：他们只是第一次意外地输错了密码，因此，再次输入正确密码并登录他们的帐户。
+常见混淆
+|  真实   | 欺骗  |
+|  ----  | ----  |
+| blog.baidu.com  | blogbaidu.com  |
+| blog.baidu.com  | b1og.baidu.com， bl0g.baidu.com |
+其他策略：
+当登录成功后索引到真实网站
+收藏你的攻击网站
 
-这种方法最巧妙地一点是你甚至不用做任何网络钓鱼的操作。因为有些人就是会打错域名或者手误漏掉 “mail” 和 “cyberspacekittens” 之间的点（.），然后进入了错误的网页并输入他们的登录凭证。我们会提示让受害者把我们的恶意网站添加为书签，这样可以让受害者每天都访问我们的恶意网页。
 ### who am i
 
 友套近乎，“他是我一个之前某某某游戏认识的，您能给我一下他的微信吗，好久没跟他聊了”
@@ -4102,7 +4114,9 @@ APP-> WEB APP->其他 APP->逆向
 通过搜索公司的QQ群、钉钉群,伪装成员工获取敏感截图和没被公知的网站
 
 ## 钓鱼
-网络钓鱼的秘诀在于激发受害者的恐惧感或者紧迫感，有时也会向受害者描绘一些非常美好(甚至不太真实)的诱惑。
+一个钓鱼成功后，通常意味着他朋友的也可能成功
+### 文件内容
+网络钓鱼的秘诀在于激发受害者的恐惧感或者紧迫感，有时也会向受害者描绘一些非常美好(甚至不太真实)的诱惑。如果是鱼叉式就自由发挥吧，以下列出了一些思路
 ****
 教育/培养机构
 科研人员：技术交流
@@ -4120,12 +4134,18 @@ hr:简历
 - 购物
 - 软件更新
 - 恐吓。我已经获得了你的邮箱密码，点击链接打钱！
-
+****
+或者，直接从网站中套用模板？https://github.com/L4bF0x/PhishingPretexts
 ### 工具
 以下工具选一
-需求自动化选	http://getgophish.com/documentation/
+需求自动化选	gophish
 你熟悉Ruby选	https://github.com/pentestgeek/phishing-frenzy
 你熟悉python选	https://github.com/securestate/king-phisher
+#### gophish
+官方文档 http://getgophish.com/documentation/
+gophish自带web面板，对于邮件编辑、网站克隆、数据可视化、批量发送等功能的使用带来的巨大的便捷
+在功能上实现分块，令钓鱼初学者能够更好理解钓鱼工作各部分的原理及运用
+使用实在很简单，国内网上公开资料也很多，我就不重复了。请阅读并做个小实验https://blog.csdn.net/qq_42939527/article/details/107485116
 ### 钓鱼手段
 DLL劫持
 假冒加固工具
@@ -4352,32 +4372,7 @@ https://cn.linkedin.com/pub/dir?lastName=&firstName=名&trk=public_profile_peopl
 也可以先用reg007找到公开的注册网站。记住记住！！！有的网站可能会在在你没有准备下一步要发送密码时，就已经发送邮箱或者短信了，无疑会打草惊蛇，因此你需要先用你的账号密码进行测试。
 通过“密码找回”获取手机号片段：
 
-大多数人会使用相同的邮箱相同的手机号注册微信、[微博](https://security.weibo.com/iforgot/loginname?entry=weibo&loginname=%E9%82%AE%E7%AE%B1/%E4%BC%9A%E5%91%98%E5%B8%90%E5%8F%B7/%E6%89%8B%E6%9C%BA%E5%8F%B7)、京东、淘宝、支付宝、携程、豆瓣、大众点评等应用。在“找回密码”页面输入已知的邮件地址：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609213557341.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-我试验了大部分热门应用的密码重置过程，大致如此，有的是前两位后四位，有的是前三位和后两位……。没有标准，屏蔽位数完全由企业和开发人员决定。
-
-第二步：使用公开数据库筛选：
-
-为什么公布个人信息时一般是隐藏中间4位号码？目前我国手机号码格式为：3位网号 +4位HLR识别号+4位用户号码。
-
- 139-1234-5678
-
-其中139代表运营商（移动），5678是用户号码。1234是HSS/HLR识别码，或者叫地区编码，相当于你手机归属地的运营商服务器编号，记录了客户数据，包括基本资料、套餐、位置信息、路由以及业务状态数据等等。比如1391234是移动江苏常州的HLR编号，1301234是联通重庆的HLR编号。
-
-在网上可找到每月更新的手机归属地数据库，字段包括省份、城市、运营商等信息
-假如我知道张三常住北京，根据数据库筛选结果，158移动目前北京有230个号段，1580100~1580169,1581000~1581159。
-
-待筛选号码剩下230个。
-
-如果是其他省市，158XXXX，上海有210个，成都有170个，西安有108个。如果是二级城市，范围就更小了。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609214656281.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609214801690.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021060921493650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609215132796.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-筛选电话号码这一小节摘抄自 https://mp.weixin.qq.com/s?__biz=MzI3NTExMDc0OQ==&mid=2247483802&idx=1&sn=e4317bcbc3e78ddf4c2715298ef197f2&scene=21#wechat_redirect
+手动筛选电话号码可以参见这篇文章 https://mp.weixin.qq.com/s?__biz=MzI3NTExMDc0OQ==&mid=2247483802&idx=1&sn=e4317bcbc3e78ddf4c2715298ef197f2&scene=21#wechat_redirect
 
 #### IP 定位
 **IP**
@@ -5489,6 +5484,7 @@ HW行动面试
 **售卖电子书**
 售卖国外电子书，这个网站有大量免费国外电子书网站链接 https://freeditorial.com/
 ### 自学
+
 ①不建议：网上有很多关于不实用的渗透技术介绍文章，不要花大量时间去研究漏洞已经濒临灭绝的，即：
 
 1. 漏洞条件苛刻：默认情况下需要网站管理员开启危险服务的(呵呵，想得美)
@@ -5832,10 +5828,6 @@ Black Hat USA
 defcon [Defcon的CTF“世界杯” 是全球最顶级的网络技术攻防竞赛。](https://www.defcon.org/)
 OWASP亚洲峰会
 
-## 导航
-
-其实各位大可不必一个个收藏知名网络安全学习的链接或工具，由于黑客覆盖面广大多，有很多更新较为及时的导航链接已经为你做好了大部分寻找资源的工作。
-[纳威安全导航](https://navisec.it/)![在这里插入图片描述](https://img-blog.csdnimg.cn/20210509182041213.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
 ## 游戏
