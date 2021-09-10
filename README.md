@@ -1,6 +1,4 @@
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515191227460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-@[toc]
 - [写在前面](#写在前面)
 - [常见知识点](#常见知识点)
   - [密码学和编码](#密码学和编码)
@@ -20,7 +18,9 @@
       - [代理](#代理)
       - [DNS](#dns)
       - [静态与动态](#静态与动态)
-      - [cookie会话验证和token验证区别以及安全问题](#cookie会话验证和token验证区别以及安全问题)
+      - [cookie](#cookie)
+        - [cookie会话验证和token验证区别以及安全问题](#cookie会话验证和token验证区别以及安全问题)
+        - [http中的cookie参数包含什么](#http中的cookie参数包含什么)
       - [访问类型](#访问类型)
       - [状态码](#状态码)
     - [编程语言](#编程语言)
@@ -184,7 +184,13 @@
       - [防御与绕过方法](#防御与绕过方法)
         - [待补充：AI破解](#待补充ai破解)
         - [绕过双因素验证](#绕过双因素验证)
-  - [XXE](#xxe)
+  - [XML 外部实体 (XXE) 注入](#xml-外部实体-xxe-注入)
+    - [背景：什么是XML？](#背景什么是xml)
+    - [什么是 XML 外部实体注入？](#什么是-xml-外部实体注入)
+    - [XXE 漏洞怎么验证？](#xxe-漏洞怎么验证)
+    - [XXE 攻击有哪些类型？](#xxe-攻击有哪些类型)
+      - [利用XXE检索文件](#利用xxe检索文件)
+      - [利用XXE进行SSRF攻击？](#利用xxe进行ssrf攻击)
     - [XXE 攻击](#xxe-攻击)
       - [奇淫技巧](#奇淫技巧)
       - [自动攻击工具](#自动攻击工具)
@@ -235,6 +241,26 @@
       - [加密参数](#加密参数)
       - [堆叠查询注入](#堆叠查询注入)
       - [cookie 注入](#cookie-注入)
+  - [网页缓存攻击](#网页缓存攻击)
+    - [什么是网页缓存中毒？](#什么是网页缓存中毒)
+    - [Web 缓存中毒攻击的影响是什么？](#web-缓存中毒攻击的影响是什么)
+    - [构建网络缓存中毒攻击](#构建网络缓存中毒攻击)
+      - [识别和评估未加密的输入](#识别和评估未加密的输入)
+        - [Param Miner](#param-miner)
+      - [从后端服务器引出有害响应](#从后端服务器引出有害响应)
+      - [获取缓存的响应](#获取缓存的响应)
+      - [如何防止网页缓存中毒漏洞](#如何防止网页缓存中毒漏洞)
+  - [HTTP 主机头攻击](#http-主机头攻击)
+    - [什么是 HTTP 主机标头？](#什么是-http-主机标头)
+    - [HTTP Host 标头的目的是什么？](#http-host-标头的目的是什么)
+      - [虚拟主机](#虚拟主机)
+      - [通过中介路由流量](#通过中介路由流量)
+      - [HTTP Host 头是如何解决这个问题的？](#http-host-头是如何解决这个问题的)
+    - [什么是 HTTP 主机标头攻击？](#什么是-http-主机标头攻击)
+    - [HTTP 主机头漏洞是如何产生的？](#http-主机头漏洞是如何产生的)
+    - [如何验证http主机头漏洞？](#如何验证http主机头漏洞)
+    - [如何利用http主机头漏洞？](#如何利用http主机头漏洞)
+    - [如何防止HTTP Host头攻击](#如何防止http-host头攻击)
   - [xss攻击](#xss攻击)
     - [基础使用](#基础使用)
     - [典型用法](#典型用法)
@@ -245,9 +271,13 @@
     - [防御与绕过](#防御与绕过)
       - [防御](#防御-4)
       - [绕过过滤](#绕过过滤)
-  - [CSRF](#csrf)
-    - [实战](#实战)
-    - [防御](#防御-5)
+  - [跨站请求伪造 (CSRF）](#跨站请求伪造-csrf)
+    - [什么是CSRF？](#什么是csrf)
+    - [CSRF 攻击的影响是什么？](#csrf-攻击的影响是什么)
+    - [CSRF 攻击前提是什么？](#csrf-攻击前提是什么)
+    - [如何构建CSRF攻击？](#如何构建csrf攻击)
+    - [CSRF 防御方式有哪些？](#csrf-防御方式有哪些)
+    - [CSRF 反防御方式有哪些？](#csrf-反防御方式有哪些)
   - [模板注入](#模板注入)
   - [SSRF](#ssrf)
     - [常见攻击](#常见攻击)
@@ -300,7 +330,7 @@
       - [修改信号](#修改信号)
     - [重复发包](#重复发包)
     - [文件上传](#文件上传)
-      - [+xxe](#xxe-1)
+      - [+xxe](#xxe)
   - [中间件](#中间件-1)
     - [IIS](#iis)
     - [Apache](#apache)
@@ -471,7 +501,7 @@
         - [寻找可控输入](#寻找可控输入)
         - [过滤敏感字符方案](#过滤敏感字符方案)
       - [SQL注入](#sql注入-1)
-        - [防御](#防御-6)
+        - [防御](#防御-5)
       - [手动](#手动-1)
       - [工具](#工具-7)
 - [待补充：物理攻击](#待补充物理攻击)
@@ -480,6 +510,7 @@
 - [待补充：隐藏技术](#待补充隐藏技术)
   - [实用工具](#实用工具)
     - [日志删除](#日志删除)
+@[toc]
 
 # 写在前面
 
@@ -768,9 +799,9 @@ DNS隧道工具将进入隧道的其他协议流量封装到DNS协议内，在�
 
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
-#### cookie会话验证和token验证区别以及安全问题
-
-之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tookie是一个意思。
+#### cookie
+##### cookie会话验证和token验证区别以及安全问题
+之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tooken是一个意思。
 
 cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
 token 储存本地。服务器验证是查看参数附带的签名。存活时间较长 小中型。此方案不会存在CSRF攻击因为跨站请求不会自动填写token值，但由于存活时间长，一般容易xss盗取利用等
@@ -779,6 +810,19 @@ token 储存本地。服务器验证是查看参数附带的签名。存活时�
 
 [想阅读两者区别更多可看这篇文章](https://wuch886.gitbooks.io/front-end-handbook/content/session-cookiehe-token-san-zhe-de-guan-xi-he-qu-bie.html)
 
+##### http中的cookie参数包含什么
+```bash
+Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm;
+route=c0dbc3af6294b1446f771c1a1aa4c7cb;
+csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE;
+```
+**csrf**
+作用：防御csrf漏洞
+常见生成方法：通常加密强度伪随机数生成器 (PRNG)，以创建时的时间戳加上静态秘密作为种子，并对整个结构进行强散列
+使用：每次请求时带上经绑定session的csrf的值，每次操作csrf重新生成（防止复用和重放）
+可能产生漏洞：csrf可被分析出
+**rount**
+“route”是指根据url分配到对应的处理程序。
 #### 访问类型
 
 get传参与post传参的区别
@@ -2149,7 +2193,10 @@ nmap -A -v -sA -T0 --osscan-guess -p- -P0 --script=vuln --spoof-mac 09:22:71:11:
 **常用命令**
 
 ```bash
-nmap -A www.baidu.com## Nmap fast scan for the most 1000tcp ports usednmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> ## Nmap fast scan for all the portsnmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> ## Nmap fast scan for all the ports slower to avoid failures due to -T4nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>#Bettercap2 Scansyn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
+nmap -A www.baidu.com## Nmap fast scan for the most 1000tcp ports usednmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> 
+## Nmap fast scan for all the ports
+nmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> 
+## Nmap fast scan for all the ports slower to avoid failures due to -T4nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>#Bettercap2 Scansyn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
 ```
 
 
@@ -2639,12 +2686,12 @@ http://127.0.0.1:8080/include.php?filename=data://text/plain,<?php%20phpinfo();?
 
 凡是网站有文件下载的功能都有可能发生漏洞。我们可以去分析下载链接和文件链接，已确定下载代码是在哪个目录。我们可以利用此漏洞下载敏感文件比如数据库配置等，也可以下载有价值的网站源码。
 一般文件下载参数以post传递
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210712170018155.png)
 
 **下载哪些文件**
 配置文件（数据库，平台，各种等）
 
-
+**其他可测**
+测一下是否下载是未授权漏洞
 ### 文件上传漏洞
 
 首先对文件上传类型进行区分，是属于编辑器文件上传，还是属于第三方应用，还是会员中心。要确保文件上传是什么类型，就用什么类型方法对它进行后期测试。
@@ -2786,10 +2833,9 @@ unlink，delfile是php中对应删除的函数
 常见漏洞：文件上传绕过检测、购买物品余额查询绕过检测
 
 #### 越权
-越权测试可以使用burpsuite的Autoz插件，在测试越权通常需要你建立两套不同的账户
+越权测试可以使用burpsuite的Autoz插件，或手动测试（两个不同浏览器或一个开无痕的浏览器）在测试越权通常需要你建立两套不同的账户
 用户的授权过程是先检测账户名和密码或session等是不是对应得上，对应得上在根据用户的组给予相应权限。这里如果权限控制未设置准确就存在越权漏洞。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/77b3ef05d85b474ca1fab1b21f2df6d7.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 水平越权：通过更换的某个ID之类的身份标识，从而使A账号获取(修改、删除等)B账号数据
 
@@ -3034,7 +3080,8 @@ https://github.com/ustayready/CredSniper
 
 
 
-## XXE
+## XML 外部实体 (XXE) 注入
+### 背景：什么是XML？
 
 XML 指可扩展标记语言（EXtensible Markup Language），它是用于存储和传输数据的最常用的语言
 
@@ -3042,15 +3089,45 @@ XML 指可扩展标记语言（EXtensible Markup Language），它是用于存�
 它是用来对HTML的补充，HTML只能定义数据的展示，而XML能定义数据的组织。XML是一种自我描述语言。
 它不包含任何预定义的标签，如 <p>、<img> 等。所有标签都是用户定义的，具体取决于它所代表的数据。<email></email>、<message></message> 等
 
-**XXE漏洞**
+### 什么是 XML 外部实体注入？
+
 XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XXE漏洞发生在应用程序解析XML输入时，**没有禁止外部实体的加载，如果禁止了就是合规的xml文件**，导致可加载恶意外部文件和代码，具体来说是XML的DTD会定义实体部分，实体部分对于XML就像是变量，**但他不仅是变量，还可以用来调用本地文件1.txt或外部实体https://baidu.com**。正因为这里实体有这么强大的功能，因此也容易被攻击。常见的攻击有任意文件读取、命令执行、内网端口扫描、攻击内网网站、发起Dos攻击等危害。
+### XXE 漏洞怎么验证？
+XXE漏洞出现在包含xml的文件，对于现实世界的 XXE 漏洞，提交的 XML 中通常会有大量数据值，其中任何一个都可能在应用程序的响应中使用。要系统地测试 XXE 漏洞，您通常需要单独测试 XML 中的每个数据节点，方法是使用您定义的实体并查看它是否出现在响应中。
+如下是一份含xml的请求，案例来自[靶场](https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files)在原始的xml文件中你需要增加你的恶意payload，并调用该变量。具体变量调用在productId还是storeId之间需要手动测试。
+```bash
+POST /product/stock HTTP/1.1
+Host: ac391f291f66563c80495011008200db.web-security-academy.net
+Connection: close
+Content-Length: 107
+Origin: https://ac391f291f66563c80495011008200db.web-security-academy.net
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Content-Type: application/xml
+Accept: */*
+Referer: https://ac391f291f66563c80495011008200db.web-security-academy.net/product?productId=2
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: session=hpqccPz9SimfThZLsXhO4Sa4xkDXHRRJ
+
+<?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>2</productId><storeId>1</storeId></stockCheck>
+```
+
+### XXE 攻击有哪些类型？
+有多种类型的 XXE 攻击：
+
+利用 XXE 来检索 files，其中定义了一个包含文件内容的外部实体，并在应用程序的响应中返回。
+利用 XXE 执行 SSRF 攻击，其中根据后端系统的 URL 定义外部实体。
+利用盲 XXE 带外数据泄露，敏感数据从应用服务器传输到攻击者控制的系统。
+利用盲XXE通过错误消息检索数据，攻击者可以在其中触发包含敏感数据的解析错误消息。
+#### 利用XXE检索文件 
+
 ```bash
 # 读取服务器密码
 ## 情况1：有回显
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE foo [
-<!ELEMENT foo ANY >
-<!ENTITY xxe SYSTEM "file:///etc/passwd" >
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<!DOCTYPE foo （foo取名任意） [
+<!ELEMENT foo ANY 其他任意实体 >
+<!ENTITY xxe（变量名） SYSTEM "file:///etc/passwd" >
 ]>
 <foo>&xxe;</foo>
 
@@ -3064,7 +3141,14 @@ XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XX
 ]>
 <foo>&callhome;</foo>
 ```
+#### 利用XXE进行SSRF攻击？
+利用XXE进行SSRF攻击，可以诱导服务器端应用程序向服务器可以访问的任何 URL 发出 HTTP 请求。
 
+要利用 XXE 漏洞执行SSRF 攻击，您需要使用要定位的 URL 定义外部 XML 实体，并在数据值中使用定义的实体。如果您可以在应用程序响应中返回的数据值中使用定义的实体，那么您将能够从应用程序响应中的 URL 查看响应，从而获得与后端系统的双向交互。如果没有，那么您将只能执行盲目的 SSRF攻击（这仍然会产生严重的后果）。
+
+在以下 XXE 示例中，外部实体将导致服务器向组织基础架构内的内部系统发出后端 HTTP 请求：
+
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://internal.vulnerable-website.com/"> ]>
 ### XXE 攻击
 #### 奇淫技巧
 如果网站允许上传 .docx  .xlsx  、 .pptx  文件，其实本质只是个 XML 文件的压缩包。
@@ -3671,7 +3755,168 @@ sqlmap -u "http://www.xx.com/xxx.asp" --cookie "id=XXX cookie" --level 2 ＼
 cookie注入 后接cookie值
 当网站依靠cookie结果做数据库查询，且不做过多的防护就会存在注入
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705235758892.png)
+## 网页缓存攻击
+### 什么是网页缓存中毒？
+首先来看看**什么是网页缓存吧**，网页缓存是为了避免用户在每次发起http请求时向服务器多次请求造成服务器负载大，缓存通常在固定的时间内保存（缓存）对特定请求的响应。如果另一个用户随后发送了一个等效的请求，缓存会直接向用户提供缓存响应的副本，而无需来自后端的任何交互。通过减少它必须处理的重复请求的数量，这大大减轻了服务器的负载。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/045a3be599244ec684c631ecd0e9830f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+处理。缓存通过比较请求组件的预定义子集（统称为“缓存键”）来识别等效请求。通常，这将包含请求行和Host标头。未包含在缓存键中的请求组件称为“未键控”。
 
+如果传入请求的缓存键与前一个请求的键匹配，则缓存认为它们是等效的。因此，它将提供为原始请求生成的缓存响应的副本。这适用于具有匹配缓存键的所有后续请求，直到缓存的响应过期。
+
+至关重要的是，请求的其他组件会被缓存完全忽略。稍后我们将更详细地探讨这种行为的影响。
+### Web 缓存中毒攻击的影响是什么？
+Web 缓存中毒的影响在很大程度上取决于两个关键因素：
+
+**攻击者究竟能成功获得什么缓存**
+由于中毒缓存更多是一种分发手段而不是独立攻击，因此 Web 缓存中毒的影响与注入的有效负载的危害程度密不可分。与大多数类型的攻击一样，Web 缓存中毒也可以与其他攻击结合使用，以进一步扩大潜在影响。
+**受影响页面上的流量**
+中毒响应只会提供给在缓存中毒时访问受影响页面的用户。因此，根据页面是否受欢迎，影响可能从不存在到巨大。例如，如果攻击者设法使主要网站主页上的缓存响应中毒，则攻击可能会影响数千名用户，而无需攻击者进行任何后续交互。
+请注意，缓存条目的持续时间不一定会影响 Web 缓存中毒的影响。攻击通常可以以这样一种方式编写，即它无限期地重新毒害缓存。
+### 构建网络缓存中毒攻击
+一般来说，构建一个基本的Web缓存中毒攻击包括以下几个步骤：
+
+1. 识别和评估未加密的输入
+2. 从后端服务器引出有害响应
+3. 获取缓存的响应
+#### 识别和评估未加密的输入
+任何 Web 缓存中毒攻击都依赖于对未加密输入（例如标头）的操作。在决定是否向用户提供缓存响应时，Web 缓存会忽略无键输入。这种行为意味着您可以使用它们来注入您的有效负载并引发“中毒”响应，如果缓存该响应，将向其请求具有匹配缓存键的所有用户提供服务。因此，构建 Web 缓存中毒攻击的第一步是识别服务器支持的未加密输入。
+
+您可以通过向请求添加随机输入并观察它们是否对响应产生影响来手动识别未加密的输入。这可能很明显，例如直接反映响应中的输入，或触发完全不同的响应。然而，有时效果更微妙，需要一些侦探工作才能弄清楚。您可以使用 Burp Comparer 等工具来比较有和没有注入输入的响应，但这仍然需要大量的手动工作。
+
+#####  Param Miner
+幸运的是，您可以通过将Param Miner扩展从 BApp 商店添加到 Burp来自动化识别未加密输入的过程。要使用 Param Miner，您只需右键单击要调查的请求，然后单击“Guess headers”。Param Miner 然后在后台运行，从其广泛的内置标头列表发送包含不同输入的请求。如果包含其注入输入之一的请求对响应有影响，Param Miner 将其记录在 Burp 中，如果您使用的是Burp Suite Professional，则在“问题”窗格中，或在扩展程序的“输出”选项卡中（“扩展器”>“扩展”>“ Param Miner”>“输出”
+![在这里插入图片描述](https://img-blog.csdnimg.cn/bd3f748086784ac29fd73f09c693f71b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+注意：在实时网站上测试无键输入时，存在无意中导致缓存将生成的响应提供给真实用户的风险。因此，重要的是要确保您的请求都具有唯一的缓存键，以便它们只会提供给您。为此，您可以在每次发出请求时手动向请求行添加缓存破坏者（例如唯一参数）。或者，如果您使用的是 Param Miner，则可以选择为每个请求自动添加缓存破坏器。
+
+####  从后端服务器引出有害响应
+一旦您确定了未加密的输入，下一步就是准确评估网站如何处理它。了解这一点对于成功引发有害反应至关重要。如果输入反映在来自服务器的响应中而没有经过适当的清理，或者用于动态生成其他数据，那么这就是 Web 缓存中毒的潜在入口点。
+
+####  获取缓存的响应
+操纵输入以引起有害响应是成功的一半，但除非您可以使响应被缓存，否则它不会取得太大成果，这有时会很棘手。
+
+响应是否被缓存取决于各种因素，例如文件扩展名、内容类型、路由、状态代码和响应标头。您可能需要花一些时间来简单地处理不同页面上的请求并研究缓存的行为。一旦您弄清楚如何缓存包含您的恶意输入的响应，您就可以准备向潜在受害者提供漏洞利用。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/fb1280dd1e3041b288e7c1e9e2d07b72.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+####  如何防止网页缓存中毒漏洞
+防止 Web 缓存中毒的最终方法显然是完全禁用缓存。虽然对于许多网站来说，这可能不是一个现实的选择，但在其他情况下，它可能是可行的。例如，如果您只使用缓存，因为它在您采用 CDN 时默认开启，那么可能值得评估默认缓存选项是否确实反映了您的需求。
+
+即使您确实需要使用缓存，将其限制为纯静态响应也是有效的，前提是您对分类为“静态”的内容足够警惕。例如，确保攻击者无法欺骗后端服务器检索静态资源的恶意版本而不是真正的资源。
+
+这也与关于网络安全的更广泛的观点有关。大多数网站现在都将各种第三方技术纳入其开发流程和日常运营中。无论您自己的内部安全状况多么强大，一旦您将第三方技术纳入您的环境，您就会依赖于它的开发人员也和您一样具有安全意识。基于您的安全性取决于您的最弱点，因此在集成任何第三方技术之前确保您完全了解其安全含义至关重要。
+
+特别是在 Web 缓存中毒的情况下，这不仅意味着决定是否默认启用缓存，还意味着查看您的 CDN 支持哪些标头。由于攻击者能够操纵一系列模糊的请求标头，其中许多对于网站的功能而言完全不需要，因此暴露了上面讨论的几个 Web 缓存中毒漏洞。同样，您可能会在没有意识到的情况下将自己暴露在这些类型的攻击中，这纯粹是因为您已经实施了一些默认支持这些未加密输入的技术。如果站点工作不需要标头，则应将其禁用。
+
+在实现缓存时，您还应该采取以下预防措施：
+
+如果出于性能原因考虑从缓存键中排除某些内容，请改写请求。
+不接受胖GET请求。请注意，某些第三方技术可能默认允许这样做。
+修补客户端漏洞，即使它们看起来无法利用。由于缓存行为中不可预测的怪癖，其中一些漏洞实际上可能被利用。有人发现一个怪癖（无论是基于缓存还是其他方式）使该漏洞可被利用可能只是时间问题。
+## HTTP 主机头攻击
+### 什么是 HTTP 主机标头？
+从 HTTP/1.1 开始，HTTP Host 标头是强制性的请求标头。它指定客户端要访问的域名。例如，当用户访问 时https://portswigger.net/web-security，他们的浏览器将编写一个包含 Host 标头的请求，如下所示：
+
+GET /web-security HTTP/1.1
+Host: portswigger.net
+
+在某些情况下，例如当请求已由中间系统转发时，Host 值可能会在它到达预期的后端组件之前被更改。我们将在下面更详细地讨论这种情况。
+### HTTP Host 标头的目的是什么？
+HTTP Host 标头的目的是帮助识别客户端想要与之通信的后端组件。如果请求不包含 Host 标头，或者 Host 标头以某种方式格式错误，这可能会导致将传入请求路由到预期应用程序时出现问题。
+
+从历史上看，这种歧义并不存在，因为每个 IP 地址只会托管单个域的内容。如今，主要是由于基于云的解决方案和外包大部分相关架构的不断增长的趋势，多个网站和应用程序可以在同一个 IP 地址上访问是很常见的。这种方法也越来越流行，部分原因是 IPv4 地址耗尽。
+
+当多个应用程序可通过同一 IP 地址访问时，这通常是以下情况之一的结果。
+
+#### 虚拟主机
+一种可能的情况是单个 Web 服务器托管多个网站或应用程序。这可能是一个所有者的多个网站，但也可以将拥有不同所有者的网站托管在一个共享平台上。这不像以前那么常见，但仍然会出现在一些基于云的 SaaS 解决方案中。
+
+在任何一种情况下，虽然这些不同的网站中的每一个都有不同的域名，但它们都与服务器共享一个公共 IP 地址。在单个服务器上以这种方式托管的网站被称为“虚拟主机”。
+
+对于访问网站的普通用户来说，虚拟主机通常与托管在其自己的专用服务器上的网站无法区分。
+
+#### 通过中介路由流量
+另一种常见情况是网站托管在不同的后端服务器上，但客户端和服务器之间的所有流量都通过中间系统路由。这可能是一个简单的负载平衡器或某种反向代理服务器。这种设置在客户端通过内容交付网络 (CDN) 访问网站的情况下尤为普遍。
+
+在这种情况下，即使网站托管在单独的后端服务器上，它们的所有域名也解析为中间组件的单个 IP 地址。这带来了一些与虚拟主机相同的挑战，因为反向代理或负载平衡器需要知道它应该将每个请求路由到的适当后端。
+
+#### HTTP Host 头是如何解决这个问题的？
+在这两种情况下，都依赖 Host 标头来指定预期的收件人。一个常见的类比是给住在公寓楼的人寄一封信的过程。整栋建筑都有相同的街道地址，但在这个街道地址后面有许多不同的公寓，每个公寓都需要以某种方式接收正确的邮件。解决此问题的一种方法是简单地在地址中包含公寓号或收件人姓名。在 HTTP 消息的情况下，Host 头用于类似的目的。
+
+当浏览器发送请求时，目标 URL 将解析为特定服务器的 IP 地址。当此服务器收到请求时，它会参考 Host 标头来确定预期的后端并相应地转发请求。
+### 什么是 HTTP 主机标头攻击？
+HTTP Host 标头攻击利用易受攻击的网站，这些网站以不安全的方式处理 Host 标头的值。如果服务器隐式信任 Host 标头，并且未能正确验证或转义它，则攻击者可能能够使用此输入注入操纵服务器端行为的有害负载。涉及将有效负载直接注入主机标头的攻击通常称为“主机标头注入”攻击。
+
+除非在安装过程中在配置文件中手动指定，否则现成的 Web 应用程序通常不知道它们部署在哪个域上。当他们需要知道当前域时，例如，要生成包含在电子邮件中的绝对 URL，他们可能会求助于从 Host 标头中检索域：
+
+<a href="https://_SERVER['HOST']/support">Contact support</a>
+
+标头值还可用于网站基础设施的不同系统之间的各种交互。
+
+由于 Host 标头实际上是用户可控制的，因此这种做法可能会导致许多问题。如果输入未正确转义或验证，则 Host 标头是利用一系列其他漏洞的潜在载体，最显着的是：
+
+* 网页缓存中毒
+* 特定功能中的 业务逻辑缺陷
+* 基于路由的SSRF
+* 经典的服务器端漏洞，例如 SQL 注入
+### HTTP 主机头漏洞是如何产生的？
+HTTP Host 标头漏洞通常是由于用户无法控制标头的错误假设而出现的。这会在 Host 标头中创建隐式信任并导致验证不充分或对其值进行转义，即使攻击者可以使用 Burp Proxy 等工具轻松修改它。
+
+即使 Host 标头本身被更安全地处理，根据处理传入请求的服务器的配置，Host 可能会通过注入其他标头而被覆盖。有时网站所有者不知道默认情况下支持这些标头，因此，它们可能不会受到相同级别的审查。
+
+事实上，许多这些漏洞的出现并不是因为不安全的编码，而是因为相关基础设施中一个或多个组件的不安全配置。之所以会出现这些配置问题，是因为网站将第三方技术集成到其架构中，而不必了解配置选项及其安全含义。
+### 如何验证http主机头漏洞？
+通过修改 Host 标头，利用burp发送请求看是否到达目标应用程序。具体
+step1: 将Host 标头修改成任意的、无法识别的域名时观察会发生什么。（返回指定网站存在http主机头漏洞）
+sep2：step1更大可能返回的结果是报Invalid Host header。可能是因为以下中原因导致的：
+* 网站存在CDN,CDN无法识别解析
+* 某些网站会验证 Host 标头是否与来自 TLS 握手的 SNI 匹配
+* 
+ 这时候需要继续验证：
+ * 某些解析算法会从 Host 标头中省略端口，这意味着仅验证域名。如果您还能够提供非数字端口，则可以保持域名不变以确保到达目标应用程序，同时可能通过端口注入有效负载，类似于：
+
+GET /example HTTP/1.1
+Host: vulnerable-website.com:bad-stuff-here
+
+其他站点将尝试应用匹配逻辑以允许任意子域。在这种情况下，您可以通过注册一个以与列入白名单的字符序列相同的字符序列结尾的任意域名来完全绕过验证：
+
+GET /example HTTP/1.1
+Host: notvulnerable-website.com
+
+或者，您可以利用您已经攻陷的安全性较低的子域：
+
+GET /example HTTP/1.1
+Host: hacked-subdomain.vulnerable-website.com
+
+
+### 如何利用http主机头漏洞？
+
+**注入重复的主机标头**
+一种可能的方法是尝试添加重复的 Host 标头。诚然，这通常只会导致您的请求被阻止。但是，由于浏览器不太可能发送这样的请求，您可能偶尔会发现开发人员没有预料到这种情况。在这种情况下，您可能会暴露一些有趣的行为怪癖。
+
+不同的系统和技术会以不同的方式处理这种情况，但通常两个标头之一优先于另一个标头，从而有效地覆盖其值。当系统不同意哪个标头是正确的标头时，这可能会导致您可以利用的差异。考虑以下请求：
+GET /example HTTP/1.1
+Host: vulnerable-website.com
+Host: bad-stuff-here
+假设前端优先于标头的第一个实例，但后端更喜欢最后一个实例。在这种情况下，您可以使用第一个标头来确保您的请求被路由到预期目标，并使用第二个标头将您的有效负载传递到服务器端代码中。
+### 如何防止HTTP Host头攻击
+
+如何防止HTTP Host头攻击
+为了防止 HTTP Host 标头攻击，最简单的方法是避免在服务器端代码中完全使用 Host 标头。仔细检查每个 URL 是否真的需要是绝对的。您经常会发现，您可以只使用相对 URL。这种简单的更改可以帮助您特别防止Web 缓存中毒漏洞。
+
+其他防止 HTTP Host 标头攻击的方法包括：
+
+保护绝对 URL
+当您必须使用绝对 URL 时，您应该要求在配置文件中手动指定当前域并引用此值而不是 Host 标头。例如，这种方法将消除密码重置中毒的威胁。
+
+验证主机标头
+如果您必须使用 Host 标头，请确保正确验证它。这应该涉及根据允许域的白名单进行检查，并拒绝或重定向对无法识别的主机的任何请求。您应该查阅框架的文档以获取有关如何执行此操作的指导。例如，Django 框架ALLOWED_HOSTS在设置文件中提供了该选项。这种方法将减少您遭受 Host 标头注入攻击的风险。
+
+不支持主机覆盖标头
+检查您是否不支持可用于构建这些攻击的其他标头也很重要，尤其是X-Forwarded-Host. 请记住，默认情况下可能支持这些。
+
+白名单允许的域
+为了防止对内部基础设施的基于路由的攻击，您应该配置您的负载平衡器或任何反向代理，以仅将请求转发到允许域的白名单。
+
+小心使用仅限内部的虚拟主机
+使用虚拟主机时，您应该避免在与面向公众的内容相同的服务器上托管仅供内部使用的网站和应用程序。否则，攻击者可能能够通过主机头操作访问内部域。
 ## xss攻击
 
 
@@ -3851,40 +4096,63 @@ https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
 新型绕过
 http://www.jsfuck.com/
 
-## CSRF
+## 跨站请求伪造 (CSRF）
+### 什么是CSRF？
+跨站请求伪造（也称为 CSRF）是一种 Web 安全漏洞，允许攻击者诱使用户执行他们不打算执行的操作。它允许攻击者部分规避旨在防止不同网站相互干扰的同源策略。
 
-只要受害者在登录状态，点击了一下你的恶意链接，或者你在网页中内嵌了渲染代码(恶意网站的链接可以包含有效的HTML， <imgsrc=”www.malicious_site.com”>  ，并且并不需要 受害者点击链接)也可以完成攻击。一般你在选取csrf界面时你应该选择可以添加（管理员、用户等）、删除、修改等操作上。如果不能做这些即便有相关漏洞也是没什么危害的。
-**危害性**
-比xss更大，更难防范。通常可以用来以目标用户的名义发邮件、盗取目标用户账号、购买商品。通常用来做蠕虫攻击、刷SEO流量等。
+###  CSRF 攻击的影响是什么？
+只要受害者在登录状态，点击了一下你的恶意链接，或者你在网页中内嵌了渲染代码(恶意网站的链接可以包含有效的HTML， <imgsrc=”www.malicious_site.com”>  ，并且并不需要 受害者点击链接)也可以完成攻击。
 
-### 实战
+CSRF通常可以用来以目标用户的名义发邮件、盗取目标用户账号、购买商品。通常用来做蠕虫攻击、刷SEO流量等。
+### CSRF 攻击前提是什么？
+要使 CSRF 攻击成为可能，必须具备三个关键条件：
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210711012444131.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-用burpsuite即可快速生成误导链接，我们只需要引导用户去点击这个恶意链接就可以完成攻击
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512184941253.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071101252633.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512185302955.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512185314721.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512185329497.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210512185532760.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+* 一个相关的动作。应用程序中存在攻击者有理由诱导的操作。这最好是特权（否则是普通操作即便存在csrf也没什么意义）操作（例如选择可以添加用户删除、修改等操作上）或对用户特定数据的任何操作（例如更改用户自己的密码）。
+* 基于 Cookie 的会话处理。执行该操作涉及发出一个或多个 HTTP 请求，应用程序仅依赖会话 cookie 来识别发出请求的用户。没有其他机制来跟踪会话或验证用户请求。
+* 没有不可预测的请求参数。执行操作的请求不包含攻击者无法确定或猜测其值的任何参数。例如，当导致用户更改其密码时，如果攻击者需要知道现有密码的值，该函数就不容易受到攻击。
+### 如何构建CSRF攻击？
+**检测是否存在csrf漏洞**
+修改csrf,repeater包，如果存在4XX状态码说明此修改不合适或不存在csrf漏洞
+如果302跳转说明存在攻击
+**构造poc**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/0d33e519fa6e4c2f85e56913cee2b20e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 
+### CSRF 防御方式有哪些？
 
-### 防御
-
-最有效的和简洁的手段是用token，如果你发现对方的网站有token那么你基本就没必要认为对方有csrf漏洞了
+最有效的和简洁的手段是用csrf token，如果你发现对方的网站有csrf token那么你基本就没必要认为对方有csrf漏洞了
 由于防御方法简单且难以被绕过，因此现在这种漏洞在大型网站几乎没有，小型网站你要想用此攻击获取普通用户的还是比较好搞，但是要想获取管理员的，你必须知道管理员请求数据包的方式。
 
->1.当用户发送重要的请求时需要输入原始密码
->2.对网页生成随机Token，一边给用户，一边存在服务器。当它提交数据时必须带着token一起发送，而在服务器的另一端会验证用户
->3.检验referer来源，请求时判断请求连接是否为当前管理员正在使用的页面(管理员在编辑文章，黑客发来恶意的修改密码链接，因为修改密码页面管理员并没有在操作，所以攻击失败)
->4.设置验证码
->5.限制请求方式只能为POS
+* 当用户发送重要的请求时需要输入原始密码
+* 对cookie生成csrf随机校验值，每次请求带上此值（有时候是在html表单提交时隐藏了此值）
+* 
 
+```bash
+Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm
+
+csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE&email=wiener@normal-user.com
+# 隐藏值在使用 POST 方法提交的 HTML 表单的隐藏字段内将令牌传输到客户端
+<input type="hidden" name="csrf-token" value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz" />
+```
+
+* 检验referer来源，请求时判断请求连接是否为当前管理员正在使用的页面(管理员在编辑文章，黑客发来恶意的修改密码链接，因为修改密码页面管理员并没有在操作，所以攻击失败)
+* samesite cookie防御
+
+```bash
+# SameSite=Strict 时浏览器将不会在源自其他站点的任何请求中包含 cookie
+# 这是最具防御性的选项，但它会损害用户体验，因为如果登录用户通过第三方链接访问某个站点，那么他们将显示为未登录，并且需要在此之前重新登录以正常方式与网站互动。
+Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Strict;
+# SameSite=Lax 时浏览器会将 cookie 包含在源自另一个站点的请求中，但前提是满足两个条件：
+# 该请求使用 GET 方法。使用其他方法（例如 POST）的请求将不包含 cookie。【大部分csrf都是post请求所以可以防范、许多应用程序和框架都可以容忍不同的 HTTP 方法。在这种情况下，即使应用程序本身设计使用 POST 方法，它实际上也会接受切换为使用 GET 方法的请求。】
+# 该请求由用户的顶级导航（例如单击链接）产生。其他请求，例如由脚本发起的请求，将不包含 cookie。
+Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Lax;
+```
+### CSRF 反防御方式有哪些？
+**CSRF TOKEN配置错误**
+* csrf token值置空
+* csrf token整个参数置空（不仅仅是它的值）
+* 更改请求方式POST改为GET，GET改为POST
+* 两个登录账户，复用一个csrf token（csrf是一次性的但与session未绑定会导致此错误）
 ## 模板注入
 模板引擎是允许开发者或设计师在创建动态网页的时候，从数据展示中分离编程逻辑的工具，模板引擎由于其模块化和简洁的代码与标准 HTML 相比而被更频繁地使用。模板注入是指用户输入直接传递到渲染模板，允许修改底层模板
 
