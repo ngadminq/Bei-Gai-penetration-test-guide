@@ -540,7 +540,7 @@
 预计2022年完成
 
 
-很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**每周五更一次版本。**
+很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**随缘更新。**
 在github显示与排版效果似乎不好，可以下载[typora](https://typora.io/)与md文件，将md用typora打开，可以看到目录树。如下图是软件打开效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。善用crtl+F，对关键字进行快速定位。学习时可自行按照自己喜欢的顺序，并不一定要严格按照我的文章目录。
