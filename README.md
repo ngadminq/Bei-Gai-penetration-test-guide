@@ -1,4 +1,5 @@
 
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210515191227460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 - [写在前面](#写在前面)
 - [常见知识点](#常见知识点)
@@ -18,7 +19,6 @@
     - [HTTP/HTTPS基础知识](#httphttps基础知识)
       - [http与https区别](#http与https区别)
       - [状态码](#状态码)
-      - [cookie](#cookie)
         - [cookie会话验证和token验证区别以及安全问题](#cookie会话验证和token验证区别以及安全问题)
         - [http中的cookie参数包含什么](#http中的cookie参数包含什么)
       - [http协议版本](#http协议版本)
@@ -147,6 +147,8 @@
       - [序列化函数介绍](#序列化函数介绍)
       - [工具](#工具-2)
     - [常见反序列化爆出漏洞](#常见反序列化爆出漏洞)
+  - [开放性重定向](#开放性重定向)
+    - [开放性重定向绕过](#开放性重定向绕过)
   - [文件操作](#文件操作)
     - [文件读取](#文件读取)
     - [文件包含](#文件包含)
@@ -162,7 +164,18 @@
       - [逻辑漏洞](#逻辑漏洞)
         - [常规上传](#常规上传)
     - [文件删除](#文件删除)
-  - [CORS](#cors)
+  - [跨域资源共享(CORS)](#跨域资源共享cors)
+    - [CORS的基础知识](#cors的基础知识)
+      - [基础知识：同源策略](#基础知识同源策略)
+        - [什么是同源策略](#什么是同源策略)
+        - [怎样修改源](#怎样修改源)
+        - [跨源网络访问](#跨源网络访问)
+    - [CORS是什么](#cors是什么)
+    - [怎么验证CORS漏洞](#怎么验证cors漏洞)
+      - [手动：常见验证CORS方法](#手动常见验证cors方法)
+      - [手动：绕过验证](#手动绕过验证)
+      - [工具验证CORS](#工具验证cors)
+      - [CORS](#cors)
   - [业务层面漏洞](#业务层面漏洞)
     - [模块](#模块)
     - [方式](#方式)
@@ -205,8 +218,15 @@
       - [自动化工具](#自动化工具)
       - [手动测试](#手动测试)
     - [XXE防御方案](#xxe防御方案)
-  - [点击劫持（Clickjacking）](#点击劫持clickjacking)
-    - [什么是点击劫持？](#什么是点击劫持)
+  - [](#)
+  - [劫持漏洞](#劫持漏洞)
+    - [DNS劫持](#dns劫持)
+      - [DNS劫持检测工具](#dns劫持检测工具)
+      - [DNS劫持实战](#dns劫持实战)
+    - [HTTP劫持](#http劫持)
+    - [DLL劫持](#dll劫持)
+    - [点击劫持（Clickjacking）](#点击劫持clickjacking)
+      - [什么是点击劫持？](#什么是点击劫持)
     - [点击劫持](#点击劫持)
   - [远程命令执行（RCE）](#远程命令执行rce)
     - [实例：网站可执行系统命令](#实例网站可执行系统命令)
@@ -307,6 +327,7 @@
     - [CSRF 攻击的影响是什么？](#csrf-攻击的影响是什么)
     - [CSRF 攻击前提是什么？](#csrf-攻击前提是什么)
     - [如何构建CSRF攻击？](#如何构建csrf攻击)
+    - [CSRF绕过手段有哪些？](#csrf绕过手段有哪些)
     - [CSRF 防御方式有哪些？](#csrf-防御方式有哪些)
     - [CSRF 反防御方式有哪些？](#csrf-反防御方式有哪些)
   - [模板注入](#模板注入)
@@ -315,13 +336,14 @@
       - [图片上传](#图片上传)
   - [DDOS 攻击](#ddos-攻击)
     - [DDOS 攻击手段](#ddos-攻击手段)
-  - [待补充：劫持漏洞](#待补充劫持漏洞)
-    - [DNS劫持](#dns劫持)
-    - [HTTP劫持](#http劫持)
-    - [DLL劫持](#dll劫持)
   - [攻击漏洞技巧](#攻击漏洞技巧)
     - [CRLF 注入](#crlf-注入)
+    - [CRLF 漏洞验证](#crlf-漏洞验证)
+        - [CRLF产生会话固定](#crlf产生会话固定)
+        - [CRLF引发XSS漏洞](#crlf引发xss漏洞)
+      - [CRLF漏洞修复建议](#crlf漏洞修复建议)
     - [宽字节注入](#宽字节注入)
+      - [宽字节注入结合的用法](#宽字节注入结合的用法)
 - [绕过检测](#绕过检测)
   - [待补充：免杀](#待补充免杀)
   - [WAF绕过](#waf绕过)
@@ -376,6 +398,7 @@
     - [制作](#制作)
     - [fuzzy](#fuzzy)
 - [API漏洞](#api漏洞)
+  - [API漏洞基础](#api漏洞基础)
 - [微信小程序漏洞](#微信小程序漏洞)
 - [PC端软件](#pc端软件)
 - [APP漏洞](#app漏洞)
@@ -403,7 +426,6 @@
       - [gophish](#gophish)
     - [钓鱼手段](#钓鱼手段)
       - [链接存放在](#链接存放在)
-        - [+开放重定向](#开放重定向-1)
       - [宏 – Office](#宏--office)
       - [非宏的 Office 文件 —— DDE](#非宏的-office-文件--dde)
       - [隐藏的加密 payload](#隐藏的加密-payload)
@@ -511,7 +533,9 @@
       - [MyBatis](#mybatis)
     - [开发基础](#开发基础-1)
     - [基础开发知识](#基础开发知识)
-    - [审计](#审计)
+    - [javaweb审计](#javaweb审计)
+      - [javaweb本身漏洞点](#javaweb本身漏洞点)
+        - [反射](#反射)
         - [常见审计知识点](#常见审计知识点)
         - [寻找可控输入](#寻找可控输入)
         - [过滤敏感字符方案](#过滤敏感字符方案)
@@ -540,7 +564,7 @@
 预计2022年完成
 
 
-很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**随缘更新。**
+很抱歉，这篇文章你看到的时候还是粗糙的，文章更改可能出现在各个章节，文章**不定期更新。**
 在github显示与排版效果似乎不好，可以下载[typora](https://typora.io/)与md文件，将md用typora打开，可以看到目录树。如下图是软件打开效果。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210720144245627.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
 哈哈哈，对了发现一个问题，因为文章文本含有不少漏洞后门代码，这可能导致你的查杀软件当做异常。不过不用担心我是不是有恶意，因为我不会伤害我的任何一位读者。善用crtl+F，对关键字进行快速定位。学习时可自行按照自己喜欢的顺序，并不一定要严格按照我的文章目录。
@@ -549,6 +573,7 @@
 
 我热爱分享，文章可能有的部分对于你有帮助有的没有，选来用。请善待我的努力和分享精神。如果你觉得文章对你有帮助记得star，或者在你的技术分享文章中引用我的文章链接
 
+我下一阶段（还早，预热中）将对文章做的更多的改进是提供更多自动化的验证脚本。
 # 常见知识点
 
 只介绍常见和必备基础不涉及到深度，并且里面穿插一些与安全相关的知识点
@@ -637,14 +662,8 @@ Redis:6379
 
 ### 术语
 
- **同源策略**
 
-先解释一下同源：协议、域名、端口都一样就是同源
- ~ http、https、 
- ~ a.com、b.com
- ~ url:80、url:90
 
- 只有Js脚本和Html模块（即网页的前端数据）必须在同一个源下，Js脚本才能读取或处理Html模块。同源策略能保护了自己域名的信息，即自己的html不能被外域名的Js脚本读取
 
 **CDN**
  cdn全称是内容分发网络。其目的是让用户能够更快速的得到请求的数据。简单来讲，cdn就是用来加速的，他能让用户就近访问数据，这样就更更快的获取到需要的数据。举个例子，现在服务器在北京，深圳的用户想要获取服务器上的数据就需要跨越一个很远的距离，这显然就比北京的用户访问北京的服务器速度要慢。但是现在我们在深圳建立一个cdn服务器，上面缓存住一些数据，深圳用户访问时先访问这个cdn服务器，如果服务器上有用户请求的数据就可以直接返回，这样速度就大大的提升了。
@@ -790,13 +809,12 @@ SSL握手协议（SSL Handshake Protocol）：它建立在SSL记录协议之上�
 403（禁止） 权限不够，服务器拒绝请求。对于403可以使用burpsuite插件尝试绕权限 https://github.com/sting8k/BurpSuite_403Bypasser或 https://github.com/yunemse48/403bypasser.git
 404（未找到）这个界面有可能是攻击者存放了潜在后门
 
-#### cookie
 
 ##### cookie会话验证和token验证区别以及安全问题
 
 之所以出现这些附加参数是因为http是无状态请求，即这一次请求和上一次请求是没有任何关系的，互不认识的，没有关联的。但这几种认证又有差别。也有的人直接称这一对的区别是cookie和session区别，这与我说的cookie会话和tooken是一个意思。
 
-cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了。
+cookie 会话。服务器验证是查看session id是否匹配得上。存储服务器 存活时间较短  大型。cookie 会话就像比如你登录了一次支付宝，过了几分钟（一般30分钟左右）不用或关闭了浏览器就还需要你登录。一个session在服务器上会占用1kb，人多了还是挺耗内存的。由于跨站自动带上cookie所以存在CSRF攻击。如果管理员在用户退出时未销毁就存在所谓的会话固定，会话固定只需要盗取session就可以登录了，这里可见一些会话固定的l利用[例子（源码分析出漏洞，并xss盗取）](https://blog.csdn.net/weixin_50464560/article/details/118442500)。与其他人的[个人总结](https://blog.csdn.net/weixin_50464560/article/details/118443906)
 token 储存本地。服务器验证是查看参数附带的签名。存活时间较长 小中型。此方案不会存在CSRF攻击因为跨站请求不会自动填写token值，但由于存活时间长，一般容易xss盗取利用等
 
 对方网站如果只认token验证，那么你盗取 cookie会话是没什么价值的。反过来只认 cookie会话你盗取token做验证也是没有价值的。
@@ -824,6 +842,7 @@ rememberme=eKKF2QT4fwpMeJf36POk6yJV
 使用：每次请求时带上经绑定session的csrf的值，每次操作csrf重新生成（防止复用和重放）
 可能产生漏洞：csrf可被分析出
 **rememberme**
+也许是某类cms的特征
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/fc324a18698d4e60a09ac5a21d03c0e2.png)
 
 **JWT**
@@ -848,7 +867,6 @@ python3 jwt_tool.py -M at -t "https://api.example.com/api/v1/user/76bab5dd-9307-
 
 **rount**
 “route”是指根据url分配到对应的处理程序。
-
 #### http协议版本
 
 http1：客户端连接网络服务器建立连接后，只能获取一个网络资源
@@ -2344,6 +2362,18 @@ fastjson反序列化：利用需要特定条件，不常用
 jackson反序列化：利用需要特定条件，不常用
 apache solr反序列化：
 
+## 开放性重定向
+这类漏洞通常出现在url跳转情况：登录、登出、分享等
+### 开放性重定向绕过
+1. 只要判定传入的 URL 地址前若干位为其事先设置好的白名单的地址，则认为该地址是安全和可信的地址，并执行跳转。在实际场景中还可以将上述方法混合使用，甚至可以使用 IP 地址代替域名、各种编码等手段进行绕过
+```handlebars
+www.test.com/?redirectUrl=http://www.domain.com.hacker.net
+www.test.com/?redirectUrl=http://www.domain.com/www.hacker.net
+www.test.com/?redirectUrl=http://www.domain.com?www.hacker.net
+www.test.com/?redirectUrl=http://www.domain.com@www.hacker.net
+www.test.com/?redirectUrl=http://www.domain.com#www.hacker.net
+```
+
 ## 文件操作
 
 文件包含
@@ -2577,13 +2607,57 @@ Windows不允许空格和点以及一些特殊字符作为结尾，创建这样�
 unlink，delfile是php中对应删除的函数
 删除数据库安装文件，可以重装数据库。
 
-## CORS
+## 跨域资源共享(CORS)
+### CORS的基础知识
+#### 基础知识：同源策略
+ ##### 什么是同源策略
+先解释一下同源：协议、域名、端口都一样就是同源
+ ~ http、https、 
+ ~ a.com、b.com
+ ~ url:80、url:90
 
+ 只有Js脚本和Html模块（即网页的前端数据）必须在同一个源下，Js脚本才能读取或处理Html模块。同源策略能保护了自己域名的信息，即自己的html不能被外域名的Js脚本读取
+ ##### 怎样修改源
+  页面可能会因为某些原因而需要改变自身的源，那该怎么进行修改呢？页面可以通过将脚本的document.domain设置为当前域或者当前域的父域来进行修改源的操作，比如说，现在页面处在http://api.threezh1.com/temp/world.html，它现在的源是api.threezh1.com，如果我想要修改它的源为threezh1.com，也就是它的父域，就需要执行下面的语句：(Ps：修改源不能修改为除了自身域和父域之外的源)
+
+```bash
+ document.domain = "threezh1.com"
+```
+ ##### 跨源网络访问
+ 跨域操作分为以下三类：
+
+* 跨域写操作（Cross-origin writes）：例如链接（links），重定向以及表单提交。非简单请求需要添加 preflight(发送一个OPTIONS请求)
+* 跨域资源嵌入（Cross-origin embedding）：<script>嵌入跨域脚本、<link rel="stylesheet" href="...">嵌入css、<img>嵌入图片、<iframe>载入资源等等
+* 跨域读操作（Cross-origin reads）
+前两项通常是默认可以运行的，而跨域读通常是不被允许的，那该如何允许跨源访问呢？这时候CORS就发挥出它的作用了。
+
+ ### CORS是什么
+ 跨域资源共享(CORS) 是一种机制，通过定义额外的HTTP头来使浏览器能够允许不同源之间的资源交互。这些HTTP头包括哪些呢？
+ HTTP 请求首部字段
+
+Origin: <origin> 表明预检请求或实际请求的源站。
+用于预检请求的HTTP请求首部字段：
+
+Access-Control-Request-Method: <method> 用于预检请求。其作用是。将实际请求所使用的 HTTP 方法告诉服务器。
+Access-Control-Request-Headers: <field-name>[, <field-name>]*用于预检请求。其作用是，将实际请求所携带的首部字段告诉服务器。
+### 怎么验证CORS漏洞
+#### 手动：常见验证CORS方法
 如果在请求的数据包中有
-origin修改后，在返回的数据包中有：
+修改`Origin:`，使得返回的HTTP字段中的`Access-Control-Allow-Origin: `出现你所输入的值，表明此网站存在CSOR漏洞。如下图我修改orgin为123,响应`Access-Control-Allow-Origin: `也为123：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/955272a4338a4b7c83b63183f3205e1d.png)
-就说明有此漏洞。在测试时需要搭建一个vps，
+在真正测试危害性时需要搭建一个vps
 
+#### 手动：绕过验证
+当域名校验不是特别严格时，可以通过以下几种方式进行绕过：
+
+在后面加域名 qq.com => qq.com.abc.com
+将域名拼接 abc.qq.com => abc_qq.com
+在前面或者在后面加字符 qq.com => abcqq.com / qq.com => qq.comabc.com
+
+#### 工具验证CORS
+[CORScanner](https://github.com/chenjj/CORScanner)
+
+#### CORS
 ## 业务层面漏洞
 
 ### 模块
@@ -2988,11 +3062,48 @@ XXEinjector的漏洞利用工具，XXEinjector是一款基于Ruby的XXE注入工
 
 通常，禁用外部实体的解析并禁用对XInclude. 这通常可以通过配置选项或以编程方式覆盖默认行为来完成。有关如何禁用不必要的功能的详细信息，请参阅 XML 解析库或 API 的文档。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210714142934224.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
+## 
+## 劫持漏洞
 
-## 点击劫持（Clickjacking）
+### DNS劫持
+也被称为子域名劫持
+DNS 记录指向的资源无效，但记录本身尚未从 DNS 清除，攻击者可以借此实现 DNS 劫持。 
+想要发现子域名解析漏洞，首先需要挖掘收集目标的子域名，并且密切关注这些子域名的变化，收集子域名的方式由很多，也有很多优秀的工具可以进行查询，例如Oneforall、Layer子域名挖掘机、Subdomain3、Sublist3r等，还有一些其他的方法来进行收集。收集完成子域名后，有两种方式来对这些子域名是否存在子域名劫持漏洞，一种思路是访问这些域名，根据网页内容进行判断。
 
 
-### 什么是点击劫持？
+
+#### DNS劫持检测工具
+以下实战和工具部分介绍参考于 https://bbs.ichunqiu.com/thread-61172-1-1.html 感谢作者分享
+Sub 404是一个使用python编写的工具，利用异步方式批量检查子域劫持漏洞。它会批量查询目标URL的状态，通过404页面的内容来判断是否具有子域名劫持漏洞，另外，它还会通过获取CNAME来进行检测，这个工具使用的前提是安装了sublist3r 和 subfinder。如果不想再另外安装这两个工具，可以使用[docker来运行sub404](https://bbs.ichunqiu.com/thread-61172-1-1.html)。
+
+NtHiM(https://github.com/TheBinitGhimire/NtHiM)
+NtHiM同样可以针对单个目标和批量进行测试
+其他帮助检测DNS劫持工具有：
+tko-subs
+HostileSubBruteforcer
+autoSubTakeover
+
+
+#### DNS劫持实战
+通过查看can-i-take-over-xyz中介绍的可能存在子域名劫持的页面的提示信息，通过这个提示[https://github.com/EdOverflow/can-i-take-over-xyz/issues/46]可以判断可以对其进行劫持
+另外使用dig命令查看hacker.xxxxxx.com的CNAME记录，可以看到具有myshopify的cname记录
+![在这里插入图片描述](https://img-blog.csdnimg.cn/d76994120ca846658daa3ff7ac3d2110.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_18,color_FFFFFF,t_70,g_se,x_16)
+
+然后尝试对hacker.xxxxxx.com进行子域名劫持，首先需要注册一个myshopify的账号，这个网站提供的服务是收费的，但是首次注册可以试用几天。注册好后创建一个shopify托管域名和页面，假设这里创建的域名是test.myshopify.com，这个可以自己定义页面的内容，我就只写了一点可以验证的内容，写好后修改页面的信息，将其连接到hacker.xxxxxx.com
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2ebeea1608ff4cbe945b561513f0a39a.png)
+这里就将之前发现具有漏洞的域名写上，它会验证是否可以与这个域名连接，验证的方式就是查询那个域名是否具有shops.myshopify.com的cname记录。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/c4128856d9454fafa4750f4afe4df34a.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_20,color_FFFFFF,t_70,g_se,x_16)
+修改保存后，就完成了对该子域名的劫持，这时去访问hacker.xxxxxx.com，访问到的就是自己创建的页面的内容。
+![在这里插入图片描述](https://img-blog.csdnimg.cn/68a362391e2844c2b20d2fc9a085fb17.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_16,color_FFFFFF,t_70,g_se,x_16)
+
+### HTTP劫持
+
+### DLL劫持
+
+### 点击劫持（Clickjacking）
+
+
+#### 什么是点击劫持？
 
 点击劫持是一种基于界面的攻击，通过点击诱饵网站中的一些其他内容，诱使用户点击隐藏网站上的可操作内容。请看以下案例：
 网络用户访问诱饵网站（可能这是电子邮件提供的链接）并单击按钮以赢取奖品。不知不觉中，他们被攻击者欺骗，按下了一个替代的隐藏按钮，这导致在另一个网站上支付一个帐户。这是一个点击劫持攻击的例子。
@@ -3890,6 +4001,7 @@ Host: bad-stuff-here
 小心使用仅限内部的虚拟主机
 使用虚拟主机时，您应该避免在与面向公众的内容相同的服务器上托管仅供内部使用的网站和应用程序。否则，攻击者可能能够通过主机头操作访问内部域。
 
+
 ## 跨站脚本（xss）
 
 ### 什么是xss
@@ -4265,6 +4377,12 @@ CSRF通常可以用来以目标用户的名义发邮件、盗取目标用户账�
 **构造poc**
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/0d33e519fa6e4c2f85e56913cee2b20e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5YyX5LiQ5a6J5YWo,size_19,color_FFFFFF,t_70,g_se,x_16)
 
+### CSRF绕过手段有哪些？
+删除CSRF token
+
+绕过CSRF的另一种方法是识别CSRF令牌的算法。根据我的经验，CSRF令牌是MD5或Base64编码的值。您可以解码该值并对该算法中的下一个值进行编码，然后使用该令牌。例如，"a0a080f42e6f13b3a2df133f073095dd"是MD5（122）。您可以类似地将下一个值MD5（123）作为CSRF令牌已达到绕过的目的
+
+经常观察到CSRF令牌由两部分组成。静态部分和动态部分。考虑两个CSRF令牌shahmeer742498h989889和shahmeer7424ashda099s。shahmeer7424作为静态部分当作令牌使用。
 
 ### CSRF 防御方式有哪些？
 
@@ -4273,7 +4391,7 @@ CSRF通常可以用来以目标用户的名义发邮件、盗取目标用户账�
 
 * 当用户发送重要的请求时需要输入原始密码
 * 对cookie生成csrf随机校验值，每次请求带上此值（有时候是在html表单提交时隐藏了此值）
-* 
+
 
 ```bash
 Cookie: session=2yQIDcpia41WrATfjPqvm9tOkDvkMvLmcsrf=WfF1szMUHhiokx9AHFply5L2xAOfjRkE&email=wiener@normal-user.com# 隐藏值在使用 POST 方法提交的 HTML 表单的隐藏字段内将令牌传输到客户端<input type="hidden" name="csrf-token" value="CIwNZNlR4XbisJF39I8yWnWX9wX4WFoz" />
@@ -4372,19 +4490,7 @@ hping3 --icmp  --flood -p 80 --rand-source 想测试的IP
 hping3 --syn  --flood -p 80 --rand-source 想测试的IP
 ```
 
-## 待补充：劫持漏洞
 
-### DNS劫持
-
-DNS 记录指向的资源无效，但记录本身尚未从 DNS 清除，攻击者可以借此实现 DNS 劫持。 
-帮助检测DNS工具有：
-tko-subs
-HostileSubBruteforcer
-autoSubTakeover
-
-### HTTP劫持
-
-### DLL劫持
 
 ## 攻击漏洞技巧
 
@@ -4394,18 +4500,45 @@ HTTP响应拆分漏洞，也叫CRLF注入攻击。CR、LF分别对应回车（%0
 一般在源码中存在将你请求的数据设置为数据包一部分、又不过滤情况就存在此漏洞。更多请看https://zhuanlan.zhihu.com/p/140702316
 
 **简介**
-难度：低
+通常用在：分享链接、对客户端的攻击，比如投票、跳转、关注等；
+### CRLF 漏洞验证
+##### CRLF产生会话固定
 
-通常用在：分享链接
-拓展思路：对客户端的攻击，比如投票、跳转、关注等；
-绕过安全防护软件；
+请求参数：http://www.sina.com%0a%0dSet-cookie:crlf%3Dtrue
+
+如果存在burp响应数据包返回：
+
+```bash
+HTTP/1.1 200 OK
+
+Location:http://www.sina.com
+
+Set-cookie:crff=true
+```
+
+##### CRLF引发XSS漏洞
+
+在请求参数中插入CRLF字符：?email=a%0d%0a%0d%0a<script>alert(/xss/);</script>
+
+服务器返回：
+
+HTTP/1.1 200 OK
+
+Set-Cookie：de=a
 
 
-**实战**
+<script>alert(/xss/);</script>
 
-测试链接：
+原理：服务器端没有过滤\r\n，而又把用户输入的数据放在HTTP头中，从而导致安全隐患。
 
-会话固定、XSS、缓存病毒攻击、日志伪造
+#### CRLF漏洞修复建议
+通过在数据包中http头中注入X-XSS-Protection: 0，关闭IE8的XSS Filter功能。
+
+?url=%0aX-XSS-Protection:%200%0d%0a%0d%0a<img%20src=1%20οnerrοr=alert(/xss/)>
+
+对抗CRLF只需过滤掉"\r","\n"之类的换行符即可
+
+
 
 ### 宽字节注入
 
@@ -4423,6 +4556,11 @@ HTTP响应拆分漏洞，也叫CRLF注入攻击。CR、LF分别对应回车（%0
 
 php中有一个转义字符
 
+#### 宽字节注入结合的用法
+我们可以使用sqlmap内置脚本unmagicquotes来进行宽字节注入.
+```bash
+python sqlmap.py -u http://219.153.49.228:46887/new_list.php?id=1 --tamper unmagicquotes --random-agent 
+```
 
 # 绕过检测
 
@@ -4780,8 +4918,6 @@ aspx一句话木马：
 
 # 系统漏洞
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/2021071422384836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L25nYWRtaW5x,size_16,color_FFFFFF,t_70)
-
 ## 工具
 
 ### 探测工具简介
@@ -4852,6 +4988,14 @@ git clone https://www.github.com/landgrey/pydictor.gitcd pydictor/python pydicto
 国外fuzzy字典https://github.com/danielmiessler/SecLists/tree/master/Discovery/Web-Content
 
 # API漏洞
+## API漏洞基础
+API调用中的安全漏洞。 有两种类型的API。一种是REST即Representational State Transfer（表述性状态传递），另一种是SOAP 即Simple Object Access Protocol（简单组件接入协议）。两种格式都支持安全套接字层在传输过程中进行数据保护，但是SOAP还支持WS-Security进行企业级保护。
+您可以说REST是新的，而SOAP是旧的。就外行而言，与REST相比，SOAP是复杂的。
+REST使用：HTTP, JSON , URL和XML
+SOAP使用：多数情况使用HTTP和XML
+当您处理重要的私人信息（例如银行帐号）时，使用SOAP更有意义。但是，如果您要将当天的天气预报发送到移动应用程序，则SOAP不需要额外的安全性。
+由于这些原因，REST在开发人员中比SOAP更受欢迎。另一个原因是“ REST API使用JavaScript更方便”。尽管SOAP与JavaScript兼容，但支持更大的实施被限制。所以，如今，您发现SOAP主要用于遗留应用程序。
+
 
 # 微信小程序漏洞
 
@@ -5053,10 +5197,7 @@ DLL劫持
 
 #### 链接存放在
 
-##### +开放重定向
 
-如果网站有开放重定向只需要将重定向参数修改为外部站点。
-如果用户访问 url?参数=example.com  ，它会重定向到 http://example.com/admin，这时候这种未经验证的参数的跳转网站你就可以伪造一个网站专门用来接待受害者
 
 #### 宏 – Office
 
@@ -6337,7 +6478,13 @@ springboot 框架对应的表示是SPEL
 
 
 
-### 审计
+### javaweb审计
+#### javaweb本身漏洞点
+##### 反射
+简单的来说就是你不需要实例化这个类你就能知道这个类的所有属性、方法并调用他们。
+```bash
+$reflection = new ReflectionMethod($jms, $action);
+```
 
 ##### 常见审计知识点
 
